@@ -1,11 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Document</title>
-  </head>
-  <body>
-      <h1>Stuff</h1>
-  </body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel = "stylesheet" href = "style.css">
+    </head>
+    <body>
+        <!-- NOTE: 
+        This is for the clients name, it will be spaced
+        out from the other text.
+            Thought:
+            Maybe later on it will be the user's name with the company
+            name? (P48 Marketing : Anne)
+         -->
+        <h1 id = "clients_name">P48 Marketing</h1>
+
+        <!-- NOTE:
+            We need to generate this form dynamically with JS.
+            Something just to remember later on.
+        -->
+        <!-- This is the form html as of now -->
+        <div id = "schedule">
+            <div>
+                <h2>Station Name</h2>
+                <h3>Type of Schedule</h3>
+            </div>
+            <table>
+                <!-- Bottom tr has all headers -->
+                <tr>
+                    <!-- Headers for the table  -->
+                    <th>DAYPART</th>
+                    <th>ads/wk</th>
+                    <th>MO</th>
+                    <th>TU</th>
+                    <th>WE</th>
+                    <th>TH</th>
+                    <th>FR</th>
+                    <th>SA</th>
+                    <th>SU</th>
+                    <th>RATE</th>
+                    <th>COST</th>
+                </tr>
+                <tr>
+                    <td class = "time-slot">Morning (7a-10a)</td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                </tr>
+                <tr>
+                    <td class = "time-slot">Middays (10a-3p)</td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                </tr>
+                <tr>
+                    <td class = "time-slot">Afternoons(3p-6:30p)</td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                </tr>
+                <tr>
+                    <td class = "time-slot">Sa-Su 9a-2p</td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                </tr>
+                <tr>
+                    <td class = "time-slot">M-Su 12M-12M Bonus</td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                    <td><input type = "text"></td>
+                </tr>
+                <tr>
+                    <td class = "time-slot">Weekly Totals:</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>                    
+                </tr>
+            </table>
+        </div>
+
+        <!-- NOTE: Schedule Creation
+            When client adds a new schedule, ask client which station
+                Question: Which way?
+                    Possible ways:
+                    City,
+                    Zipcode,
+                    Radiostations name,
+                    Drop Down,
+                    Search Bar
+                    (If we go with drop down or search bar, could just use a list to hold every radio station or a data base)
+                    Need to somehow filter out each radio station (based on city for example)
+        -->
+
+        <!-- NOTE:
+            I assume that this will be our monthly budget area.
+            Will leave it mostly blank until later on. 
+        -->
+        <div>
+            <p>
+                Monthly Budget
+                $X.XX
+            </p>
+        </div>     
+    </body>
 </html>

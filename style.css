@@ -1,0 +1,33 @@
+/* Can add in custom fonts later */
+
+body
+{
+    
+    /* To make the input fields a little smaller */
+    input
+    {
+        width: 80%;
+    }
+
+    /* To adjust the current table */
+    #schedule
+    {
+        width: 90%;
+        margin: 0 auto;
+        border: 1px solid black;
+        padding: 20px;
+        margin-top: 80px;
+
+        /* Aligns the text of the table center */
+        table
+        {
+            text-align: center;
+        }
+        
+        /* Adjustes the cells under DAYPART */
+        .time-slot
+        {
+            padding: 5px;
+        }
+    }
+}
