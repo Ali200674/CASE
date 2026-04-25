@@ -26,7 +26,7 @@ def get_deployable():
     return to_deploy
 
 
-@routes.get('/')
+@routes.post('/')
 async def handle_webhook(request):
     print("New commit detected, pulling changes")
     os.system('git pull')
