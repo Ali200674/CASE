@@ -1,12 +1,8 @@
-from aiohttp import web
-
 import os
 
 DEPLOYMENT_ROOT = "/home2/albanygr/public_html/CASE/" #Directory to copy files to
 DEPLOYMENT_EXCLUDED_TYPES = ["md", "yml", "py"] #File types to exclude from deployment
 DEPLOYMENT_EXCLUDED_OBJECTS = [] #Specific files to exclude from deployment
-
-routes = web.RouteTableDef()
 
 def is_deployable(filename):
     '''Return whether a file is OK to be deployed.'''
@@ -25,9 +21,7 @@ def get_deployable():
             to_deploy.append(filename)
     return to_deploy
 
-
-@routes.post('/')
-async def handle_webhook(request):
+def handle_deployment():
     print("New commit detected, pulling changes")
     os.system('git pull')
     deployable = get_deployable()
@@ -35,9 +29,5 @@ async def handle_webhook(request):
     print(f"Deploying to {DEPLOYMENT_ROOT}")
     os.system(f"/bin/cp -R -t {DEPLOYMENT_ROOT} {' '.join(deployable)}") #Copy everything deployable to DEPLOYMENT_ROOT
     print("Deployment finished")
-    return web.Response(status=200)
 
-app = web.Application()
-app.add_routes(routes)
-
-web.run_app(app, port=8081)
+handle_deployment()
