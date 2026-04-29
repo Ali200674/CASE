@@ -26,7 +26,7 @@ def get_deployable():
     return to_deploy
 
 @routes.get('/')
-async def handle_deployment():
+async def handle_deployment(request):
     print("New commit detected, pulling changes")
     os.system('git pull')
     deployable = get_deployable()
