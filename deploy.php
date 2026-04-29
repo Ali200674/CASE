@@ -1,6 +1,6 @@
 <?php
 
-shell_exec('../CASE/.venv/bin/python3 ../CASE/deploy.py');
+file_get_contents('http://localhost:8081/');
 
 http_response_code(200);
 
