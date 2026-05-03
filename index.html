@@ -15,7 +15,7 @@
             Maybe later on it will be the user's name with the company
             name? (P48 Marketing : Anne)
          -->
-        <h1 id = "clients_name">P48 Marketing</h1>
+        <h1 id = "company-name">P48 Marketing</h1>
 
         <!-- NOTE:
             We need to generate this form dynamically with JS.
@@ -23,10 +23,10 @@
         -->
         <!-- This is the form html as of now -->
         <div id = "section">
-            <h2>Station Name</h2>
+            <h2 id = "client-name">Station Name</h2>
             <div id = "schedule">
                 <div>
-                    <h3>Type of Schedule</h3>
+                    <h3>Weekly Schedule</h3>
                 </div>
                 <table>
                     <!-- tr below has all headers -->
@@ -191,13 +191,13 @@
         </div>
         
         <!-- Here is the section for adding in a new schedule. -->
-        <div id = "add-schedule">
-            <select>
-                <option value="">Radio Station One</option>
-                <option value="">Radio Station Two</option>
-                <option value="">Radio Station Three</option>
+        <div id = "add-client">
+            <select id = "add-client-dropdown">
+                <option>Radio Station One</option>
+                <option>Radio Station Two</option>
+                <option>Radio Station Three</option>
             </select>
-            <button id = "new-schedule">Add New Company</button>
+            <button id = "add-client-button">Add New Client</button>
         </div>
     </body>
 </html>
