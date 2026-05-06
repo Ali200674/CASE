@@ -181,13 +181,7 @@ function getAllTotals()
     }
 }
 
-// Will be worked on later.
-// const generateNewSchedule = document.querySelector("#make-new-schedule");
-// generateNewSchedule.addEventListener("click", () =>
-// {
-//     console.log("test");
-// })
-
+// THIS IS FOR THE DYNAMIC TABLE 
 // VARIABLES
 // This is the button to create the table.
 const button = document.querySelector("#make-schedule");
