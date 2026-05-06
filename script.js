@@ -227,11 +227,8 @@ function buildTable()
     // Create a container (div)
     const container = createDiv(undefined, "tables")
 
-    // // Create a h2 for the client name
+    // // Create a h2 for the client name (We could something like this later)
     // const clientName = createHeading("h2", "client-name", "Radio Station One");
-
-    // Create another div with id schedule
-    const scheduleContainer = createDiv(undefined, "schedule");
 
     // Create a div for the type of schedule h3 heading
     const h3Wrapper = createDiv();
@@ -241,11 +238,6 @@ function buildTable()
 
     // Append the h3 to the h3Wrapper div
     h3Wrapper.append(headingThree)
-
-    // Leave this for now
-    // Append both h3 wrapper and table to the scheduleContainer div
-    // scheduleContainer.appendChild(h3Wrapper)
-    // scheduleContainer.appendChild(createWholeTable());
 
     // Append all of that to the main div
     // container.append(clientName, scheduleContainer);
