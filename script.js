@@ -1,6 +1,6 @@
 // All of this code is for the schedule
 // Variables
-const scheduleTable = document.querySelector("#schedule");
+const scheduleTable = document.querySelector(".tables");
 const allTotalIDs = ["adsTotal", "mondayTotal", "tuesdayTotal",
     "wednesdayTotal", "thursdayTotal", "fridayTotal", "saturdayTotal",
     "sundayTotal", "rateTotal", "costTotal"
@@ -187,3 +187,295 @@ function getAllTotals()
 // {
 //     console.log("test");
 // })
+
+// VARIABLES
+// This is the button to create the table.
+const button = document.querySelector("#make-schedule");
+
+// This is the div that stores the button. every time the button get's pressed, the table gets inserted above this div
+const mainDiv = document.querySelector("#generate-new-schedule");
+
+// An event lister that listens for the button to be clicked.
+button.addEventListener("click", () =>
+{
+    // Call this function to insert the table
+    insertTableToDOM();
+})
+
+
+/**
+ * This method inserts the table into the DOM.
+ * Specifically, it gets inserted above the div that holds the button.
+ */
+function insertTableToDOM()
+{
+    // Build the table
+    const ele = buildTable();
+
+    // Insert the table ABOVE the div (or before this div comes up)
+    mainDiv.parentNode.insertBefore(ele, mainDiv);
+}
+
+/**
+ * This method creates a table and returns it.
+ * 
+ * returns: A table
+ * 
+ */
+function buildTable()
+{
+    // Create a container (div)
+    const container = createDiv(undefined, "tables")
+
+    // // Create a h2 for the client name
+    // const clientName = createHeading("h2", "client-name", "Radio Station One");
+
+    // Create another div with id schedule
+    const scheduleContainer = createDiv(undefined, "schedule");
+
+    // Create a div for the type of schedule h3 heading
+    const h3Wrapper = createDiv();
+
+    // Create a h3 heading with Type of Schedule text
+    const headingThree = createHeading("h3", null, "Weekly Schedule");
+
+    // Append the h3 to the h3Wrapper div
+    h3Wrapper.append(headingThree)
+
+    // Leave this for now
+    // Append both h3 wrapper and table to the scheduleContainer div
+    // scheduleContainer.appendChild(h3Wrapper)
+    // scheduleContainer.appendChild(createWholeTable());
+
+    // Append all of that to the main div
+    // container.append(clientName, scheduleContainer);
+
+    // Append the h3 and the table to the div 
+    container.append(h3Wrapper, createWholeTable());
+
+    // Return the table
+    return container;
+}
+
+/**
+ * This method creates a type of heading and returns it.
+ * If we want to put an id or text in it, we can pass it as an argument.
+ * 
+ * headingType: This is the type of heading you want to create and return (h2, h3, h4, etc)
+ * possibleId: This is the id you want to give to this heading
+ * possibleText: This is text you want to assign to this heading.
+ * 
+ * return: A heading of your choice.
+ */
+function createHeading(headingType, possibleId, possibleText) 
+{ 
+    // Make heading
+    const headingEle = document.createElement(headingType);
+
+    // If we pass in a id or text, assign it
+    if (possibleId) { headingEle.id = possibleId }
+    if (possibleText) { headingEle.textContent = possibleText}
+
+    // Return heading.
+    return headingEle; 
+}
+
+/**
+ * This method creates a div. This div can also have a id or class to it to it.
+ * 
+ * possibleId: This is the id you want to assign to this div
+ * 
+ * return: A div
+ */
+function createDiv(possibleId, possibleClass)
+{
+    // Make div
+    const div = document.createElement("div");
+
+    // If we pass in a id, assign that id
+    if (possibleId) { div.id = possibleId }
+
+    // If we pass in a class, assign it
+    if (possibleClass) {div.classList.add(possibleClass)}
+
+    // Return div
+    return div;
+}
+
+/**
+ * This method creates the whole table (schedule) and then returns it.
+ * 
+ * returns: the schedule.
+ */
+function createWholeTable()
+{
+    // Make element table
+    const table = document.createElement("table")
+
+    // Create tbody
+    const tableBody = document.createElement("tbody");
+
+    // Append tableBody to table
+    table.append(tableBody);
+
+    // Create the tr elements for the table
+    const trEles = createTrElements();
+    
+    // Populate the first tr with the columns
+    populateFirstTr(trEles[0])
+
+    // Populate the other tr elements
+    populateOtherTrElements(trEles)
+
+    // For every tr element made, append it to the table
+    for (let i = 0; i < trEles.length; i++)
+    {
+        tableBody.append(trEles[i]);
+    }
+
+    // Return that table
+    return table;
+}
+
+/**
+ * This method creates a array of tr elements and returns it.
+ * 
+ * returns: A array of tr elements.
+ * 
+ */
+function createTrElements()
+{
+    // A array of soon to be tr elements
+    const trs = [];
+
+    // A for loop to add to the array
+    for (let i = 0; i < Math.max(7); i++)
+    {
+        trs.push(document.createElement("tr"));
+    }
+
+    // Return that array of tr elements
+    return trs;
+}
+
+/**
+ * This method populates the first tr element of every table made.
+ * It populates it with a array of column headings.
+ * 
+ * returns: the tr element that had a bunch of th elements with every heading in the array.
+ * 
+ */
+
+function populateFirstTr(firstTrEle)
+{
+    // Create the array of column headings.
+    const headings = ["DAYPART", "ads/wk", "Length", "MO", "TU", "WE", "TH", "FR", "SA", "SU", "RATE", "COST"]
+
+    // Loop through the array
+    for (let i = 0; i < headings.length; i++)
+    {
+        // Create th elemenent
+        const thEle = document.createElement("th");
+
+        // Assign the text content to a column heading
+        thEle.textContent = headings[i];
+
+        // Append it to the tr element
+        firstTrEle.append(thEle);
+    }
+}
+
+function populateOtherTrElements(trArray)
+{
+    const elementTitles = ["Morning (7a-10a)", "Middays (10a-3p)", "Afternoons(3p-6:30p)", "Sa-Su 9a-2p", "M-Su 12M-12M Bonus", "Weekly Totals:"]
+    // const allTotalIDs = ["adsTotal", "mondayTotal", "tuesdayTotal",
+    //     "wednesdayTotal", "thursdayTotal", "fridayTotal", "saturdayTotal",
+    //     "sundayTotal", "rateTotal", "costTotal"
+    // ]
+    // const allColumnClasses = [
+    //     "ads", "monday", "tuesday",
+    //     "wednesday", "thursday", "friday", "saturday",
+    //     "sunday", "rate", "cost"
+    // ]
+    // const allRowClasses = ["rowOne", "rowTwo", "rowThree", "rowFour", "rowFive"];
+    // const allRowColumnTotalID = ["rowOneTotal", "rowTwoTotal", "rowTotalThree", "rowTotalFour", "rowTotalFive"];
+
+
+
+    // For every tr element in the table
+    for (let i = 1; i < trArray.length; i++)
+    {
+        // We will add 12 td elements to that tr element
+        for (let j = 0; j < 11; j++)
+        {
+            // Make a td element
+            const tdEle = document.createElement("td")
+
+            // If it's 0, that td will be a row heading.
+            if (j == 0)
+            {
+                tdEle.textContent = elementTitles[i - 1];
+
+                // Add class for css
+                tdEle.classList.add("time-slot");
+            }
+
+            // If i does not equal one (meaning that it's not a row heading)
+            if (i != trArray.length - 1)
+            {
+                // If j is the second one (it's the length of a ad)
+                if (j == 2)
+                {
+                    // We add a drop down for the length of a ad
+                    tdEle.append(createSections());
+                }
+                // Else it's a basic td element with a input field
+                else if (j != 0)
+                {
+                    // Make a input field, give a type of number and min of 0
+                    const inputEle = document.createElement("input");
+                    inputEle.type = "number"
+                    inputEle.min = "0";
+
+                    // Append it to the td element
+                    tdEle.append(inputEle);
+                }   
+              }  
+            
+            // Append that td element to the tr element.
+            trArray[i].append(tdEle)
+        }
+    }
+}
+
+/**
+ * 
+ * This method creates a drop down of the length of an ad.
+ * 
+ * 
+ * A drop down with four options for a length of an ad 
+ */
+function createSections()
+{
+    // Create select tag
+    const selection = document.createElement("select")
+
+    // Make array of values
+    const values = [":60", ":30", ":15", ":10"]
+
+    // For each value to be added to the select tag
+    for (let i = 0; i < values.length; i++)
+    {
+        // Create opition tag
+        const option = document.createElement("option");
+        
+        // Set text content to the values[i]
+        option.textContent = values[i];
+
+        // Append that opinion tag to the select tag
+        selection.append(option);
+    }
+
+    // Return that select tag
+    return selection;
+}
