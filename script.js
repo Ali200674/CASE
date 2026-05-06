@@ -219,16 +219,16 @@ function insertTableToDOM()
 function buildTable()
 {
     // Create a container (div)
-    const container = createDiv(undefined, "tables")
+    const container = createElement("div", null, "tables")
 
     // // Create a h2 for the client name (We could something like this later)
     // const clientName = createHeading("h2", "client-name", "Radio Station One");
 
     // Create a div for the type of schedule h3 heading
-    const h3Wrapper = createDiv();
+    const h3Wrapper = createElement("div", null, "scheduleTypeWrapper");
 
     // Create a h3 heading with Type of Schedule text
-    const headingThree = createHeading("h3", null, "Weekly Schedule");
+    const headingThree = createElement("h3", null, "scheduleType", "Weekly Schedule");
 
     // Append the h3 to the h3Wrapper div
     h3Wrapper.append(headingThree)
@@ -244,48 +244,24 @@ function buildTable()
 }
 
 /**
- * This method creates a type of heading and returns it.
- * If we want to put an id or text in it, we can pass it as an argument.
+ * Creates and returns an element with the given type, id, and class.
  * 
- * headingType: This is the type of heading you want to create and return (h2, h3, h4, etc)
- * possibleId: This is the id you want to give to this heading
- * possibleText: This is text you want to assign to this heading.
+ * type: The type of the element. Must be a valid HTML tag
+ * id: The ID to apply to this element. May be an empty string / null if no ID should be applied
+ * classes: The classes to apply to this element. May be an empty string / null if no classes should be applied
+ * text: The text content to apply to this element. May be omitted if no text content should be applied
  * 
- * return: A heading of your choice.
  */
-function createHeading(headingType, possibleId, possibleText) 
-{ 
-    // Make heading
-    const headingEle = document.createElement(headingType);
+function createElement(type, id, classes, text="")
+{
+    const newElement = document.createElement(type);
 
     // If we pass in a id or text, assign it
-    if (possibleId) { headingEle.id = possibleId }
-    if (possibleText) { headingEle.textContent = possibleText}
-
-    // Return heading.
-    return headingEle; 
-}
-
-/**
- * This method creates a div. This div can also have a id or class to it to it.
- * 
- * possibleId: This is the id you want to assign to this div
- * 
- * return: A div
- */
-function createDiv(possibleId, possibleClass)
-{
-    // Make div
-    const div = document.createElement("div");
-
-    // If we pass in a id, assign that id
-    if (possibleId) { div.id = possibleId }
-
-    // If we pass in a class, assign it
-    if (possibleClass) {div.classList.add(possibleClass)}
-
-    // Return div
-    return div;
+    if (id) { newElement.id = id }
+    if (classes) { newElement.className = classes }
+    if (text) { newElement.textContent = text }
+    
+    return newElement;
 }
 
 /**
