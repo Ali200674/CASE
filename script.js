@@ -1,6 +1,6 @@
 // All of this code is for the schedule
 // Variables
-const scheduleTable = document.querySelector(".tables");
+const scheduleTable = document.querySelector(".table-container");
 const allTotalIDs = ["adsTotal", "mondayTotal", "tuesdayTotal",
     "wednesdayTotal", "thursdayTotal", "fridayTotal", "saturdayTotal",
     "sundayTotal", "rateTotal", "costTotal"
@@ -219,16 +219,13 @@ function insertTableToDOM()
 function buildTable()
 {
     // Create a container (div)
-    const container = createElement("div", null, "tables")
-
-    // // Create a h2 for the client name (We could something like this later)
-    // const clientName = createHeading("h2", "client-name", "Radio Station One");
+    const container = createElement("div", null, "table-container")
 
     // Create a div for the type of schedule h3 heading
-    const h3Wrapper = createElement("div", null, "scheduleTypeWrapper");
+    const h3Wrapper = createElement("div", null, "schedule-type-wrapper");
 
     // Create a h3 heading with Type of Schedule text
-    const headingThree = createElement("h3", null, "scheduleType", "Weekly Schedule");
+    const headingThree = createElement("h3", null, "schedule-type", "Weekly Schedule");
 
     // Append the h3 to the h3Wrapper div
     h3Wrapper.append(headingThree)
@@ -365,34 +362,39 @@ function populateOtherTrElements(trArray)
 
 
     // For every tr element in the table
-    for (let i = 1; i < trArray.length; i++)
+    for (let row = 1; row < trArray.length; row++)
     {
+
         // We will add 12 td elements to that tr element
-        for (let j = 0; j < 11; j++)
+        for (let col = 0; col < 11; col++)
         {
             // Make a td element
-            const tdEle = document.createElement("td")
+            const tdEle = document.createElement("td");
 
-            // If it's 0, that td will be a row heading.
-            if (j == 0)
+            let isDayPart = (col == 0);
+            let isAdLengthField = (col == 2);
+            let isWeeklyTotalsRow = (row != trArray.length - 1)
+
+            // If it's 0, that td will be a day part.
+            if (isDayPart)
             {
-                tdEle.textContent = elementTitles[i - 1];
+                tdEle.textContent = elementTitles[row - 1];
 
                 // Add class for css
                 tdEle.classList.add("time-slot");
             }
 
-            // If i does not equal one (meaning that it's not a row heading)
-            if (i != trArray.length - 1)
+            // Don't modify the "Weekly totals" row
+            if (row != trArray.length - 1)
             {
                 // If j is the second one (it's the length of a ad)
-                if (j == 2)
+                if (isAdLengthField)
                 {
                     // We add a drop down for the length of a ad
                     tdEle.append(createSections());
                 }
                 // Else it's a basic td element with a input field
-                else if (j != 0)
+                else if (!isDayPart)
                 {
                     // Make a input field, give a type of number and min of 0
                     const inputEle = document.createElement("input");
@@ -405,7 +407,7 @@ function populateOtherTrElements(trArray)
               }  
             
             // Append that td element to the tr element.
-            trArray[i].append(tdEle)
+            trArray[row].append(tdEle)
         }
     }
 }
