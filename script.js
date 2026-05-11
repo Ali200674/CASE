@@ -1,7 +1,7 @@
 // All of this code is for the schedule
 // Variables
 const scheduleTable = document.querySelector(".table-container");
-const allTotalIDs = ["adsTotal", "mondayTotal", "tuesdayTotal",
+const allTotalClasses = ["adsTotal", "mondayTotal", "tuesdayTotal",
     "wednesdayTotal", "thursdayTotal", "fridayTotal", "saturdayTotal",
     "sundayTotal", "rateTotal", "costTotal"
 ]
@@ -30,7 +30,9 @@ scheduleTable.addEventListener("input", (event) =>
         }
     }
 
-    getAllTotals();
+    let parentTable = event.target.parentElement.parentElement.parentElement;
+    console.log(parentTable);
+    getAllTotals(parentTable);
 })
 
 // This is a event listener that listens to the keyboard. If they press in a "-" and if it's coming
@@ -96,25 +98,43 @@ function calculateTotalColumn(singleColumn)
     return total;
 }
 
-// This is to calculate each row. It will add up all of the cells in a row and return the total of it.
-function calculateTotalRow(singleRow)
+
+/*
+Calculates all necessary totals for a row, returns an array containing each column value including the final total.
+
+Example return value:
+ads/week, length, mon, tues, wed, thur, fri, sat, sun, rate, cost
+[4, 1.0, 3, 3, 3, 2, 1, 4, 4]
+*/
+function calculateTotalsForRow(singleRow)
 {
     let total = 0;
 
-    const row = document.querySelectorAll("." + singleRow);
+    const cells = singleRow.children;
 
-    // Loop through the cells in each row
-    for (let i = 0; i < row.length; i++)
+    // Loop through the cells in each row, skipping dayparts
+    for (let i = 1; i < cells.length; i++)
     {
         
-        // Get the value
-        const value = parseFloat(row[i].value)
+        //Get the input field contained within the table element
+        let cell = cells[i].children[0];
+
+        let adsPerWeekElement = null;
+        // If this is the ads/week column, hold onto that element so it can be updated later
+        if (i == 1)
+        {
+            adsPerWeekElement = cell;
+            
+        }
+
+        // Get the value of the element
+        const value = parseFloat(cells[i].children[0].value)
 
         // If the row is not empty
         if (!isNaN(value))
         {
             // If it's the rate column, multiply instead of adding.
-            if (i == row.length - 1)
+            if (i == cells.length - 1)
             {
                 total *= value;
             }
@@ -132,18 +152,15 @@ function calculateTotalRow(singleRow)
 /*
     This method will display the total of a row / column.
 */
-function displayTotal(totalCell, amount, moneySign = false)
+function displayTotal(target, total, moneySign = false)
 {
-    // We will get the total cell (either a row or column)
-    const totalCellId = document.querySelector("#" + totalCell);
-
-    // If there will be a money sign, then concatinate it to the amount
+    // If there will be a money sign, then concatenate it to the amount
     if (moneySign)
     {
-        totalCellId.textContent = "$" + amount;
+        target.textContent = "$" + total;
     } else // else, just put the amount only
     {
-        totalCellId.textContent = amount;
+        target.textContent = total;
     }  
 } 
 
@@ -151,8 +168,18 @@ function displayTotal(totalCell, amount, moneySign = false)
     This method will be used to generate all of the totals in the "Weekly Totals"
     cells. It include the cells of each row and each column.
  */
-function getAllTotals()
+function getAllTotals(parentTable)
 {
+
+    let rows = parentTable.children;
+    let columnTotals = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+    //Loop through each row in the table, skipping headers
+    for (let i = 1; i < rows.length; i++)
+    {
+        //Calculate the total for this row
+        const rowTotal = calculateTotalForRow(row)
+    }
     // This loop is for the rows.
     for (let i = 0; i < allRowClasses.length; i++)
     {
