@@ -13,54 +13,17 @@ const allColumnClasses = [
 const allRowClasses = ["rowOne", "rowTwo", "rowThree", "rowFour", "rowFive"];
 const allRowColumnTotalID = ["rowOneTotal", "rowTwoTotal", "rowTotalThree", "rowTotalFour", "rowTotalFive"];
 
-
-// This will be for the table. It will automatically listen for any inputs when the client types in a number
-scheduleTable.addEventListener("input", (event) =>
-{
-    // If the target is an input field.
-    if (event.target.tagName === "INPUT")
-    {   
-        // Turn the value into a float
-        const value = parseFloat(event.target.value)
-
-        // if the value is negative and is not NaN
-        if (!isNaN(value) && value < 0)
-        {
-            event.target.value = 0;
-        }
-    }
-
-    getAllTotals();
-})
-
-// This is a event listener that listens to the keyboard. If they press in a "-" and if it's coming
-// from the input tag, don't let it happen
-scheduleTable.addEventListener("keydown", (event) =>
-{
-    if ( event.key === "-" && event.target.tagName === "INPUT")
-    {
-        event.preventDefault();
-    }
-})
-
-// This listens for anything that the user pastes into the table. If it contains
-// a "-", it will stop it.
-scheduleTable.addEventListener("paste", (event) =>
-{
-    const pastedNum = event.clipboardData.getData("text")
-
-    if (pastedNum.includes("-"))
-    {
-        event.preventDefault();
-    }
-})
+// Variables for the schedule selection
+const fromWeek = document.querySelector("#from-week");
+const toWeek = document.querySelector("#to-week");
+const monthChoosen = document.querySelector("#month-choosen");
+const selectionSchedule = document.querySelector("#type-schedule");
+const weekArea = document.querySelector("#week-selection");
+const monthArea = document.querySelector("#month-selection");
+const errorMessage = document.querySelector("#error-message");
 
 
-document.getElementById("add-client-button").addEventListener("click", (event) =>
-{
-    let selected_client = document.getElementById("add-client-dropdown").value;
-    document.getElementById("client-name").innerHTML = selected_client;
-})
+
 
 /*
     This is for the columns. It will add up all of the cells in the column and return the total
@@ -190,8 +153,42 @@ const button = document.querySelector("#make-schedule");
 const mainDiv = document.querySelector("#generate-new-schedule");
 
 // An event lister that listens for the button to be clicked.
-button.addEventListener("click", () =>
+button.addEventListener("click", (event) =>
 {
+    // If week is showing
+    if (weekArea.style.display === "flex")
+    {
+        // If either are null
+        if (fromWeek.valueAsDate === null || toWeek.valueAsDate === null) 
+        { 
+            // Show error message and stop button
+            errorMessage.style.display = "block";
+            return; 
+        }
+        else // Else, both are not null and don't show message
+        {
+            errorMessage.style.display = "none"; 
+        } 
+    }
+
+    // If month is showing
+    if (monthArea.style.display === "block")
+    {
+        // If month is null
+        if (monthChoosen.valueAsDate === null) 
+        {
+            // Show error and stop
+            errorMessage.style.display = "block";
+            return; 
+        }
+        else // Else, not null and don't show message
+        {
+            errorMessage.style.display = "none";
+        }
+    }
+
+    
+
     // Call this function to insert the table
     insertTableToDOM();
 })
@@ -225,7 +222,7 @@ function buildTable()
     const h3Wrapper = createElement("div", null, "schedule-type-wrapper");
 
     // Create a h3 heading with Type of Schedule text
-    const headingThree = createElement("h3", null, "schedule-type", "Weekly Schedule");
+    const headingThree = createElement("h3", null, "schedule-type", getTypeOfSchedule());
 
     // Append the h3 to the h3Wrapper div
     h3Wrapper.append(headingThree)
@@ -238,6 +235,50 @@ function buildTable()
 
     // Return the table
     return container;
+}
+
+/**
+ * This method gets the type of schedule from whatever the user is using to add in a schedule (week or month)
+ * It gets the value from whatever the user has choosen, formats it to a usable date, then returned as a string.
+ * 
+ * 
+ * return: Returns a date based on if the user chooses the week selection or the month selection
+ */
+function getTypeOfSchedule()
+{
+
+    // If the week is showing
+    if (weekArea.style.display === "flex")
+    {
+            // Make a option object that formats the value received 
+            const option = {month: "long", day: "2-digit", year: "numeric",}
+
+            /*
+                What this does is that it converts the values returned to a Date object,
+                then with that Date object, we turn it into a string with the toLocaleDateString.
+                for it's parameters, we give it a format of the date (US in this case), then 
+                we pass in the option object to format the date to whatever we want it to be. 
+            */
+            return fromWeek.valueAsDate.toLocaleDateString("en-US", option) + " - " + toWeek.valueAsDate.toLocaleDateString("en-US", option);
+        
+    }
+    else // Else, the month is showing instead
+    {
+        // Format the month
+        const option = {month: "long", year: "numeric",}
+        
+        // Make a Date object based on the value 
+        const monthDateObject = new Date(monthChoosen.value)
+        
+        // Due to the indexing of the months (0 - 11 instead of 1 - 12), increment the month by one
+        monthDateObject.setMonth(monthDateObject.getMonth() + 1)
+        
+        // Return that month Date object as a string and formated
+        return monthDateObject.toLocaleDateString(
+            "en-US",
+            option
+        );
+    }
 }
 
 /**
@@ -443,3 +484,6 @@ function createSections()
     // Return that select tag
     return selection;
 }
+
+
+

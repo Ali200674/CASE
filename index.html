@@ -6,6 +6,7 @@
     <title>P48 Marketing</title>
     <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
+    <script src = "main.js" defer></script>
   </head>
   <body>
     <!-- NOTE: 
@@ -169,6 +170,31 @@
         </table>
       </div>
       <div id="generate-new-schedule">
+        <p>Type Of Schedule</p>
+
+        <select id="type-schedule">
+          <option value="week">Week</option>
+          <option value="month">Month</option>
+        </select>
+         
+        <!-- This div will hold all of the selections for the schedule making -->
+          <div id = "date-selections">
+            <span id = "error-message">Input Field(s) Cannot Be Empty!</span>
+            <div id = "week-selection">
+                <div id = "week-range">
+                  <p>From:</p>
+                  <input type="week" id = "from-week">
+                  <p>To:</p>
+                  <input type="week" id = "to-week">
+                </div>
+            </div>
+
+            <div id = "month-selection">
+              <p>Month:</p>
+              <input type="month" id = "month-choosen">
+            </div>
+        </div>
+        
         <button id="make-schedule">Generate New Schedule</button>
       </div>
     </div>
