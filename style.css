@@ -48,7 +48,7 @@ body
     .table-container
     {
 
-        margin: 20px auto 0px;
+        margin: 20px 0px;
         border: 1px solid black;
         padding: 20px;
         display: flex;
