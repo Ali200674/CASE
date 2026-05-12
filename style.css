@@ -60,7 +60,7 @@ body
     /* As of now, I will just call this section and that's basically the whole table with the name of the company and kind of schedule */
     #section
     {
-        width: 50%;
+        width: fit-content;
         margin: 0 auto;
         border: 1px solid black;
         display: flex;
@@ -68,17 +68,24 @@ body
         padding: 20px;   
     }
 
-    /* To make the input fields a little smaller */
     input
     {
-        width: 80%;
+        text-align: center;
+    }
+
+    /* To make the input fields a little smaller, adjust to number type restrictions */
+    input[type="number"]
+    {
+        width: 3ch;
+        min-width: 60px;
+        max-width: 120px;
     }
 
     /* To adjust the current tables */
     .table-container
     {
 
-        margin: 20px auto 0px;
+        margin: 20px 0px;
         border: 1px solid black;
         padding: 20px;
         display: flex;
@@ -96,6 +103,8 @@ body
         .time-slot
         {
             padding: 5px;
+            
+            white-space: normal;
         }
 
     }
@@ -134,4 +143,6 @@ body
     {
         border-top: 1px solid black;
     }
+
+
 }
