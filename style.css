@@ -35,13 +35,17 @@ body
         padding: 20px;   
     }
 
+    input
+    {
+        text-align: center;
+    }
+
     /* To make the input fields a little smaller, adjust to number type restrictions */
     input[type="number"]
     {
         width: 3ch;
         min-width: 60px;
         max-width: 120px;
-        text-align: center;
     }
 
     /* To adjust the current tables */
