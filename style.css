@@ -144,5 +144,22 @@ body
         border-top: 1px solid black;
     }
 
+    /* 
+        adjustments to editable daypart field
+    */
+    .daypart-input
+    {
+        border: none;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        width: 100%;
+    }
+
+    .daypart-input:focus
+    {
+        outline: none;
+    }
+
 
 }
