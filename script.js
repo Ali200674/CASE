@@ -376,20 +376,7 @@ function populateFirstTr(firstTrEle)
 function populateOtherTrElements(trArray)
 {
     const elementTitles = ["Morning (7a-10a)", "Middays (10a-3p)", "Afternoons(3p-6:30p)", "Sa-Su 9a-2p", "M-Su 12M-12M Bonus", "Weekly Totals:"]
-    // const allTotalIDs = ["adsTotal", "mondayTotal", "tuesdayTotal",
-    //     "wednesdayTotal", "thursdayTotal", "fridayTotal", "saturdayTotal",
-    //     "sundayTotal", "rateTotal", "costTotal"
-    // ]
-    // const allColumnClasses = [
-    //     "ads", "monday", "tuesday",
-    //     "wednesday", "thursday", "friday", "saturday",
-    //     "sunday", "rate", "cost"
-    // ]
-    // const allRowClasses = ["rowOne", "rowTwo", "rowThree", "rowFour", "rowFive"];
-    // const allRowColumnTotalID = ["rowOneTotal", "rowTwoTotal", "rowTotalThree", "rowTotalFour", "rowTotalFive"];
-
-
-
+    
     // For every tr element in the table
     for (let row = 1; row < trArray.length; row++)
     {
