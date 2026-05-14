@@ -13,9 +13,8 @@ const allColumnClasses = [
 const allRowClasses = ["rowOne", "rowTwo", "rowThree", "rowFour", "rowFive"];
 const allRowColumnTotalID = ["rowOneTotal", "rowTwoTotal", "rowTotalThree", "rowTotalFour", "rowTotalFive"];
 
-
 // This will be for the table. It will automatically listen for any inputs when the client types in a number
-scheduleTable.addEventListener("input", (event) =>
+function handleInputEventForSchedules(event)
 {
     // If the target is an input field.
     if (event.target.tagName === "INPUT")
@@ -33,21 +32,19 @@ scheduleTable.addEventListener("input", (event) =>
     let parentTable = event.target.parentElement.parentElement.parentElement;
     console.log(parentTable);
     getAllTotals(parentTable);
-})
+}
 
-// This is a event listener that listens to the keyboard. If they press in a "-" and if it's coming
-// from the input tag, don't let it happen
-scheduleTable.addEventListener("keydown", (event) =>
+// Ignore '-' in input fields when typing
+function handleKeyDownEventForSchedules(event)
 {
     if ( event.key === "-" && event.target.tagName === "INPUT")
     {
         event.preventDefault();
     }
-})
+}
 
-// This listens for anything that the user pastes into the table. If it contains
-// a "-", it will stop it.
-scheduleTable.addEventListener("paste", (event) =>
+// Ignore '-' in input fields when pasting
+function handlePasteEventForSchedules(event)
 {
     const pastedNum = event.clipboardData.getData("text")
 
@@ -55,8 +52,7 @@ scheduleTable.addEventListener("paste", (event) =>
     {
         event.preventDefault();
     }
-})
-
+}
 
 document.getElementById("add-client-button").addEventListener("click", (event) =>
 {
@@ -90,8 +86,8 @@ function updateTotalsForRow(singleRow, totals)
     const adsPerWeekTotal = totals[0];
     displayTotal(adsPerWeekCell, adsPerWeekTotal, false);
 
-    const costCell = cells[-1];
-    const costTotal = totals[-1];
+    const costCell = cells[cells.length -1];
+    const costTotal = totals[totals.length - 1];
     displayTotal(costCell, costTotal, true);
 }
 
@@ -138,7 +134,7 @@ function calculateAndUpdateTotalsForRow(singleRow)
     // Get the total amount of ads for the week
     let adsPerWeekTotal = adCountsArray.reduce((total, value) => total + value, 0);
     // Calculate cost by multiplying this by the rate
-    let cost = adsPerWeekTotal * totals[-1];
+    let cost = adsPerWeekTotal * totals.at(-1);
 
     //Add these values to the array of totals
     totals.unshift(adsPerWeekTotal);
@@ -159,7 +155,7 @@ function getAllTotals(parentTable)
 
     let rows = parentTable.children;
     // Columns that don't need a total displayed (e.g length, rate) are null
-    let columnTotals = [0, null, 0, 0, 0, 0, 0, null, 0];
+    let columnTotals = [0, null, 0, 0, 0, 0, 0, 0, 0, null, 0];
 
     // Loop through each row in the table, skipping headers and final totals
     for (let rowIndex = 1; rowIndex < rows.length - 1; rowIndex++)
@@ -184,7 +180,7 @@ function getAllTotals(parentTable)
         }
     }
 
-    for (let columnIndex = 0; columnIndex < columnTotals.length; columnIndex++)
+    for (let columnIndex = 0; columnIndex <= columnTotals.length; columnIndex++)
     {
         let finalColumnTotal = columnTotals[columnIndex];
         
@@ -195,9 +191,9 @@ function getAllTotals(parentTable)
 
         let finalTotalCellIndex = columnIndex + 1; // We don't want to overwrite the "Weekly totals" header
         // The weekly totals row is the last in the table. The cells containing the totals are its children
-        let finalTotalCellToUpdate = rows[-1].children[finalTotalCellIndex];
+        let finalTotalCellToUpdate = rows[rows.length - 1].children[finalTotalCellIndex];
 
-        if (columnIndex = columnTotals.length) { // Display a dollar sign in the cost total
+        if (finalTotalCellIndex == columnTotals.length) { // Display a dollar sign in the cost total
             displayTotal(finalTotalCellToUpdate, finalColumnTotal, true);
         } else {
             displayTotal(finalTotalCellToUpdate, finalColumnTotal, false);
