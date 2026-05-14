@@ -99,11 +99,34 @@ function calculateTotalColumn(singleColumn)
 }
 
 /*
+    This method will display the total of a row / column.
+*/
+function displayTotal(target, total, moneySign = false)
+{
+    // If there will be a money sign, then concatenate it to the amount
+    if (moneySign)
+    {
+        target.textContent = "$" + total;
+    } else // else, just put the amount only
+    {
+        target.textContent = total;
+    }  
+} 
+
+/*
 Updates the ads/week and cost fields for the row provided.
 */
 function updateTotalsForRow(singleRow, totals)
 {
-    return null;
+    const cells = singleRow.children;
+
+    const adsPerWeekCell = cells[1];
+    const adsPerWeekTotal = totals[0];
+    displayTotal(adsPerWeekCell, adsPerWeekTotal, false);
+
+    const costCell = cells[-1];
+    const costTotal = totals[-1];
+    displayTotal(costCell, costTotal, true);
 }
 
 /*
@@ -155,24 +178,11 @@ function calculateAndUpdateTotalsForRow(singleRow)
     totals.unshift(adsPerWeekTotal);
     totals.push(cost);
 
+    updateTotalsForRow(singleRow, totals);
+
     // Return the totals.
     return totals;
 }
-
-/*
-    This method will display the total of a row / column.
-*/
-function displayTotal(target, total, moneySign = false)
-{
-    // If there will be a money sign, then concatenate it to the amount
-    if (moneySign)
-    {
-        target.textContent = "$" + total;
-    } else // else, just put the amount only
-    {
-        target.textContent = total;
-    }  
-} 
 
 /*
     This method will be used to generate all of the totals in the "Weekly Totals"
