@@ -65,40 +65,6 @@ document.getElementById("add-client-button").addEventListener("click", (event) =
 })
 
 /*
-    This is for the columns. It will add up all of the cells in the column and return the total
-*/
-function calculateTotalColumn(singleColumn)
-{
-    // Get all of the cells in a column
-    const column = document.querySelectorAll("." + singleColumn);
-
-
-    let total = 0;
-
-    // For each cell
-    for (const x of column)
-    {
-        // Get the value (or text content for the last row)
-        let currentValue = x.value || x.textContent
-
-        // If it contains the "$", replace and trim it.
-        currentValue = currentValue.replace("$", "").trim();
-
-        // Parse it.
-        const value = parseFloat(currentValue)
-
-        // If it's not NaN, add it
-        if (!isNaN(value))
-        {
-            total += value;
-        }
-    }
-
-    // Return it
-    return total;
-}
-
-/*
     This method will display the total of a row / column.
 */
 function displayTotal(target, total, moneySign = false)
