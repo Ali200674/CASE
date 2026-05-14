@@ -101,7 +101,7 @@ Runs updateTotalsForRow to update the ads/week and cost fields with the new tota
 
 Example return value:
 ads/week, length, mon, tues, wed, thur, fri, sat, sun, rate, cost
-[4, 1.0, 3, 3, 3, 2, 1, 4, 4]
+[19, 1.0, 1, 5, 2, 1, 1, 5, 4, 5, 95]
 */
 function calculateAndUpdateTotalsForRow(singleRow)
 {
@@ -116,7 +116,7 @@ function calculateAndUpdateTotalsForRow(singleRow)
         let cell = cells[i].children[0];
 
         // Get the value of the element
-        const value = parseFloat(cell.value);
+        let value = parseFloat(cell.value);
 
         if (cell.className.includes("adLength")) { // Cell is the ad length selector? Append the selected value to the totals
             totals.push(value);
@@ -158,14 +158,50 @@ function getAllTotals(parentTable)
 {
 
     let rows = parentTable.children;
-    // Columns that don't need a total displayed (e.g rate) are null
-    let columnTotals = [0, 0, 0, 0, 0, 0, 0, null, 0];
+    // Columns that don't need a total displayed (e.g length, rate) are null
+    let columnTotals = [0, null, 0, 0, 0, 0, 0, null, 0];
 
-    //Loop through each row in the table, skipping headers
-    for (let i = 1; i < rows.length; i++)
+    // Loop through each row in the table, skipping headers and final totals
+    for (let rowIndex = 1; rowIndex < rows.length - 1; rowIndex++)
     {
-        //Calculate the totals for this row
+
+        // Grab the tr element to calculate totals for
+        const row = rows[rowIndex];
+        // Calculate the totals for this row
         const rowTotals = calculateAndUpdateTotalsForRow(row);
+
+        // Add totals for each column to column totals
+        for (let totalIndex = 0; totalIndex < rowTotals.length; totalIndex++) {
+            let rowTotal = rowTotals[totalIndex];
+            
+            // Skip null column totals (we don't need to calculate a total for this column)
+            if (columnTotals[totalIndex] == null)
+            {
+                continue;
+            }
+
+            columnTotals[totalIndex] += rowTotal;
+        }
+    }
+
+    for (let columnIndex = 0; columnIndex < columnTotals.length; columnIndex++)
+    {
+        let finalColumnTotal = columnTotals[columnIndex];
+        
+        // Once again skip null column totals
+        if (finalColumnTotal == null) {
+            continue;
+        }
+
+        let finalTotalCellIndex = columnIndex + 1; // We don't want to overwrite the "Weekly totals" header
+        // The weekly totals row is the last in the table. The cells containing the totals are its children
+        let finalTotalCellToUpdate = rows[-1].children[finalTotalCellIndex];
+
+        if (columnIndex = columnTotals.length) { // Display a dollar sign in the cost total
+            displayTotal(finalTotalCellToUpdate, finalColumnTotal, true);
+        } else {
+            displayTotal(finalTotalCellToUpdate, finalColumnTotal, false);
+        }
     }
 }
 
