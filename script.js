@@ -395,13 +395,15 @@ function populateOtherTrElements(trArray)
     {
 
         // We will add 12 td elements to that tr element
-        for (let col = 0; col < 11; col++)
+        for (let col = 0; col < 12; col++)
         {
             // Make a td element
             const tdEle = document.createElement("td");
 
             let isDayPart = (col == 0);
+            let isAdsPerWeekField = (col == 1);
             let isAdLengthField = (col == 2);
+            let isCostField = (col == 11);
             let isWeeklyTotalsRow = (row != trArray.length - 1)
 
             // If it's 0, that td will be a day part.
@@ -422,8 +424,13 @@ function populateOtherTrElements(trArray)
                     // We add a drop down for the length of a ad
                     tdEle.append(createSections());
                 }
-                // Else it's a basic td element with a input field
-                else if (!isDayPart)
+                // Create a blank span for ads/week
+                else if (isAdsPerWeekField)
+                {
+                    tdEle.append(createElement("span", null, "ads", "0"));
+                }
+                // If it's not a special element or already filled in it's a regular input field
+                else if (!isDayPart && !isCostField)
                 {
                     // Make a input field, give a type of number and min of 0
                     const inputEle = document.createElement("input");
