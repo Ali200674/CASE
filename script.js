@@ -54,6 +54,10 @@ function handlePasteEventForSchedules(event)
     }
 }
 
+scheduleTable.addEventListener("input", handleInputEventForSchedules);
+scheduleTable.addEventListener("keydown", handleKeyDownEventForSchedules);
+scheduleTable.addEventListener("paste", handlePasteEventForSchedules);
+
 document.getElementById("add-client-button").addEventListener("click", (event) =>
 {
     let selected_client = document.getElementById("add-client-dropdown").value;
@@ -224,10 +228,15 @@ button.addEventListener("click", () =>
 function insertTableToDOM()
 {
     // Build the table
-    const ele = buildTable();
+    const newTable = buildTable();
+
+    //Add event listeners to the table
+    newTable.addEventListener("input", handleInputEventForSchedules);
+    newTable.addEventListener("paste", handlePasteEventForSchedules);
+    newTable.addEventListener("keydown", handleKeyDownEventForSchedules);
 
     // Insert the table ABOVE the div (or before this div comes up)
-    mainDiv.parentNode.insertBefore(ele, mainDiv);
+    mainDiv.parentNode.insertBefore(newTable, mainDiv);
 }
 
 /**
