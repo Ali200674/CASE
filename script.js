@@ -98,55 +98,65 @@ function calculateTotalColumn(singleColumn)
     return total;
 }
 
+/*
+Updates the ads/week and cost fields for the row provided.
+*/
+function updateTotalsForRow(singleRow, totals)
+{
+    return null;
+}
 
 /*
 Calculates all necessary totals for a row, returns an array containing each column value including the final total.
+Runs updateTotalsForRow to update the ads/week and cost fields with the new totals.
 
 Example return value:
 ads/week, length, mon, tues, wed, thur, fri, sat, sun, rate, cost
 [4, 1.0, 3, 3, 3, 2, 1, 4, 4]
 */
-function calculateTotalsForRow(singleRow)
+function calculateAndUpdateTotalsForRow(singleRow)
 {
-    let total = 0;
+    let totals = [];
 
     const cells = singleRow.children;
 
-    // Loop through the cells in each row, skipping dayparts
-    for (let i = 1; i < cells.length; i++)
+    // Loop through the cells in the row, skipping dayparts, ads/week, and cost
+    for (let i = 2; i < cells.length - 1; i++)
     {
-        
         //Get the input field contained within the table element
         let cell = cells[i].children[0];
 
-        let adsPerWeekElement = null;
-        // If this is the ads/week column, hold onto that element so it can be updated later
-        if (i == 1)
-        {
-            adsPerWeekElement = cell;
-            
-        }
-
         // Get the value of the element
-        const value = parseFloat(cells[i].children[0].value)
+        const value = parseFloat(cell.value);
 
-        // If the row is not empty
-        if (!isNaN(value))
-        {
-            // If it's the rate column, multiply instead of adding.
-            if (i == cells.length - 1)
-            {
-                total *= value;
-            }
-            else
-            {
-                total += value;
-            }
+        if (cell.className.includes("adLength")) { // Cell is the ad length selector? Append the selected value to the totals
+            totals.push(value);
+            continue;
         }
+
+        //If the cell is empty use 0 as a placeholder
+        if (isNaN(value))
+        {
+            value = 0;
+        }
+        totals.push(value);
     }
 
-    // Return the total.
-    return total;
+    // Create an array of just the ad counts
+    // by slicing off the first and last elements (length and rate)
+    let adCountsArray = totals.slice(1, -1);
+
+    // Get the total amount of ads for the week
+    let adsPerWeekTotal = adCountsArray.reduce((total, value) => total + value, 0);
+    // Calculate cost by multiplying this by the rate
+    let cost = adsPerWeekTotal * totals[-1];
+
+    //Add these values to the array of totals
+    totals.unshift(adsPerWeekTotal);
+    totals.push(cost);
+
+    // Return the totals.
+    return totals;
 }
 
 /*
@@ -172,39 +182,14 @@ function getAllTotals(parentTable)
 {
 
     let rows = parentTable.children;
-    let columnTotals = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    // Columns that don't need a total displayed (e.g rate) are null
+    let columnTotals = [0, 0, 0, 0, 0, 0, 0, null, 0];
 
     //Loop through each row in the table, skipping headers
     for (let i = 1; i < rows.length; i++)
     {
-        //Calculate the total for this row
-        const rowTotal = calculateTotalForRow(row)
-    }
-    // This loop is for the rows.
-    for (let i = 0; i < allRowClasses.length; i++)
-    {
-        // This is for calculating the total row to row.
-        const rowAmount = calculateTotalRow(allRowClasses[i])
-        displayTotal(allRowColumnTotalID[i], rowAmount.toFixed(2))
-    }
-     
-
-    // This loop is for the columns
-    for (let i = 0; i < allTotalIDs.length; i++)
-    {
-        // This is for calculating the totals column to column
-        const amount = calculateTotalColumn(allColumnClasses[i])
-
-        // If it's the last two rows (rate and total), add a "$" to the number
-        // else, don't
-        if (i > allTotalIDs.length - 3)
-        {
-            displayTotal(allTotalIDs[i], amount.toFixed(2), true)
-        }
-        else
-        {
-            displayTotal(allTotalIDs[i], amount)
-        }   
+        //Calculate the totals for this row
+        const rowTotals = calculateAndUpdateTotalsForRow(row);
     }
 }
 
