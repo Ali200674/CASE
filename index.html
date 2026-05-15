@@ -6,6 +6,8 @@
     <title>P48 Marketing</title>
     <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
+    <script src = "dynamicClientSections.js" defer></script>
+    <script src = "main.js" defer></script>
   </head>
   <body>
     <!-- NOTE: 
@@ -22,8 +24,8 @@
             Something just to remember later on.
         -->
     <!-- This is the form html as of now -->
-    <div id="section">
-      <h2 id="client-name">Station Name</h2>
+    <div class = "section">
+      <h2 class = "client-name">Radio Station One</h2>
       <div class="table-container">
         <div>
           <h3>Weekly Schedule</h3>
@@ -178,8 +180,33 @@
           </tr>
         </table>
       </div>
-      <div id="generate-new-schedule">
-        <button id="make-schedule">Generate New Schedule</button>
+      <div class="generate-new-schedule">
+        <p>Type Of Schedule</p>
+
+        <select class="type-schedule">
+          <option value="week">Week</option>
+          <option value="month">Month</option>
+        </select>
+         
+        <!-- This div will hold all of the selections for the schedule making -->
+          <div class = "date-selections">
+            <span class = "error-message">Input Field(s) Cannot Be Empty!</span>
+            <div class = "week-selection">
+                <div class = "week-range">
+                  <p>From:</p>
+                  <input type="week" class = "from-week">
+                  <p>To:</p>
+                  <input type="week" class = "to-week">
+                </div>
+            </div>
+
+            <div class = "month-selection">
+              <p>Month:</p>
+              <input type="month" class = "month-choosen">
+            </div>
+        </div>
+        
+        <button class = "make-schedule">Generate New Schedule</button>
       </div>
     </div>
 
