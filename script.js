@@ -13,17 +13,6 @@ const allColumnClasses = [
 const allRowClasses = ["rowOne", "rowTwo", "rowThree", "rowFour", "rowFive"];
 const allRowColumnTotalID = ["rowOneTotal", "rowTwoTotal", "rowTotalThree", "rowTotalFour", "rowTotalFive"];
 
-// Variables for the schedule selection
-const fromWeek = document.querySelector("#from-week");
-const toWeek = document.querySelector("#to-week");
-const monthChoosen = document.querySelector("#month-choosen");
-const selectionSchedule = document.querySelector("#type-schedule");
-const weekArea = document.querySelector("#week-selection");
-const monthArea = document.querySelector("#month-selection");
-const errorMessage = document.querySelector("#error-message");
-
-
-
 
 /*
     This is for the columns. It will add up all of the cells in the column and return the total
@@ -32,7 +21,6 @@ function calculateTotalColumn(singleColumn)
 {
     // Get all of the cells in a column
     const column = document.querySelectorAll("." + singleColumn);
-
 
     let total = 0;
 
@@ -147,16 +135,28 @@ function getAllTotals()
 // THIS IS FOR THE DYNAMIC TABLE 
 // VARIABLES
 // This is the button to create the table.
-const button = document.querySelector("#make-schedule");
-
-// This is the div that stores the button. every time the button get's pressed, the table gets inserted above this div
-const mainDiv = document.querySelector("#generate-new-schedule");
+const button = document.querySelector(".make-schedule");
 
 // An event lister that listens for the button to be clicked.
 button.addEventListener("click", (event) =>
 {
+    // Get the button
+    const getTarget = event.target;
+
+    // Get the closest tag with ".generate-new-schedule" class
+    const getClosestSchedule = getTarget.closest(".generate-new-schedule");
+
+    // Within that tag, find all of these classes
+    const weekSelection = getClosestSchedule.querySelector(".week-selection")
+    const fromWeek = getClosestSchedule.querySelector(".from-week")
+    const toWeek = getClosestSchedule.querySelector(".to-week")
+    const errorMessage = getClosestSchedule.querySelector(".error-message")
+    const monthChoosen = getClosestSchedule.querySelector(".month-choosen")
+    const monthSelection = getClosestSchedule.querySelector(".month-selection")
+
+    // All of these are for the closest tag with the ".generate-new-schedule" class. 
     // If week is showing
-    if (weekArea.style.display === "flex")
+    if (weekSelection.style.display === "flex")
     {
         // If either are null
         if (fromWeek.valueAsDate === null || toWeek.valueAsDate === null) 
@@ -172,7 +172,7 @@ button.addEventListener("click", (event) =>
     }
 
     // If month is showing
-    if (monthArea.style.display === "block")
+    if (monthSelection.style.display === "block")
     {
         // If month is null
         if (monthChoosen.valueAsDate === null) 
@@ -189,31 +189,34 @@ button.addEventListener("click", (event) =>
 
     
 
-    // Call this function to insert the table
-    insertTableToDOM();
+    // Call this function to insert the table, pass in the closest schedule
+    insertTableToDOM(getClosestSchedule);
 })
 
 
 /**
  * This method inserts the table into the DOM.
- * Specifically, it gets inserted above the div that holds the button.
+ * Specifically, it gets inserted above the closest div that has the element's class
+ * 
+ * element: In this case, the closest element with the ".generate-new-schedule" tag to insert a new table
  */
-function insertTableToDOM()
+function insertTableToDOM(element)
 {
-    // Build the table
-    const ele = buildTable();
+    
+    // Build the table for that schedule
+    const ele = buildTable(element);
 
-    // Insert the table ABOVE the div (or before this div comes up)
-    mainDiv.parentNode.insertBefore(ele, mainDiv);
+    // Insert the table ABOVE the element (or before this element comes up)
+    element.parentNode.insertBefore(ele, element);
 }
 
 /**
  * This method creates a table and returns it.
  * 
+ * element: In this case, the closest element with the ".generate-new-schedule" tag to insert a new table
  * returns: A table
- * 
  */
-function buildTable()
+function buildTable(element)
 {
     // Create a container (div)
     const container = createElement("div", null, "table-container")
@@ -222,7 +225,7 @@ function buildTable()
     const h3Wrapper = createElement("div", null, "schedule-type-wrapper");
 
     // Create a h3 heading with Type of Schedule text
-    const headingThree = createElement("h3", null, "schedule-type", getTypeOfSchedule());
+    const headingThree = createElement("h3", null, "schedule-type", getTypeOfSchedule(element));
 
     // Append the h3 to the h3Wrapper div
     h3Wrapper.append(headingThree)
@@ -241,11 +244,17 @@ function buildTable()
  * This method gets the type of schedule from whatever the user is using to add in a schedule (week or month)
  * It gets the value from whatever the user has choosen, formats it to a usable date, then returned as a string.
  * 
- * 
+ * element: In this case, the closest element with the ".generate-new-schedule" tag to insert a new table
  * return: Returns a date based on if the user chooses the week selection or the month selection
  */
-function getTypeOfSchedule()
+function getTypeOfSchedule(element)
 {
+    // Find all of the elements in that element passed
+    const weekArea = element.querySelector(".week-selection")
+    const fromWeek = element.querySelector(".from-week")
+    const toWeek = element.querySelector(".to-week")
+    const monthArea = element.querySelector(".month-selection")
+    const monthChoosen = element.querySelector(".month-choosen")
 
     // If the week is showing
     if (weekArea.style.display === "flex")

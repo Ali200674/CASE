@@ -5,11 +5,19 @@
  */
 
 // When the page loads, we will hide the error and month message, but show the week
+// I believe with some time, this could be removed if we take out the table that appears when the website loads up.
 window.onload = () =>
 {
-    errorMessage.style.display = "none";
+    // This is to hide the month and error message and show the week section for the generate new schedule
+    const weekArea = document.querySelector(".week-selection");
     weekArea.style.display = "flex";
+
+    const monthArea = document.querySelector(".month-selection");
     monthArea.style.display = "none";
+
+    const errorMessage = document.querySelector(".error-message");
+    errorMessage.style.display = "none";
+  
 }
 
 
@@ -54,30 +62,45 @@ scheduleTable.addEventListener("paste", (event) =>
     }
 })
 
-
+// When we try to add a new client, we make a new section with the clients name choosen
 document.getElementById("add-client-button").addEventListener("click", (event) =>
 {
-    let selected_client = document.getElementById("add-client-dropdown").value;
-    document.getElementById("client-name").innerHTML = selected_client;
+    createClientSection();
 })
 
-// This is to listen for any changes to the drop down 
-selectionSchedule.addEventListener("change", (event) =>
+// Variable for the schedule selection
+const selectionSchedule = document.querySelector(".type-schedule");
+
+// This is to listen for any changes to the drop down () 
+// NOTE: This is only for the table when the page is loaded.
+// If we remove the table that appears when the page is loaded in
+// favor of only the dynamic creation (if we have the time), we could be removed and same as the code in the windows.load() (I believe so)
+selectionSchedule.addEventListener("change", (event) => 
 {
+    // Find the closest tag that has this class (schedule selection)
+    const closestSchedule = event.target.closest(".generate-new-schedule");
+
+    // Get the week, month, and error message
+    const weekSelection = closestSchedule.querySelector(".week-selection");
+    const monthSelection = closestSchedule.querySelector(".month-selection");
+    const errorMessage = closestSchedule.querySelector(".error-message")
+
     // if the user chooses week
     if (event.target.value === "week")
     {
         // Show the week and hide the month and error message (if still there)
-        weekArea.style.display = "flex";
-        monthArea.style.display = "none";
+        weekSelection.style.display = "flex";
+        monthSelection.style.display = "none";
         errorMessage.style.display = "none";
     }
     else // Else (month is showing instead)
     {
         // Hide week and error message (if still there) and show month
-        weekArea.style.display = "none";
-        monthArea.style.display = "block";
+        weekSelection.style.display = "none";
+        monthSelection.style.display = "block";
         errorMessage.style.display = "none";
     }
 })
+
+
 
