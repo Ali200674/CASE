@@ -13,10 +13,6 @@ const allColumnClasses = [
 const allRowClasses = ["rowOne", "rowTwo", "rowThree", "rowFour", "rowFive"];
 const allRowColumnTotalID = ["rowOneTotal", "rowTwoTotal", "rowTotalThree", "rowTotalFour", "rowTotalFive"];
 
-scheduleTable.addEventListener("input", handleInputEventForSchedules);
-scheduleTable.addEventListener("keydown", handleKeyDownEventForSchedules);
-scheduleTable.addEventListener("paste", handlePasteEventForSchedules);
-
 document.getElementById("add-client-button").addEventListener("click", (event) =>
 {
     let selected_client = document.getElementById("add-client-dropdown").value;
@@ -89,38 +85,6 @@ function createElement(type, id, classes, text="")
     if (text) { newElement.textContent = text }
     
     return newElement;
-}
-
-/**
- * 
- * This method creates a drop down of the length of an ad.
- * 
- * 
- * A drop down with four options for a length of an ad 
- */
-function createSections()
-{
-    // Create select tag
-    const selection = document.createElement("select")
-
-    // Make array of values
-    const values = [":60", ":30", ":15", ":10"]
-
-    // For each value to be added to the select tag
-    for (let i = 0; i < values.length; i++)
-    {
-        // Create opition tag
-        const option = document.createElement("option");
-        
-        // Set text content to the values[i]
-        option.textContent = values[i];
-
-        // Append that opinion tag to the select tag
-        selection.append(option);
-    }
-
-    // Return that select tag
-    return selection;
 }
 
 

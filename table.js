@@ -140,6 +140,38 @@ function getAllTotals(parentTable)
 }
 
 /**
+ * 
+ * This method creates a drop down of the length of an ad.
+ * 
+ * 
+ * A drop down with four options for a length of an ad 
+ */
+function createAdLengthDropdown()
+{
+    // Create select tag
+    const selection = document.createElement("select")
+
+    // Make array of values
+    const values = [":60", ":30", ":15", ":10"]
+
+    // For each value to be added to the select tag
+    for (let i = 0; i < values.length; i++)
+    {
+        // Create opition tag
+        const option = document.createElement("option");
+        
+        // Set text content to the values[i]
+        option.textContent = values[i];
+
+        // Append that opinion tag to the select tag
+        selection.append(option);
+    }
+
+    // Return that select tag
+    return selection;
+}
+
+/**
  * This method inserts the table into the DOM.
  * Specifically, it gets inserted above the closest div that has the element's class
  * 
@@ -309,7 +341,7 @@ function populateOtherTrElements(trArray)
                 if (isAdLengthField)
                 {
                     // We add a drop down for the length of a ad
-                    tdEle.append(createSections());
+                    tdEle.append(createAdLengthDropdown());
                 }
                 // Create a blank span for ads/week
                 else if (isAdsPerWeekField)
