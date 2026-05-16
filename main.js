@@ -8,7 +8,7 @@
 // I believe with some time, this could be removed if we take out the table that appears when the website loads up.
 window.onload = () =>
 {
-    // This is to hide the month and error message and show the week section for the generate new schedule
+    // Show the week picker by default
     const weekArea = document.querySelector(".week-selection");
     weekArea.style.display = "flex";
 
@@ -18,8 +18,11 @@ window.onload = () =>
     const errorMessage = document.querySelector(".error-message");
     errorMessage.style.display = "none";
 
-    const generateScheduleButton = document.querySelector(".make-new-schedule");
-  
+    const generateScheduleButton = document.querySelector(".make-schedule");
+    generateScheduleButton.addEventListener("click", generateNewSchedule);
+
+    const addClientButton = document.getElementById("add-client-button");
+    addClientButton.addEventListener("click", createClientSection);
 }
 
 // When we try to add a new client, we make a new section with the clients name choosen
