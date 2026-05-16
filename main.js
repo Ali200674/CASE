@@ -4,74 +4,6 @@
  * js file.
  */
 
-// This will be for the table. It will automatically listen for any inputs when the client types in a number
-function handleInputEventForSchedules(event)
-{
-    // If the target is an input field.
-    if (event.target.tagName === "INPUT")
-    {   
-        // Turn the value into a float
-        const value = parseFloat(event.target.value)
-
-        // if the value is negative and is not NaN
-        if (!isNaN(value) && value < 0)
-        {
-            event.target.value = 0;
-        }
-    }
-
-    let parentTable = event.target.parentElement.parentElement.parentElement;
-    getAllTotals(parentTable);
-}
-
-// Ignore '-' in input fields when typing
-function handleKeyDownEventForSchedules(event)
-{
-    if ( event.key === "-" && event.target.tagName === "INPUT")
-    {
-        event.preventDefault();
-    }
-}
-
-// Ignore '-' in input fields when pasting
-function handlePasteEventForSchedules(event)
-{
-    const pastedNum = event.clipboardData.getData("text")
-
-    if (pastedNum.includes("-"))
-    {
-        event.preventDefault();
-    }
-}
-
-//Show different input fields based on the chosen schedule type
-function handleChangeEventForScheduleTypes(event)
-{
-    // Find the closest tag that has this class (schedule selection)
-    const closestSchedule = event.target.closest(".generate-new-schedule");
-
-    // Get the week, month, and error message
-    const weekSelection = closestSchedule.querySelector(".week-selection");
-    const monthSelection = closestSchedule.querySelector(".month-selection");
-    const errorMessage = closestSchedule.querySelector(".error-message")
-
-    // if the user chooses week
-    if (event.target.value === "week")
-    {
-        // Show the week and hide the month and error message (if still there)
-        weekSelection.style.display = "flex";
-        monthSelection.style.display = "none";
-        errorMessage.style.display = "none";
-    }
-    else // Else (month is showing instead)
-    {
-        // Hide week and error message (if still there) and show month
-        weekSelection.style.display = "none";
-        monthSelection.style.display = "block";
-        errorMessage.style.display = "none";
-    }
-}
-
 // When the page loads, we will hide the error and month message, but show the week
 // I believe with some time, this could be removed if we take out the table that appears when the website loads up.
 window.onload = () =>
@@ -85,6 +17,8 @@ window.onload = () =>
 
     const errorMessage = document.querySelector(".error-message");
     errorMessage.style.display = "none";
+
+    const generateScheduleButton = document.querySelector(".make-new-schedule");
   
 }
 
