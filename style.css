@@ -19,15 +19,49 @@ body
 
     
     /* This is for the "Generate New Schedule" button */
-    #generate-new-schedule
+    .generate-new-schedule
     {
-       margin: 40px auto 0;
+        text-align: center;
+        margin: 40px auto 0;
+        gap: 10px;
+
+        /* Button to make schedule */
+        .make-schedule
+        {
+            margin-top: 20px;
+        }
+
+        /* Div that holds the week and month selections */
+        .date-selections
+        {
+            margin-top: 20px;
+        }
+
+        /* Week selection in selections div */
+        .week-selection
+        {
+            align-items: center;
+            gap: 10px;
+            flex-direction: column;
+        }
+
+        /* Div that holds the from and to input weeks  */
+        .week-range
+        {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+        }
     }
+
+
     
     /* As of now, I will just call this section and that's basically the whole table with the name of the company and kind of schedule */
-    #section
+    .section
     {
-        width: 50%;
+        width: fit-content;
+        min-width: 60%;
         margin: 0 auto;
         border: 1px solid black;
         display: flex;
@@ -35,17 +69,24 @@ body
         padding: 20px;   
     }
 
-    /* To make the input fields a little smaller */
     input
     {
-        width: 80%;
+        text-align: center;
+    }
+
+    /* To make the input fields a little smaller, adjust to number type restrictions */
+    input[type="number"]
+    {
+        width: 3ch;
+        min-width: 60px;
+        max-width: 120px;
     }
 
     /* To adjust the current tables */
     .table-container
     {
 
-        margin: 20px auto 0px;
+        margin: 20px 0px;
         border: 1px solid black;
         padding: 20px;
         display: flex;
@@ -63,6 +104,8 @@ body
         .time-slot
         {
             padding: 5px;
+            
+            white-space: normal;
         }
 
         td:nth-child(2), tr:nth-child(2)
@@ -72,7 +115,7 @@ body
 
     }
 
-        /* This is for the adding a new schedule block. */
+    /* This is for the adding a new schedule block. */
     #add-client
     {
         display: grid;
@@ -106,4 +149,23 @@ body
     {
         border-top: 1px solid black;
     }
+
+    /* 
+        adjustments to editable daypart field
+    */
+    .daypart-input
+    {
+        border: none;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        width: 100%;
+    }
+
+    .daypart-input:focus
+    {
+        outline: none;
+    }
+
+
 }
