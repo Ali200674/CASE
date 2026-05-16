@@ -4,28 +4,9 @@
  * js file.
  */
 
-// When the page loads, we will hide the error and month message, but show the week
-// I believe with some time, this could be removed if we take out the table that appears when the website loads up.
+// This will add an event listener to the addClientButton to let it add sections for clients
 window.onload = () =>
 {
-    // Show the week picker by default
-    const weekArea = document.querySelector(".week-selection");
-    weekArea.style.display = "flex";
-
-    const monthArea = document.querySelector(".month-selection");
-    monthArea.style.display = "none";
-
-    const errorMessage = document.querySelector(".error-message");
-    errorMessage.style.display = "none";
-
-    const generateScheduleButton = document.querySelector(".make-schedule");
-    generateScheduleButton.addEventListener("click", handleCreateNewSchedule);
-
     const addClientButton = document.getElementById("add-client-button");
     addClientButton.addEventListener("click", createClientSection);
-
-    // Variable for the schedule selection
-    const selectionSchedule = document.querySelector(".type-schedule");
-    // Listen for changes to the schedule type dropdown
-    selectionSchedule.addEventListener("change", handleChangeEventForScheduleTypes);
 }
