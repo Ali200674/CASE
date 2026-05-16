@@ -1,3 +1,5 @@
+//Contains functions for handling events
+
 // This will be for the table. It will automatically listen for any inputs when the client types in a number
 function handleInputEventForSchedules(event)
 {

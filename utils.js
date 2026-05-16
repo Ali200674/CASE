@@ -1,3 +1,5 @@
+//Contains miscellaneous utilities used throughout
+
 /**
  * This method gets the type of schedule from whatever the user is using to add in a schedule (week or month)
  * It gets the value from whatever the user has choosen, formats it to a usable date, then returned as a string.
