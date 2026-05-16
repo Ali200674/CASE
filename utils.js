@@ -33,17 +33,18 @@ function getTypeOfSchedule(element)
     }
     else // Else, the month is showing instead
     {
-        // Format the month
-        const option = {month: "long", year: "numeric"};
+       // Format the month
+        const option = {month: "long", year: "numeric",}
         
-        // Make a Date object based on the value 
-        const monthDateObject = new Date(monthChoosen.value);
-        
-        // Due to the indexing of the months (0 - 11 instead of 1 - 12), increment the month by one
-        monthDateObject.setMonth(monthDateObject.getMonth() + 1);
+        // Make a Date object based on the value. split the value given into two strings (year and month) 
+        // Due to the indexing of the months (0 - 11 instead of 1 - 12), decrement the month by 1
+        const monthDateObject = new Date(monthChoosen.value.substring(0, 4), monthChoosen.value.substring(5) - 1);
         
         // Return that month Date object as a string and formated
-        return monthDateObject.toLocaleDateString("en-US", option);
+        return monthDateObject.toLocaleDateString(
+            "en-US",
+            option
+        );
     }
 }
 
