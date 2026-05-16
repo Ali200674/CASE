@@ -172,92 +172,6 @@ function createAdLengthDropdown()
 }
 
 /**
- * This method inserts the table into the DOM.
- * Specifically, it gets inserted above the closest div that has the element's class
- * 
- * element: In this case, the closest element with the ".generate-new-schedule" tag to insert a new table
- */
-function insertTableToDOM(element)
-{
-    
-    // Build the table for that schedule
-    const newTable = buildTable(element);
-
-    //Add event listeners to the table
-    newTable.addEventListener("input", handleInputEventForSchedules);
-    newTable.addEventListener("paste", handlePasteEventForSchedules);
-    newTable.addEventListener("keydown", handleKeyDownEventForSchedules);
-
-    // Insert the table ABOVE the element (or before this element comes up)
-    element.parentNode.insertBefore(ele, element);
-}
-
-/**
- * This method creates a table and returns it.
- * 
- * element: In this case, the closest element with the ".generate-new-schedule" tag to insert a new table
- * returns: A table
- */
-function buildTable(element)
-{
-    // Create a container (div)
-    const container = createElement("div", null, "table-container")
-
-    // Create a div for the type of schedule h3 heading
-    const h3Wrapper = createElement("div", null, "schedule-type-wrapper");
-
-    // Create a h3 heading with Type of Schedule text
-    const headingThree = createElement("h3", null, "schedule-type", getTypeOfSchedule(element));
-
-    // Append the h3 to the h3Wrapper div
-    h3Wrapper.append(headingThree)
-
-    // Append all of that to the main div
-    // container.append(clientName, scheduleContainer);
-
-    // Append the h3 and the table to the div 
-    container.append(h3Wrapper, createWholeTable());
-
-    // Return the table
-    return container;
-}
-
-/**
- * This method creates the whole table (schedule) and then returns it.
- * 
- * returns: the schedule.
- */
-function createWholeTable()
-{
-    // Make element table
-    const table = document.createElement("table")
-
-    // Create tbody
-    const tableBody = document.createElement("tbody");
-
-    // Append tableBody to table
-    table.append(tableBody);
-
-    // Create the tr elements for the table
-    const trEles = createTrElements();
-    
-    // Populate the first tr with the columns
-    populateFirstTr(trEles[0])
-
-    // Populate the other tr elements
-    populateOtherTrElements(trEles)
-
-    // For every tr element made, append it to the table
-    for (let i = 0; i < trEles.length; i++)
-    {
-        tableBody.append(trEles[i]);
-    }
-
-    // Return that table
-    return table;
-}
-
-/**
  * This method creates a array of tr elements and returns it.
  * 
  * returns: A array of tr elements.
@@ -365,4 +279,90 @@ function populateOtherTrElements(trArray)
             trArray[row].append(tdEle)
         }
     }
+}
+
+/**
+ * This method creates the whole table (schedule) and then returns it.
+ * 
+ * returns: the schedule.
+ */
+function createWholeTable()
+{
+    // Make element table
+    const table = document.createElement("table")
+
+    // Create tbody
+    const tableBody = document.createElement("tbody");
+
+    // Append tableBody to table
+    table.append(tableBody);
+
+    // Create the tr elements for the table
+    const trEles = createTrElements();
+    
+    // Populate the first tr with the columns
+    populateFirstTr(trEles[0])
+
+    // Populate the other tr elements
+    populateOtherTrElements(trEles)
+
+    // For every tr element made, append it to the table
+    for (let i = 0; i < trEles.length; i++)
+    {
+        tableBody.append(trEles[i]);
+    }
+
+    // Return that table
+    return table;
+}
+
+/**
+ * This method creates a table and returns it.
+ * 
+ * element: In this case, the closest element with the ".generate-new-schedule" tag to insert a new table
+ * returns: A table
+ */
+function buildTable(element)
+{
+    // Create a container (div)
+    const container = createElement("div", null, "table-container")
+
+    // Create a div for the type of schedule h3 heading
+    const h3Wrapper = createElement("div", null, "schedule-type-wrapper");
+
+    // Create a h3 heading with Type of Schedule text
+    const headingThree = createElement("h3", null, "schedule-type", getTypeOfSchedule(element));
+
+    // Append the h3 to the h3Wrapper div
+    h3Wrapper.append(headingThree)
+
+    // Append all of that to the main div
+    // container.append(clientName, scheduleContainer);
+
+    // Append the h3 and the table to the div 
+    container.append(h3Wrapper, createWholeTable());
+
+    // Return the table
+    return container;
+}
+
+/**
+ * This method inserts the table into the DOM.
+ * Specifically, it gets inserted above the closest div that has the element's class
+ * 
+ * element: In this case, the closest element with the ".generate-new-schedule" tag to insert a new table
+ */
+function insertTableToDOM(element)
+{
+    
+    // Build the table for that schedule
+    const newTable = buildTable(element);
+
+    //Add event listeners to the table
+    newTable.addEventListener("input", handleInputEventForSchedules);
+    newTable.addEventListener("paste", handlePasteEventForSchedules);
+    newTable.addEventListener("keydown", handleKeyDownEventForSchedules);
+
+    // Insert the table ABOVE the element (or before this element comes up)
+    element.parentNode.insertBefore(newTable, element);
 }
