@@ -242,7 +242,10 @@ function populateOtherTrElements(trArray)
             // If it's 0, that td will be a day part.
             if (isDayPart)
             {
-                tdEle.textContent = elementTitles[row - 1];
+                const dayPartInputField = createElement("input", null, "daypart-input");
+                dayPartInputField.type = "text";
+                dayPartInputField.value = elementTitles[row - 1];
+                tdEle.append(dayPartInputField)
 
                 // Add class for css
                 tdEle.classList.add("time-slot");
