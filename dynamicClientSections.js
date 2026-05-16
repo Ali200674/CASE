@@ -36,7 +36,7 @@ function generateSection()
  * 
  */
 
-function createClientSection()
+function createClientSection(event)
 {
     // Generate the main section
     const newClient = generateSection();

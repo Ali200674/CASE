@@ -23,21 +23,9 @@ window.onload = () =>
 
     const addClientButton = document.getElementById("add-client-button");
     addClientButton.addEventListener("click", createClientSection);
+
+    // Variable for the schedule selection
+    const selectionSchedule = document.querySelector(".type-schedule");
+    // Listen for changes to the schedule type dropdown
+    selectionSchedule.addEventListener("change", handleChangeEventForScheduleTypes);
 }
-
-// When we try to add a new client, we make a new section with the clients name choosen
-document.getElementById("add-client-button").addEventListener("click", (event) =>
-{
-    createClientSection();
-})
-
-// Variable for the schedule selection
-const selectionSchedule = document.querySelector(".type-schedule");
-
-// Listen for changes to the schedule type dropdown
-selectionSchedule.addEventListener("change", handleChangeEventForScheduleTypes);
-
-// This will be for the table. It will automatically listen for any inputs when the client types in a number
-scheduleTable.addEventListener("input", handleInputEventForSchedules);
-scheduleTable.addEventListener("keydown", handleKeyDownEventForSchedules);
-scheduleTable.addEventListener("paste", handlePasteEventForSchedules);
