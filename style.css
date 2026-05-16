@@ -108,6 +108,11 @@ body
             white-space: normal;
         }
 
+        td:nth-child(2), tr:nth-child(2)
+        {
+            min-width: 75px;
+        }
+
     }
 
     /* This is for the adding a new schedule block. */

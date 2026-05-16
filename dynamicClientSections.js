@@ -36,7 +36,7 @@ function generateSection()
  * 
  */
 
-function createClientSection()
+function createClientSection(event)
 {
     // Generate the main section
     const newClient = generateSection();
@@ -90,59 +90,7 @@ function generateNewSchedule()
         Every button will be given this event listener. When clicked, it will find the closest tag with ".generate-new-schedule",
         then will add in a table above that section
     */
-    createSchedule.addEventListener("click", (event) =>
-    {
-    // Get target
-    const getTarget = event.target;
-
-    // Find closest tag with class
-    const getClosestSchedule = getTarget.closest(".generate-new-schedule");
-
-    // Get these tags
-    const weekArea = getClosestSchedule.querySelector(".week-selection")
-    const fromWeek = getClosestSchedule.querySelector(".from-week")
-    const toWeek = getClosestSchedule.querySelector(".to-week")
-    const errorMessage = getClosestSchedule.querySelector(".error-message")
-    const monthChoosen = getClosestSchedule.querySelector(".month-choosen")
-    const monthArea = getClosestSchedule.querySelector(".month-selection")
-
-    // If week is showing
-    if (weekArea.style.display === "flex")
-    {
-        // If either are null
-        if (fromWeek.valueAsDate === null || toWeek.valueAsDate === null) 
-        { 
-            // Show error message and stop button
-            errorMessage.style.display = "block";
-            return; 
-        }
-        else // Else, both are not null and don't show message
-        {
-            errorMessage.style.display = "none"; 
-        } 
-    }
-
-    // If month is showing
-    if (monthArea.style.display === "block")
-    {
-        // If month is null
-        if (monthChoosen.valueAsDate === null) 
-        {
-            // Show error and stop
-            errorMessage.style.display = "block";
-            return; 
-        }
-        else // Else, not null and don't show message
-        {
-            errorMessage.style.display = "none";
-        }
-    }
-
-    
-
-    // Call this function to insert the table above the div that holds this button
-    insertTableToDOM(getClosestSchedule);
-})
+    createSchedule.addEventListener("click", handleCreateNewSchedule);
 
     // Append this button to the div
     container.append(createSchedule);
@@ -152,31 +100,7 @@ function generateNewSchedule()
         It will find the closest tag with the ".generate-new-schedule" class, and show the week, month and if needed,
         the error message
     */
-    selections.addEventListener("change", (event) => 
-    {
-
-        const closestGenerateNewSchedule = event.target.closest(".generate-new-schedule");
-
-        const weekSelection = closestGenerateNewSchedule.querySelector(".week-selection")
-        const monthSelection = closestGenerateNewSchedule.querySelector(".month-selection")
-        const errorMessage = closestGenerateNewSchedule.querySelector(".error-message")
-
-        // if the user chooses week
-        if (event.target.value === "week")
-        {
-            // Show the week and hide the month and error message (if still there)
-            weekSelection.style.display = "flex";
-            monthSelection.style.display = "none";
-            errorMessage.style.display = "none";
-        }
-        else // Else (month is showing instead)
-        {
-            // Hide week and error message (if still there) and show month
-            weekSelection.style.display = "none";
-            monthSelection.style.display = "block";
-            errorMessage.style.display = "none";
-        }
-    })
+    selections.addEventListener("change", handleChangeEventForScheduleTypes);
 
     // Return this div
     return container;
