@@ -19,7 +19,7 @@ window.onload = () =>
     errorMessage.style.display = "none";
 
     const generateScheduleButton = document.querySelector(".make-schedule");
-    generateScheduleButton.addEventListener("click", generateNewSchedule);
+    generateScheduleButton.addEventListener("click", handleCreateNewSchedule);
 
     const addClientButton = document.getElementById("add-client-button");
     addClientButton.addEventListener("click", createClientSection);

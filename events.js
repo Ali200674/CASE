@@ -66,7 +66,7 @@ function handleChangeEventForScheduleTypes(event)
     }
 }
 
-function generateNewSchedule(event)
+function handleCreateNewSchedule(event)
 {
     // Get the button
     const getTarget = event.target;
