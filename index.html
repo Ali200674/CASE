@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>P48 Marketing</title>
     <link rel="stylesheet" href="style.css" />
-    <script src = "events.js" ></script>
-    <script src = "table.js" ></script>
-    <script src = "script.js" ></script>
-    <script src = "dynamicClientSections.js" ></script>
+    <script src = "utils.js"></script>
+    <script src = "events.js"></script>
+    <script src = "table.js"></script>
+    <script src = "dynamicClientSections.js"></script>
     <script src = "main.js" defer></script>
   </head>
   <body>
@@ -28,14 +28,13 @@
     <!-- This is the form html as of now -->
     <div class = "section">
       <h2 class = "client-name">Radio Station One</h2>
+      <!--
       <div class="table-container">
         <div>
           <h3>Weekly Schedule</h3>
         </div>
         <table>
-          <!-- tr below has all headers -->
           <tr>
-            <!-- Headers for the table  -->
             <th>DAYPART</th>
             <th>ads/wk</th>
             <th>Length</th>
@@ -49,7 +48,6 @@
             <th>RATE</th>
             <th>COST</th>
           </tr>
-          <!-- Each row of the table -->
           <tr>
             <td class="time-slot">
               <input class="daypart-input" type="text" value="Morning (7a-10a)">
@@ -165,7 +163,6 @@
             <td><input type="number" min="0" class="rate rowFive" /></td>
             <td class="cost" id="rowTotalFive"></td>
           </tr>
-          <!-- The final row will all of the totals from each column -->
           <tr>
             <td class="time-slot">Weekly Totals:</td>
             <td id="adsTotal"></td>
@@ -181,7 +178,8 @@
             <td id="costTotal"></td>
           </tr>
         </table>
-      </div>
+      </div> 
+    -->
       <div class="generate-new-schedule">
         <p>Type Of Schedule</p>
 
