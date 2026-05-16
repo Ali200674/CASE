@@ -61,7 +61,7 @@ body
     .section
     {
         width: fit-content;
-        min-width: 60%;
+        min-width: 65%;
         margin: 0 auto;
         border: 1px solid black;
         display: flex;
