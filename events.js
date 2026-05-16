@@ -23,7 +23,7 @@ function handleInputEventForSchedules(event)
 // Ignore '-' in input fields when typing
 function handleKeyDownEventForSchedules(event)
 {
-    if ( event.key === "-" && event.target.tagName === "INPUT")
+    if ( event.key === "-" && event.target.tagName === "INPUT" && !event.target.className.includes("daypart"))
     {
         event.preventDefault();
     }
@@ -34,7 +34,7 @@ function handlePasteEventForSchedules(event)
 {
     const pastedNum = event.clipboardData.getData("text")
 
-    if (pastedNum.includes("-"))
+    if (pastedNum.includes("-") && !event.target.className.includes("daypart"))
     {
         event.preventDefault();
     }
