@@ -1,171 +1,244 @@
-body
-{
+:root {
+    --primary-purple: #7b2cbf;
+    --hover-purple: #5a189a;
+    --section-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+    --table-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    --border-color: #e2e8f0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
     font-family: sans-serif;
+    margin: 0;
+    background-color: #f9f9f9;
+}
 
-    #company-name
-    {
-        text-align: center;
-    }
+/* Header styling with logo and company name */
+.main-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 40px;
+    background-color: #ffffff;
+    border-bottom: 3px solid black;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
 
-    /* This is for the station's name */
-    .client-name
-    {
-        width: fit-content;
-        padding: 20px;
-        border: 1px solid black;
-        text-align: left;
-        margin-bottom: 0px;
-    }
-
-    
-    /* This is for the "Generate New Schedule" button */
-    .generate-new-schedule
-    {
-        text-align: center;
-        margin: 40px auto 0;
-        gap: 10px;
-
-        /* Button to make schedule */
-        .make-schedule
-        {
-            margin-top: 20px;
-        }
-
-        /* Div that holds the week and month selections */
-        .date-selections
-        {
-            margin-top: 20px;
-        }
-
-        /* Week selection in selections div */
-        .week-selection
-        {
-            align-items: center;
-            gap: 10px;
-            flex-direction: column;
-        }
-
-        /* Div that holds the from and to input weeks  */
-        .week-range
-        {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 10px;
-        }
-    }
+.header-logo {
+    height: 50px;
+    margin-right: 20px;
+}
 
 
-    
-    /* As of now, I will just call this section and that's basically the whole table with the name of the company and kind of schedule */
-    .section
-    {
-        width: fit-content;
-        min-width: 60%;
-        margin: 0 auto;
-        border: 1px solid black;
-        display: flex;
-        flex-direction: column; 
-        padding: 20px;   
-    }
 
-    input
-    {
-        text-align: center;
-    }
-
-    /* To make the input fields a little smaller, adjust to number type restrictions */
-    input[type="number"]
-    {
-        width: 3ch;
-        min-width: 60px;
-        max-width: 120px;
-    }
-
-    /* To adjust the current tables */
-    .table-container
-    {
-
-        margin: 20px 0px;
-        border: 1px solid black;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        
-
-        /* Aligns the text of the table center */
-        table
-        {
-            text-align: center;
-            border-collapse: collapse;
-        }
-        
-        /* Adjustes the cells under DAYPART */
-        .time-slot
-        {
-            padding: 5px;
-            
-            white-space: normal;
-        }
-
-        td:nth-child(2), tr:nth-child(2)
-        {
-            min-width: 75px;
-        }
-
-    }
-
-    /* This is for the adding a new schedule block. */
-    #add-client
-    {
-        display: grid;
-        padding: 20px 0;
-        margin: 40px auto 0;
-        border: 1px solid black;
-        gap: 20px;
-        justify-items: center;
-        width: 50%;
-    }
-
-    /* This is for the monthly spending at the bottom */
-    #monthly-spending
-    {
-        display: flex;
-        justify-content: flex-end;
-        margin: 5px;
-        p
-        {
-            padding: 20px;
-            text-align: center;
-            border: 1px solid black;
-        }
-    }
-
-    /* 
-        This is for the last row in the table. It's trying to mimic what the final
-        row looks like in the excel sheet.
-    */
-    tr:nth-last-child(1)
-    {
-        border-top: 1px solid black;
-    }
-
-    /* 
-        adjustments to editable daypart field
-    */
-    .daypart-input
-    {
-        border: none;
-        background: transparent;
-        font-family: inherit;
-        font-size: inherit;
-        width: 100%;
-    }
-
-    .daypart-input:focus
-    {
-        outline: none;
-    }
+.client-name {
+    width: fit-content;
+    padding: 20px;
+    border: 1px solid black;
+    background-color: #fff;
+    text-align: left;
+    margin-bottom: 0px;
+    box-shadow: 2px 2px 0px rgba(0,0,0,1);
+}
 
 
+.generate-new-schedule {
+    text-align: center;
+    margin: 40px auto 0;
+    gap: 10px;
+}
+
+/* Button to make schedule */
+.generate-new-schedule .make-schedule {
+    margin-top: 20px;
+    padding: 10px 24px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.generate-new-schedule .make-schedule:hover {
+    background-color: var(--primary-purple);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(123, 44, 191, 0.3);
+}
+
+.generate-new-schedule .date-selections {
+    margin-top: 20px;
+}
+
+/* Week selection in selections div */
+.generate-new-schedule .week-selection {
+    align-items: center;
+    gap: 10px;
+    flex-direction: column;
+}
+
+/* Div that holds the from and to input weeks  */
+.generate-new-schedule .week-range {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Main section container */
+.section {
+    width: 90%;
+    max-width: 1400px;
+    margin: 20px auto 40px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: var(--section-shadow);
+    transition: transform 0.3s ease;
+}
+
+input {
+    text-align: center;
+}
+
+input[type="number"] {
+    width: 3ch;
+    min-width: 60px;
+    max-width: 120px;
+    padding: 4px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Table styling */
+.table-container {
+    margin: 30px 0px;
+    border: 1px solid var(--border-color);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: var(--table-shadow);
+}
+
+.table-container table {
+    text-align: center;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table-container th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.table-container tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.table-container th, 
+.table-container td {
+    border: 1px solid black;
+    padding: 8px;
+}
+
+.table-container .time-slot {
+    padding: 5px;
+    white-space: normal;
+}
+
+.table-container td:nth-child(2), 
+.table-container tr:nth-child(2) {
+    min-width: 75px;
+}
+
+#add-client {
+    display: grid;
+    padding: 40px;
+    margin: 20px auto 60px;
+    border: 1px solid var(--border-color);
+    gap: 20px;
+    justify-items: center;
+    width: 90%;
+    max-width: 1400px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: var(--section-shadow);
+}
+
+#add-client-dropdown, 
+#add-client-button {
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+#add-client-button {
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+#add-client-button:hover {
+    background-color: var(--primary-purple);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(123, 44, 191, 0.3);
+}
+
+#monthly-spending {
+    display: flex;
+    justify-content: flex-end;
+    margin: 5px;
+}
+
+#monthly-spending p {
+    padding: 20px;
+    text-align: center;
+    border: 1px solid black;
+    background-color: #fff;
+    font-weight: bold;
+}
+
+/* Last row styling */
+tr:nth-last-child(1) {
+    border-top: 2px solid black;
+    font-weight: bold;
+}
+
+
+.daypart-input {
+    border: 1px solid transparent;
+    background: rgba(0, 0, 0, 0.03);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: inherit;
+    width: calc(100% - 22px);
+    text-align: left;
+    cursor: text;
+    transition: all 0.2s ease;
+}
+
+.daypart-input:hover {
+    background: rgba(0, 0, 0, 0.06);
+    border-color: var(--border-color);
+}
+
+.daypart-input:focus {
+    outline: none;
+    background: #fff;
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.1);
 }
