@@ -74,14 +74,14 @@ body {
     margin-top: 20px;
 }
 
-/* Week selection in selections div */
+
 .generate-new-schedule .week-selection {
     align-items: center;
     gap: 10px;
     flex-direction: column;
 }
 
-/* Div that holds the from and to input weeks  */
+
 .generate-new-schedule .week-range {
     display: flex;
     flex-direction: row;
