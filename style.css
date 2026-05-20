@@ -21,6 +21,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 1000;
+    gap: 20px;
 
     display: flex;
     align-items: center;
@@ -29,6 +30,32 @@ body {
     border-bottom: 3px solid black;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     margin-bottom: 30px;
+}
+
+.header-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.header-field label {
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.header-field input {
+    padding: 6px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.header-client-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    min-width: 220px;
 }
 
 .header-logo {
