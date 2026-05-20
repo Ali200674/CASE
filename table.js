@@ -24,7 +24,8 @@ function updateTotalsForRow(singleRow, totals)
     const adsPerWeekTotal = totals[0];
     displayTotal(adsPerWeekCell, adsPerWeekTotal, false);
 
-    const costCell = cells[cells.length -1];
+    // Move the costcell back one (because of deletion div)
+    const costCell = cells[cells.length - 2];
     const costTotal = totals[totals.length - 1];
     displayTotal(costCell, costTotal, true);
 }
@@ -44,7 +45,8 @@ function calculateAndUpdateTotalsForRow(singleRow)
     const cells = singleRow.children;
 
     // Loop through the cells in the row, skipping dayparts, ads/week, and cost
-    for (let i = 2; i < cells.length - 1; i++)
+    // Update, will skip the deletion column as well
+    for (let i = 2; i < cells.length - 2; i++)
     {
         //Get the input field contained within the table element
         let cell = cells[i].children[0];
@@ -227,8 +229,9 @@ function populateOtherTrElements(trArray)
     for (let row = 1; row < trArray.length; row++)
     {
 
-        // We will add 12 td elements to that tr element
-        for (let col = 0; col < 12; col++)
+        // We will add 13 td elements to that tr element
+        // Update: to 13 elements to add in new div for deletion of rows
+        for (let col = 0; col < 13; col++)
         {
             // Make a td element
             const tdEle = document.createElement("td");
@@ -251,11 +254,20 @@ function populateOtherTrElements(trArray)
                 tdEle.classList.add("time-slot");
             }
 
+            // If the row is the last row and it's the last column, don't do anything
+            if (row == trArray.length - 1 && col == 12) { continue; }
+
             // Don't modify the "Weekly totals" row
             if (row != trArray.length - 1)
             {
+                // If it's the last cell in the td, add in the delete div
+                if (col == 12)
+                {
+                    // Append the div with the td element (because that will be removed when clicked)
+                    tdEle.append(generateDeleteDiv("tr"));
+                }
                 // If j is the second one (it's the length of a ad)
-                if (isAdLengthField)
+                else if (isAdLengthField)
                 {
                     // We add a drop down for the length of a ad
                     tdEle.append(createAdLengthDropdown());
@@ -275,11 +287,11 @@ function populateOtherTrElements(trArray)
 
                     // Append it to the td element
                     tdEle.append(inputEle);
-                }   
-              }  
-            
+                }
+              }
+
             // Append that td element to the tr element.
-            trArray[row].append(tdEle)
+            trArray[row].append(tdEle) 
         }
     }
 }

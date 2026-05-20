@@ -191,7 +191,8 @@ input[type="number"] {
     font-size: 0.9rem;
 }
 
-.table-container tr:nth-child(even) {
+/* Same thing as before, but excludes the last child */
+.table-container tr:nth-child(even) td:not(:last-child) {
     background-color: #fafafa;
 }
 
@@ -262,11 +263,11 @@ input[type="number"] {
 }
 
 /* Last row styling */
-tr:nth-last-child(1) {
+/* Last tr element, all td elements */
+tr:nth-last-child(1) td
+{
     border-top: 2px solid black;
-    font-weight: bold;
 }
-
 
 .daypart-input {
     border: 1px solid transparent;
@@ -292,3 +293,76 @@ tr:nth-last-child(1) {
     border-color: var(--primary-purple);
     box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.1);
 }
+
+/* This is for the confirm section (Are you sure? screen) */
+.confirm-section
+{
+    display: none;
+    position: fixed;
+    color: purple;
+    background-color: wheat;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Div that holds the h2 element (radio station) and the deletion div */
+.section-name
+{
+
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    /* h2 tag */
+    .client-name
+    {
+        margin: 0px;
+    }
+}
+
+/* The container that holds the button and image for deleting */
+.delete-container
+{
+    display: inline;
+
+    /* Button that holds image  */
+    .delete-button
+    {
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+}
+
+/* Trash can image */
+.trash-can-image
+{
+    width: 25px;
+}
+
+/* For every tr element besides the last one to every last td element, remove border (Deletion div) */
+tr:not(:last-child) td:last-child{
+    border:none;
+}
+
+/* Overlay to darken background a little when on Are you sure screen */
+.overlay
+{
+    display: none;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+

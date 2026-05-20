@@ -20,6 +20,9 @@ function generateSection()
     // Make main section
     const div = createElement("div", undefined, "section", undefined)
 
+    // Make section for h2 and deletion div
+    const sectionName = createElement("div", undefined, "section-name", undefined)
+
     // Make h2 with clients name
     const clientName = createElement("input", undefined, "client-name", undefined);
 
@@ -33,8 +36,12 @@ function generateSection()
         }
     })
 
-    // Put h2 in main div
-    div.append(clientName)
+    // Append the client name (h2) and the deletion div that will delete the section
+    sectionName.append(clientName);
+    sectionName.append(generateDeleteDiv(".section"));
+
+    // Put section that has the h2 and the delete div inside of the main div
+    div.append(sectionName);
 
     // Return div
     return div;
@@ -45,7 +52,6 @@ function generateSection()
  * It uses a bunch of other methods to create that section.
  * 
  */
-
 function createClientSection(event)
 {
     // Generate the main section
