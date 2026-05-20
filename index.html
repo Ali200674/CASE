@@ -13,28 +13,50 @@
   </head>
   <body>
     <!-- NOTE: 
-        This is for the clients name, it will be spaced
-        out from the other text.
-            Thought:
-            Maybe later on it will be the user's name with the company
-            name? (P48 Marketing : Anne)
+        Added client Name and campaign start and end fields
          -->
     <header class="main-header">
       <img src="P48_Logo.png" alt="P48 Logo" class="header-logo">
-      <h1 id="company-name"></h1>
+
+      <input 
+        id="client-name-input"
+        class="header-client-name"
+        type="text"
+        placeholder="Client Name">
+
+      <div class="header-field">
+        <label for="campaign-start">Campaign Start</label>
+        <input id="campaign-start" type="date">
+      </div>
+
+      <div class="header-field">
+        <label for="campaign-end">Campaign End</label>
+        <input id="campaign-end" type="date">
+      </div>
+
+      <!-- <h1 id="company-name"></h1> -->
     </header>
   
 
     <!-- Here is the section for adding in a new schedule. -->
     <div id="add-client">
+      <!-- 
+      i didn't want to delete this, i wanted to try a different way, lemme know what you think!
       <select id="add-client-dropdown">
         <option>97.9 WNCI</option>
         <option>92.3 WCOL</option>
         <option>97.1 The Fan (WBNS)</option>
       </select>
-      <button id="add-client-button">Add New Client</button>
+    -->
+      <button id="add-client-button">Add New Table</button>
     </div>
 
+    <!-- preliminary attempt at making a dropdown in the section-->
+    <datalist id="station-list">
+      <option value="97.9 WNCI">
+      <option value="92.3 WCOL">
+      <option value="97.1 The Fan (WBNS)">
+    </datalist>
     <!-- This grays out the background when the confirm-section below is shown -->
     <div class = "overlay"></div>
 

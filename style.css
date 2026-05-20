@@ -18,6 +18,11 @@ body {
 
 /* Header styling with logo and company name */
 .main-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    gap: 20px;
+
     display: flex;
     align-items: center;
     padding: 10px 40px;
@@ -25,6 +30,32 @@ body {
     border-bottom: 3px solid black;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     margin-bottom: 30px;
+}
+
+.header-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.header-field label {
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.header-field input {
+    padding: 6px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.header-client-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    min-width: 220px;
 }
 
 .header-logo {
@@ -36,12 +67,31 @@ body {
 
 .client-name {
     width: fit-content;
+    min-width: 120px;
+
     padding: 20px;
+
     border: 1px solid black;
     background-color: #fff;
-    text-align: left;
+
+    text-align: center;
+    transition: all 0.2s ease;
+
     margin-bottom: 0px;
+
     box-shadow: 2px 2px 0px rgba(0,0,0,1);
+
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: inherit;
+
+    outline: none;
+}
+
+.client-name:focus {
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.15);
+    text-align: left;
 }
 
 
