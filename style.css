@@ -67,12 +67,31 @@ body {
 
 .client-name {
     width: fit-content;
+    min-width: 120px;
+
     padding: 20px;
+
     border: 1px solid black;
     background-color: #fff;
-    text-align: left;
+
+    text-align: center;
+    transition: all 0.2s ease;
+
     margin-bottom: 0px;
+
     box-shadow: 2px 2px 0px rgba(0,0,0,1);
+
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: inherit;
+
+    outline: none;
+}
+
+.client-name:focus {
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.15);
+    text-align: left;
 }
 
 

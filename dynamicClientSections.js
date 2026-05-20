@@ -21,7 +21,17 @@ function generateSection()
     const div = createElement("div", undefined, "section", undefined)
 
     // Make h2 with clients name
-    const clientName = createElement("h2", undefined, "client-name",document.getElementById("add-client-dropdown").value);
+    const clientName = createElement("input", undefined, "client-name", undefined);
+
+    clientName.setAttribute("list", "station-list");
+    clientName.placeholder = "Client Name";
+
+    //so you can press enter in a field
+    clientName.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            clientName.blur();
+        }
+    })
 
     // Put h2 in main div
     div.append(clientName)
