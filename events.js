@@ -17,6 +17,7 @@ function handleInputEventForSchedules(event)
     }
 
     let parentTable = event.target.parentElement.parentElement.parentElement;
+
     getAllTotals(parentTable);
 }
 
