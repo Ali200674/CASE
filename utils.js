@@ -147,7 +147,7 @@ function generateDeleteDiv(element)
 
     // Make a img tag with it's src to the trash can
     const trashCanImage = createElement("img", undefined, "trash-can-image", undefined);
-    trashCanImage.src = "trash can.png";
+    trashCanImage.src = "trash_can.png";
 
     // Append the trash can to the button and button to container
     deleteButton.append(trashCanImage);
