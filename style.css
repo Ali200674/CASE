@@ -18,6 +18,10 @@ body {
 
 /* Header styling with logo and company name */
 .main-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
     display: flex;
     align-items: center;
     padding: 10px 40px;
