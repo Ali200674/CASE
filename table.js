@@ -24,8 +24,8 @@ function updateTotalsForRow(singleRow, totals)
     const adsPerWeekTotal = totals[0];
     displayTotal(adsPerWeekCell, adsPerWeekTotal, false);
 
-    // Move the costcell back one (because of deletion div)
-    const costCell = cells[cells.length - 2];
+    // Move the costcell back two (because of deletion div and calendar cell)
+    const costCell = cells[cells.length - 3];
     const costTotal = totals[totals.length - 1];
     displayTotal(costCell, costTotal, true);
 }
@@ -45,8 +45,8 @@ function calculateAndUpdateTotalsForRow(singleRow)
     const cells = singleRow.children;
 
     // Loop through the cells in the row, skipping dayparts, ads/week, and cost
-    // Update, will skip the deletion column as well
-    for (let i = 2; i < cells.length - 2; i++)
+    // Update, will skip the deletion column and calendar column as well
+    for (let i = 2; i < cells.length - 3; i++)
     {
         //Get the input field contained within the table element
         let cell = cells[i].children[0];
@@ -230,8 +230,8 @@ function populateOtherTrElements(trArray)
     {
 
         // We will add 13 td elements to that tr element
-        // Update: to 13 elements to add in new div for deletion of rows
-        for (let col = 0; col < 13; col++)
+        // Update: to 14 elements to add in new div for deletion of rows and create events of those rows
+        for (let col = 0; col < 14; col++)
         {
             // Make a td element
             const tdEle = document.createElement("td");
@@ -254,17 +254,22 @@ function populateOtherTrElements(trArray)
                 tdEle.classList.add("time-slot");
             }
 
-            // If the row is the last row and it's the last column, don't do anything
-            if (row == trArray.length - 1 && col == 12) { continue; }
+            // If the row is the last row and it's the last two column, don't do anything
+            if (row == trArray.length - 1 && (col == 12 || col == 13) ) { continue; }
 
             // Don't modify the "Weekly totals" row
             if (row != trArray.length - 1)
             {
-                // If it's the last cell in the td, add in the delete div
+                // If it's the second to last cell in the td, add in the delete div
                 if (col == 12)
                 {
                     // Append the div with the td element (because that will be removed when clicked)
                     tdEle.append(generateDeleteDiv("tr"));
+                }
+                // If is the last cell in the td, add a create event div
+                else if (col == 13)
+                {
+                    tdEle.append(generateCreateEvent())
                 }
                 // If j is the second one (it's the length of a ad)
                 else if (isAdLengthField)

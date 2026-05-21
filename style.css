@@ -191,8 +191,8 @@ input[type="number"] {
     font-size: 0.9rem;
 }
 
-/* Same thing as before, but excludes the last child */
-.table-container tr:nth-child(even) td:not(:last-child) {
+/* Same thing as before, but excludes the two children */
+.table-container tr:nth-child(even) td:not(:nth-last-child(-n + 2)) {
     background-color: #fafafa;
 }
 
@@ -304,6 +304,7 @@ tr:nth-last-child(1) td
 
     top: 50%;
     left: 50%;
+    z-index: 21;
 
     transform: translate(-50%, -50%);
 
@@ -332,24 +333,24 @@ tr:nth-last-child(1) td
 .delete-container
 {
     display: inline;
-
-    /* Button that holds image  */
-    .delete-button
-    {
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
 }
 
-/* Trash can image */
-.trash-can-image
+/* CSS for both the create and delete button */
+.create-event-button, .delete-button
+{
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Trash can image and calendar add image */
+.trash-can-image, .calendar-add-image
 {
     width: 25px;
 }
 
-/* For every tr element besides the last one to every last td element, remove border (Deletion div) */
-tr:not(:last-child) td:last-child{
+/* For every tr element besides the last one to every last td element, remove border */
+.table-container tr:not(:last-child) td:nth-last-child(-n + 2){
     border:none;
 }
 
@@ -360,9 +361,38 @@ tr:not(:last-child) td:last-child{
     position: fixed;
     top: 0px;
     left: 0px;
+    z-index: 20;
 
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
 }
 
+/* This is for the calendar itself */
+#calendar
+{
+    width: 1200px;
+    margin: 0 auto;
+}
+
+/* This is for the div that will hold all of the event cells */
+#table-draggable-cells
+{  
+    border: 2px solid black;
+    height: 600px;
+    width: 300px;
+    margin: 40px auto 0;
+}
+
+/* A event cell */
+.event-cell
+{
+    background-color: blue;
+    color: white;
+    text-align: center;
+    margin: 10px auto 0;
+    border:1px solid black;
+    border-radius: 5px;
+    width: fit-content;
+    padding: 0 10px 0; 
+}
