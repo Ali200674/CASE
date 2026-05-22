@@ -176,7 +176,7 @@ function generateCreateEvent()
     
     // Make image and give it the src location of the image
     const img = createElement("img", undefined, "calendar-add-image", undefined)
-    img.src = "calendar-add.svg"
+    img.src = "calendar_add.svg"
 
     // Append all of this to the div
     button.append(img);
