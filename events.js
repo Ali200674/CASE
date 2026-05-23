@@ -79,8 +79,7 @@ function handleCreateNewSchedule(event)
 
     // Within that tag, find all of these classes
     const weekSelection = getClosestSchedule.querySelector(".week-selection")
-    const fromWeek = getClosestSchedule.querySelector(".from-week")
-    const toWeek = getClosestSchedule.querySelector(".to-week")
+    const weekOf = getClosestSchedule.querySelector(".week-of")
     const errorMessage = getClosestSchedule.querySelector(".error-message")
     const monthChoosen = getClosestSchedule.querySelector(".month-choosen")
     const monthSelection = getClosestSchedule.querySelector(".month-selection")
@@ -90,7 +89,7 @@ function handleCreateNewSchedule(event)
     if (weekSelection.style.display === "flex")
     {
         // If either are null
-        if (fromWeek.valueAsDate === null || toWeek.valueAsDate === null) 
+        if (weekOf.value === "") 
         { 
             // Show error message and stop button
             errorMessage.style.display = "block";

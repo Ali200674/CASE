@@ -159,21 +159,26 @@ function createWeekContainer()
     // Make container for week ranges and has a class
     const weekRangeContainer = createElement("div", undefined, "week-range", undefined);
 
-    // Make week from text and input with a week type
-    const weekFrom = createElement("p", undefined, undefined, "From:");
-    const inputWeekFrom = createElement("input", undefined, "from-week", undefined)
-    inputWeekFrom.type = "week";
+    // removed to adjust week selector to just give us one selection point since it doesn't generate multiple weeks
+    
+    // // Make week from text and input with a week type
+    // const weekFrom = createElement("p", undefined, undefined, "From:");
+    // const inputWeekFrom = createElement("input", undefined, "from-week", undefined)
+    // inputWeekFrom.type = "week";
 
-    // Make week to text and input with a week type
-    const weekTo = createElement("p", undefined, undefined, "To:");
-    const inputWeekTo = createElement("input", undefined, "to-week", undefined)
-    inputWeekTo.type = "week";
+    // // Make week to text and input with a week type
+    // const weekTo = createElement("p", undefined, undefined, "To:");
+    // const inputWeekTo = createElement("input", undefined, "to-week", undefined)
+    // inputWeekTo.type = "week";
+
+    const weekOf = createElement("p", undefined, undefined, "Broadcast Week:");
+    const inputWeek = createElement("input", undefined, "week-of", undefined)
+    inputWeek.type = "week";
+    inputWeek.title = "Select a broadcast week";
 
     // Append all to weekRangeContainer and then weekContainer
-    weekRangeContainer.append(weekFrom);
-    weekRangeContainer.append(inputWeekFrom);
-    weekRangeContainer.append(weekTo);
-    weekRangeContainer.append(inputWeekTo);
+    weekRangeContainer.append(weekOf);
+    weekRangeContainer.append(inputWeek);
     weekContainer.append(weekRangeContainer);
 
     // Return weekContainer

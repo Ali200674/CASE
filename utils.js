@@ -11,24 +11,25 @@ function getTypeOfSchedule(element)
 {
     // Find all of the elements in that element passed
     const weekArea = element.querySelector(".week-selection");
-    const fromWeek = element.querySelector(".from-week");
-    const toWeek = element.querySelector(".to-week");
+    const weekOf = element.querySelector(".week-of");
     const monthArea = element.querySelector(".month-selection");
     const monthChoosen = element.querySelector(".month-choosen");
 
     // If the week is showing
     if (weekArea.style.display === "flex")
     {
-            // Make a option object that formats the value received 
-            const option = {month: "long", day: "2-digit", year: "numeric",};
+            // The week picker returns something like:
+            // "2026-W22"
+            // Split that into:
+            // ["2026", "22"]
+            const splitWeek = weekOf.value.split("-W");
 
-            /*
-                What this does is that it converts the values returned to a Date object,
-                then with that Date object, we turn it into a string with the toLocaleDateString.
-                for it's parameters, we give it a format of the date (US in this case), then 
-                we pass in the option object to format the date to whatever we want it to be. 
-            */
-            return fromWeek.valueAsDate.toLocaleDateString("en-US", option) + " - " + toWeek.valueAsDate.toLocaleDateString("en-US", option);
+            // Grab just the week number
+            const weekNumber = parseInt(splitWeek[1]);
+
+            // Return:
+            // Week 22
+            return "Week " + weekNumber;
         
     }
     else // Else, the month is showing instead

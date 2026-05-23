@@ -202,10 +202,73 @@ function createTrElements()
  * 
  */
 
-function populateFirstTr(firstTrEle)
+// Added element as a parameter so we can grab whatever
+// week the user selected and use that information
+// to build the table headings dynamically
+function populateFirstTr(firstTrEle, element)
 {
     // Create the array of column headings.
-    const headings = ["DAYPART", "ads/wk", "Length", "MO", "TU", "WE", "TH", "FR", "SA", "SU", "RATE", "COST"]
+    const headings = [
+    "DAYPART", 
+    "ads/wk", 
+    "Length", 
+    "MON", 
+    "TUE", 
+    "WED", 
+    "THU", 
+    "FRI", 
+    "SAT", 
+    "SUN", 
+    "RATE", 
+    "COST"
+    ];
+
+    const weekOf = element.querySelector(".week-of");
+
+
+    // The week picker returns something like:
+    // "2026-W22"
+    // Split that into:
+    // ["2026", "22"]
+    const splitWeek = weekOf.value.split("-W");
+
+    // Grab the year and week number separately
+    const year = parseInt(splitWeek[0]);
+    const weekNumber = parseInt(splitWeek[1]);
+
+    // Start at Jan 1st, then move forward
+    // by however many weeks were selected
+    const monday = new Date(year, 0, 1 + (weekNumber - 1) * 7);
+
+    // moving backwards until we land on Monday
+    while (monday.getDay() !== 1)
+    {
+        monday.setDate(monday.getDate() - 1);
+    }
+
+    // Make an array that will hold all 7 dates
+    // for the selected broadcast week
+    const dates = [];
+
+    // Loop 7 times (Monday -> Sunday)
+    for (let i = 0; i < 7; i++)
+    {
+        //make a new copy of monday
+        const currentDate = new Date(monday);
+
+        //move forward however many days we are into the week
+        currentDate.setDate(monday.getDate() + i);
+
+        // Push formatted dates into the array
+        // Example:
+        // "5/25"
+        dates.push(
+            currentDate.toLocaleDateString("en-US", {
+                month: "numeric",
+                day: "numeric"
+            })
+        );
+    }
 
     // Loop through the array
     for (let i = 0; i < headings.length; i++)
@@ -213,8 +276,19 @@ function populateFirstTr(firstTrEle)
         // Create th elemenent
         const thEle = document.createElement("th");
 
-        // Assign the text content to a column heading
-        thEle.textContent = headings[i];
+        // Use innerHTML instead of textContent
+        // so we can add line breaks inside the table headings
+        thEle.innerHTML = headings[i];
+
+        // If this is one of the weekday columns,
+        // put the date above the weekday label
+        // Example:
+        // 5/25
+        // MO
+        if (i >= 3 && i <= 9)
+        {
+            thEle.innerHTML = dates[i - 3] + "<br>" + headings[i];
+        }
 
         // Append it to the tr element
         firstTrEle.append(thEle);
@@ -301,7 +375,10 @@ function populateOtherTrElements(trArray)
  * 
  * returns: the schedule.
  */
-function createWholeTable()
+
+// Added element as a parameter so we can pass the selected
+// schedule information down into the table builder
+function createWholeTable(element)
 {
     // Make element table
     const table = document.createElement("table")
@@ -316,8 +393,8 @@ function createWholeTable()
     const trEles = createTrElements();
     
     // Populate the first tr with the columns
-    populateFirstTr(trEles[0])
-
+    populateFirstTr(trEles[0], element)
+    
     // Populate the other tr elements
     populateOtherTrElements(trEles)
 
@@ -337,6 +414,9 @@ function createWholeTable()
  * element: In this case, the closest element with the ".generate-new-schedule" tag to insert a new table
  * returns: A table
  */
+
+// Pass the element into createWholeTable so the table
+// can access the selected week/month information
 function buildTable(element)
 {
     // Create a container (div)
@@ -355,7 +435,7 @@ function buildTable(element)
     // container.append(clientName, scheduleContainer);
 
     // Append the h3 and the table to the div 
-    container.append(h3Wrapper, createWholeTable());
+    container.append(h3Wrapper, createWholeTable(element));
 
     // Return the table
     return container;
