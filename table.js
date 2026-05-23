@@ -103,6 +103,16 @@ function getAllTotals(parentTable)
 
         // Grab the tr element to calculate totals for
         const row = rows[rowIndex];
+
+        // If this is the fake "+ Add Daypart" row,
+        // skip it because it is not a real schedule row
+        const daypartInput = row.children[0].querySelector("input");
+
+        if (daypartInput && daypartInput.value === "+ Add Daypart")
+        {
+            continue;
+        }
+
         // Calculate the totals for this row
         const rowTotals = calculateAndUpdateTotalsForRow(row);
 
@@ -185,7 +195,7 @@ function createTrElements()
     const trs = [];
 
     // A for loop to add to the array
-    for (let i = 0; i < Math.max(7); i++)
+    for (let i = 0; i < Math.max(8); i++)
     {
         trs.push(document.createElement("tr"));
     }
@@ -297,7 +307,15 @@ function populateFirstTr(firstTrEle, element)
 
 function populateOtherTrElements(trArray)
 {
-    const elementTitles = ["Morning (7a-10a)", "Middays (10a-3p)", "Afternoons(3p-6:30p)", "Sa-Su 9a-2p", "M-Su 12M-12M Bonus", "Weekly Totals:"]
+    const elementTitles = [
+        "Morning (7a-10a)",
+        "Middays (10a-3p)", 
+        "Afternoons(3p-6:30p)", 
+        "Sa-Su 9a-2p", 
+        "M-Su 12M-12M Bonus",
+        "+ Add Daypart", 
+        "Weekly Totals:"
+    ]
     
     // For every tr element in the table
     for (let row = 1; row < trArray.length; row++)
@@ -314,17 +332,45 @@ function populateOtherTrElements(trArray)
             let isAdsPerWeekField = (col == 1);
             let isAdLengthField = (col == 2);
             let isCostField = (col == 11);
-            let isWeeklyTotalsRow = (row != trArray.length - 1)
+            let isSpecialRow = (
+                row === trArray.length - 1 ||
+                row === trArray.length - 2
+            );
 
             // If it's 0, that td will be a day part.
             if (isDayPart)
             {
-                const dayPartInputField = createElement("input", null, "daypart-input");
-                dayPartInputField.type = "text";
-                dayPartInputField.value = elementTitles[row - 1];
-                tdEle.append(dayPartInputField)
+                // If this is the weekly totals row,
+                // don't make an editable input field.
+                // Just put plain text instead.
+                if (elementTitles[row - 1] === "Weekly Totals:")
+                {
+                    tdEle.textContent = "Weekly Totals:";
+                }
+                else
+                {
+                    // Otherwise make a normal editable daypart input field
+                    const dayPartInputField = createElement("input", null, "daypart-input");
+                    dayPartInputField.type = "text";
+                    dayPartInputField.value = elementTitles[row - 1];
 
-                // Add class for css
+                    // If this is the fake "+ Add Daypart" row,
+                    // make it readonly and style it like a button
+                    if (elementTitles[row - 1] === "+ Add Daypart")
+                    {
+                        dayPartInputField.readOnly = true;
+                        dayPartInputField.classList.add("add-daypart-button");
+
+                        // When this fake button row is clicked,
+                        // run the add row function
+                        dayPartInputField.addEventListener("click", handleAddDaypartRow);
+                    }
+
+                    // Add the input field into the td
+                    tdEle.append(dayPartInputField)
+                }
+
+                // Add css styling class for the daypart column
                 tdEle.classList.add("time-slot");
             }
 
@@ -332,7 +378,7 @@ function populateOtherTrElements(trArray)
             if (row == trArray.length - 1 && col == 12) { continue; }
 
             // Don't modify the "Weekly totals" row
-            if (row != trArray.length - 1)
+            if (!isSpecialRow)
             {
                 // If it's the last cell in the td, add in the delete div
                 if (col == 12)
