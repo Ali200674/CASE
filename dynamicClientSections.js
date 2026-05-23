@@ -27,7 +27,7 @@ function generateSection()
     const clientName = createElement("input", undefined, "client-name", undefined);
 
     clientName.setAttribute("list", "station-list");
-    clientName.placeholder = "Client Name";
+    clientName.placeholder = "Station Name";
 
     //so you can press enter in a field
     clientName.addEventListener("keydown", (event) => {
