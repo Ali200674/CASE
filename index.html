@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>P48 Marketing</title>
     <link rel="stylesheet" href="style.css" />
+    <!-- For calendar -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/index.global.min.js'></script>
+    <script src = "calendar.js" defer></script>
+    
     <script src = "utils.js"></script>
     <script src = "events.js"></script>
     <script src = "table.js"></script>
@@ -38,7 +42,7 @@
     </header>
   
 
-    <!-- Here is the section for adding in a new schedule. -->
+      <!-- Here is the section for adding in a new schedule. -->
     <div id="add-client">
       <!-- 
       i didn't want to delete this, i wanted to try a different way, lemme know what you think!
@@ -57,6 +61,7 @@
       <option value="92.3 WCOL">
       <option value="97.1 The Fan (WBNS)">
     </datalist>
+   
     <!-- This grays out the background when the confirm-section below is shown -->
     <div class = "overlay"></div>
 
@@ -67,6 +72,14 @@
       <button class = "yes-button">Yes</button>
       <button class = "no-button">No</button>
     </div>
-    
+
+    <!-- This is for the calendar -->
+    <div id = "calendar"></div>
+
+    <!-- This div will contain all of the cells to be dragged into the schedule -->
+    <div id = "table-draggable-cells">
+      <!-- For testing styles -->
+      <!-- <div class = "event-cell">hello</div> -->
+    </div>
   </body>
 </html>
