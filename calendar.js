@@ -1,4 +1,6 @@
 
+
+
 // This makes an event listener for the calendar
 document.addEventListener("DOMContentLoaded", function(){
 
@@ -17,11 +19,20 @@ document.addEventListener("DOMContentLoaded", function(){
             start: "prev next today",
             center: "title",
             end: "dayGridWeek timeGridDay dayGridMonth multiMonthYear"   
-        },
+        }, 
+
+        // Function of when a cell is clicked, it will switch to the day view of what was clicked on
+        dateClick: function(info)
+        {
+           calendar.changeView("timeGridDay", info.dateStr);     
+        }
 
     })
 
     // Renders the calendar
     calendar.render();
 })
+
+
+
 
