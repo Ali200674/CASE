@@ -214,4 +214,3 @@ function generateCreateEvent()
     return eventContainer;
 
 }
-
