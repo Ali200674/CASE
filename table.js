@@ -10,14 +10,14 @@ class ScheduleTable {
 
     //Skip dayparts and ads/week
     columnsToSkipAtStart = 2;
-    //Skip cost / deletion / calendar columns
+    //Skip cost / other utility columns
     columnsToSkipAtEnd = 3;
     //Skip headers
     rowsToSkipAtStart = 1;
     //Skip weekly totals
     rowsToSkipAtEnd = 1;
 
-    width = colHeadings.length;
+    width = colHeadings.length + 2; // All columns + utilities (delete and calendar buttons)
     height = rowHeadings.length;
     tableElement = null;
 
@@ -40,7 +40,7 @@ class ScheduleTable {
     /*
         This method will display the total of a row / column.
     */
-    function displayTotal(target, total, moneySign = false)
+    displayTotal(target, total, moneySign = false)
     {
         // If there will be a money sign, then concatenate it to the amount
         if (moneySign)
@@ -55,7 +55,7 @@ class ScheduleTable {
     /*
     Updates the ads/week and cost fields for the row provided.
     */
-    function updateTotalsForRow(singleRow, totals)
+    updateTotalsForRow(singleRow, totals)
     {
         const cells = singleRow.children;
 
@@ -64,7 +64,7 @@ class ScheduleTable {
         displayTotal(adsPerWeekCell, adsPerWeekTotal, false);
 
         // Move the costcell back one (because of deletion div)
-        const costCell = cells[cells.length - 2];
+        const costCell = cells[cells.length - columnsToSkipAtEnd];
         const costTotal = totals[totals.length - 1];
         displayTotal(costCell, costTotal, true);
     }
@@ -174,11 +174,10 @@ class ScheduleTable {
     //Creates and returns an array of rows for a new table
     createTrElements()
     {
-        // A array of soon to be tr elements
         const trs = [];
 
-        // A for loop to add to the array
-        for (let i = 0; i < Math.max(7); i++)
+        // Add an extra row for headings
+        for (let i = 0; i < rowHeadings.length+1; i++)
         {
             trs.push(document.createElement("tr"));
         }
@@ -187,34 +186,62 @@ class ScheduleTable {
         return trs;
     }
 
-    //Populates the first table row with column headings.
+    //Populates the first table row with column headings
     populateFirstTr(firstTrEle)
     {
-        // Loop through the array
         for (let i = 0; i < colHeadings.length; i++)
         {
-            // Create th elemenent
             const thEle = document.createElement("th");
 
             // Assign the text content to a column heading
             thEle.textContent = colHeadings[i];
 
-            // Append it to the tr element
+            // Add the new heading to the row
             firstTrEle.append(thEle);
         }
     }
 
-    populateOtherTrElements(trArray)
+    populateSpecialTableElements(trArray, col)
     {
-        const elementTitles = ["Morning (7a-10a)", "Middays (10a-3p)", "Afternoons(3p-6:30p)", "Sa-Su 9a-2p", "M-Su 12M-12M Bonus", "Weekly Totals:"]
-        
+        // If it's the last cell in the td, add in the delete div
+        if (col == 12)
+        {
+             // Append the div with the td element (because that will be removed when clicked)
+             tdEle.append(generateDeleteDiv("tr"));
+         }
+         // If j is the second one (it's the length of a ad)
+         else if (isAdLengthField)
+         {
+             // We add a drop down for the length of a ad
+             tdEle.append(createAdLengthDropdown());
+         }
+         // Create a blank span for ads/week
+         else if (isAdsPerWeekField)
+         {
+             tdEle.append(createElement("span", null, "ads", "0"));
+         }
+         // If it's not a special element or already filled in it's a regular input field
+         else if (!isDayPart && !isCostField)
+         {
+             // Make a input field, give a type of number and min of 0
+             const inputEle = document.createElement("input");
+             inputEle.type = "number"
+             inputEle.min = "0";
+
+             // Append it to the td element
+             tdEle.append(inputEle);
+         }
+
+    }
+
+    populateOtherTableElements(trArray)
+    {
         // For every tr element in the table
         for (let row = 1; row < trArray.length; row++)
         {
-
             // We will add 13 td elements to that tr element
             // Update: to 13 elements to add in new div for deletion of rows
-            for (let col = 0; col < 13; col++)
+            for (let col = 0; col < 14; col++)
             {
                 // Make a td element
                 const tdEle = document.createElement("td");
@@ -223,7 +250,7 @@ class ScheduleTable {
                 let isAdsPerWeekField = (col == 1);
                 let isAdLengthField = (col == 2);
                 let isCostField = (col == 11);
-                let isWeeklyTotalsRow = (row != trArray.length - 1)
+                let isWeeklyTotalsRow = (row == trArray.length - 1)
 
                 // If it's 0, that td will be a day part.
                 if (isDayPart)
@@ -237,43 +264,16 @@ class ScheduleTable {
                     tdEle.classList.add("time-slot");
                 }
 
-                // If the row is the last row and it's the last column, don't do anything
-                if (row == trArray.length - 1 && col == 12) { continue; }
+                // Don't add utilities to the last row
+                if (isWeeklyTotalsRow && col >= 12) { continue; }
 
                 // Don't modify the "Weekly totals" row
-                if (row != trArray.length - 1)
+                if (isWeeklyTotalsRow == false)
                 {
-                    // If it's the last cell in the td, add in the delete div
-                    if (col == 12)
-                    {
-                        // Append the div with the td element (because that will be removed when clicked)
-                        tdEle.append(generateDeleteDiv("tr"));
-                    }
-                    // If j is the second one (it's the length of a ad)
-                    else if (isAdLengthField)
-                    {
-                        // We add a drop down for the length of a ad
-                        tdEle.append(createAdLengthDropdown());
-                    }
-                    // Create a blank span for ads/week
-                    else if (isAdsPerWeekField)
-                    {
-                        tdEle.append(createElement("span", null, "ads", "0"));
-                    }
-                    // If it's not a special element or already filled in it's a regular input field
-                    else if (!isDayPart && !isCostField)
-                    {
-                        // Make a input field, give a type of number and min of 0
-                        const inputEle = document.createElement("input");
-                        inputEle.type = "number"
-                        inputEle.min = "0";
-
-                        // Append it to the td element
-                        tdEle.append(inputEle);
-                    }
-                  }
-
-                // Append that td element to the tr element.
+                    tdEle = populateSpecialTableElement(tdEle, col))
+                } else if (isDayPart) {
+                    tdEle.textContent = rowHeadings[row];
+                }
                 trArray[row].append(tdEle) 
             }
         }
@@ -335,9 +335,6 @@ class ScheduleTable {
 
         // Append the h3 to the h3Wrapper div
         h3Wrapper.append(headingThree)
-
-        // Append all of that to the main div
-        // container.append(clientName, scheduleContainer);
 
         // Append the h3 and the table to the div 
         container.append(h3Wrapper, createWholeTable());
