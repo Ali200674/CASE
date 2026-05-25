@@ -4,9 +4,9 @@ class ScheduleTable {
     fromDate = null;
     toDate = null;
 
-    colHeadings = ["DAYPART", "ads/wk", "Length", "MO", "TU", "WE", "TH", "FR", "SA", "SU", "RATE", "COST"];
+    colHeadings = ["DAYPART", "ads/wk", "Length", "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN", "RATE", "COST"];
     defaultDayParts = ["Morning (7a-10a)", "Middays (10a-3p)", "Afternoons(3p-6:30p)", "Sa-Su 9a-2p", "M-Su 12M-12M Bonus"];
-    rowHeadings = ["Totals:"];
+    rowHeadings = ["+ Add Daypart", "Totals:"];
 
     //Skip dayparts and ads/week
     columnsToSkipAtStart = 2;
@@ -32,6 +32,7 @@ class ScheduleTable {
             rowHeadings = defaultDayParts.concat(rowHeadings);
             height = rowHeadings.height;
         }
+        //Initialize an empty array for each row's totals
         for (i = 0; i < height; i++) {
             rowTotals.push([]);
         }
@@ -159,8 +160,8 @@ class ScheduleTable {
     //Creates an ad length dropdown for use in a new table.
     createAdLengthDropdown()
     {
-        const selection = document.createElement("select")
-        const values = [":60", ":30", ":15", ":10"]
+        const selection = document.createElement("select");
+        const values = [":60", ":30", ":15", ":10"];
 
         for (let i = 0; i < values.length; i++)
         {
@@ -187,96 +188,185 @@ class ScheduleTable {
     }
 
     //Populates the first table row with column headings
-    populateFirstTr(firstTrEle)
+    populateFirstTr(firstTrEle, generateScheduleElement)
     {
+        const weekOf = generateScheduleElement.querySelector(".week-of");
+        if (weekOf)
+        {
+            // The week picker returns something like:
+            // "2026-W22"
+            // Split that into:
+            // ["2026", "22"]
+            const splitWeek = weekOf.value.split("-W");
+            // Grab the year and week number separately
+            const year = parseInt(splitWeek[0]);
+            const weekNumber = parseInt(splitWeek[1]);
+            // Start at Jan 1st, then move forward
+            // by however many weeks were selected
+            const monday = new Date(year, 0, 1 + (weekNumber - 1) * 7);
+
+            // moving backwards until we land on Monday
+            while (monday.getDay() !== 1)
+            {
+                monday.setDate(monday.getDate() - 1);
+            }
+
+            // Make an array that will hold all 7 dates
+            // for the selected broadcast week
+            const dates = [];
+
+            // Loop 7 times (Monday -> Sunday)
+            for (let i = 0; i < 7; i++)
+            {
+                //make a new copy of monday
+                const currentDate = new Date(monday);
+
+                //move forward however many days we are into the week
+                currentDate.setDate(monday.getDate() + i);
+
+                // Push formatted dates into the array
+                // Example:
+                // "5/25"
+                dates.push(
+                    currentDate.toLocaleDateString("en-US", {
+                        month: "numeric",
+                        day: "numeric"
+                    })
+                );
+            }
+        }
+
         for (let i = 0; i < colHeadings.length; i++)
         {
             const thEle = document.createElement("th");
 
-            // Assign the text content to a column heading
-            thEle.textContent = colHeadings[i];
+            if (weekOf)
+            {
+                // Use innerHTML instead of textContent
+                // so we can add line breaks inside the table headings
+                thEle.innerHTML = colHeadings[i];
 
+                // If this is one of the weekday columns,
+                // put the date above the weekday label
+                // Example:
+                // 5/25
+                // MO
+                if (i >= 3 && i <= 9)
+                {
+                    thEle.innerHTML = dates[i - 3] + "<br>" + colHeadings[i];
+                }
+            }
+            else
+            {
+                thEle.textContent = colHeadings[i];
+            }
             // Add the new heading to the row
             firstTrEle.append(thEle);
         }
     }
 
-    populateSpecialTableElements(trArray, col)
+    populateTableElement(tdEle, row, col)
     {
-        // If it's the last cell in the td, add in the delete div
+        let isAdsPerWeekField = (col == 1);
+        let isAdLengthField = (col == 2);
+        let isCostField = (col == 11);
+        let isWeeklyTotalsRow = (row == this.height - 1);
+
+        // If it's the second to last cell in the td, add in the delete div
         if (col == 12)
         {
              // Append the div with the td element (because that will be removed when clicked)
              tdEle.append(generateDeleteDiv("tr"));
-         }
-         // If j is the second one (it's the length of a ad)
-         else if (isAdLengthField)
-         {
-             // We add a drop down for the length of a ad
-             tdEle.append(createAdLengthDropdown());
-         }
-         // Create a blank span for ads/week
-         else if (isAdsPerWeekField)
-         {
-             tdEle.append(createElement("span", null, "ads", "0"));
-         }
-         // If it's not a special element or already filled in it's a regular input field
-         else if (!isDayPart && !isCostField)
-         {
-             // Make a input field, give a type of number and min of 0
-             const inputEle = document.createElement("input");
-             inputEle.type = "number"
-             inputEle.min = "0";
-
-             // Append it to the td element
-             tdEle.append(inputEle);
-         }
+        }
+        else if (col == 13)
+        {
+            tdEle.append(generateCreateEvent());
+        }
+        //Add ad length dropdown
+        else if (isAdLengthField)
+        {
+            tdEle.append(createAdLengthDropdown());
+        }
+        //Create a blank span for ads/week
+        else if (isAdsPerWeekField)
+        {
+            tdEle.append(createElement("span", null, "ads", "0"));
+        }
+        //If it's not a special element or already filled in it's a regular input field
+        else if (!isCostField)
+        {
+            // Make a input field, give a type of number and min of 0
+            const inputEle = document.createElement("input");
+            inputEle.type = "number"
+            inputEle.min = "0";
+            // Append it to the td element
+            tdEle.append(inputEle);
+        }
 
     }
 
-    populateOtherTableElements(trArray)
+    populateRow(rowToPopulate, rowIndex, isNewRow = false)
     {
-        // For every tr element in the table
-        for (let row = 1; row < trArray.length; row++)
+        if (isNewRow)
         {
-            // We will add 13 td elements to that tr element
-            // Update: to 13 elements to add in new div for deletion of rows
-            for (let col = 0; col < 14; col++)
-            {
-                // Make a td element
-                const tdEle = document.createElement("td");
-
-                let isDayPart = (col == 0);
-                let isAdsPerWeekField = (col == 1);
-                let isAdLengthField = (col == 2);
-                let isCostField = (col == 11);
-                let isWeeklyTotalsRow = (row == trArray.length - 1)
-
-                // If it's 0, that td will be a day part.
-                if (isDayPart)
-                {
-                    const dayPartInputField = createElement("input", null, "daypart-input");
-                    dayPartInputField.type = "text";
-                    dayPartInputField.value = elementTitles[row - 1];
-                    tdEle.append(dayPartInputField)
-
-                    // Add class for css
-                    tdEle.classList.add("time-slot");
-                }
-
-                // Don't add utilities to the last row
-                if (isWeeklyTotalsRow && col >= 12) { continue; }
-
-                // Don't modify the "Weekly totals" row
-                if (isWeeklyTotalsRow == false)
-                {
-                    tdEle = populateSpecialTableElement(tdEle, col))
-                } else if (isDayPart) {
-                    tdEle.textContent = rowHeadings[row];
-                }
-                trArray[row].append(tdEle) 
-            }
+            const dayPartValue = "";
+            const dayPartPlaceholder = "New Daypart";
         }
+        else
+        {
+            const dayPartValue = rowHeadings[rowIndex - 1];
+            const dayPartPlaceholder = "";
+        }
+
+        // For each column
+        for (let col = 0; col < this.width; col++)
+        {
+            // Make a td element
+            const tdEle = document.createElement("td");
+
+            let isWeeklyTotalsRow = (rowIndex == this.height - 1);
+
+            // Don't add utilities to the last column
+            if (isWeeklyTotalsRow && col >= 12) { continue; }
+
+            if (col == 0)
+            {
+                // Don't make the weekly totals row editable
+                if (isWeeklyTotalsRow)
+                {
+                    tdEle.textContent = rowHeadings[rowIndex - 1];
+                }
+                else
+                {
+                    const dayPartField = createElement("input", null, "daypart-input");
+                    dayPartField.type = "text";
+                    dayPartField.value = dayPartValue;
+                    dayPartField.placeholder = dayPartPlaceholder;
+                    tdEle.append(dayPartInputField);
+
+                    // If this is the fake "+ Add Daypart" row,
+                    // make it readonly and style it like a button
+                    if (elementTitles[rowIndex - 1] === "+ Add Daypart")
+                    {
+                        dayPartInputField.readOnly = true;
+                        dayPartInputField.classList.add("add-daypart-button");
+
+                        // When this fake button row is clicked,
+                        // run the add row function
+                        dayPartInputField.addEventListener("click", handleAddDaypartRow);
+                    }
+                }
+                // Add styling for daypart column
+                tdEle.classList.add("time-slot");
+            }
+            else
+            {
+                tdEle = populateTableElement(tdEle, row, col));
+            }
+
+            rowToPopulate.append(tdEle);
+        }
+        return rowToPopulate;
     }
 
     /**
@@ -284,12 +374,9 @@ class ScheduleTable {
      * 
      * returns: the schedule.
      */
-    createWholeTable()
+    createWholeTable(generateScheduleElement)
     {
-        // Make element table
         const table = document.createElement("table")
-
-        // Create tbody
         const tableBody = document.createElement("tbody");
 
         // Append tableBody to table
@@ -299,12 +386,15 @@ class ScheduleTable {
         const trEles = createTrElements();
         
         // Populate the first tr with the columns
-        populateFirstTr(trEles[0])
+        populateFirstTr(trEles[0], generateScheduleElement);
 
-        // Populate the other tr elements
-        populateOtherTrElements(trEles)
+        // Populate the rest of the rows
+        for (let row = 1; row < trEles.length; row++)
+        {
+            trEles[row] = populateRow(trEles[row], row);
+        }
 
-        // For every tr element made, append it to the table
+        // Add each row to the table
         for (let i = 0; i < trEles.length; i++)
         {
             tableBody.append(trEles[i]);
@@ -322,7 +412,7 @@ class ScheduleTable {
      * element: In this case, the closest element with the ".generate-new-schedule" tag to insert a new table
      * returns: A table
      */
-    function buildTable(element)
+    buildTable(element)
     {
         // Create a container (div)
         const container = createElement("div", null, "table-container")
@@ -337,7 +427,7 @@ class ScheduleTable {
         h3Wrapper.append(headingThree)
 
         // Append the h3 and the table to the div 
-        container.append(h3Wrapper, createWholeTable());
+        container.append(h3Wrapper, createWholeTable(element));
 
         // Return the table
         return container;

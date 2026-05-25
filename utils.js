@@ -11,24 +11,25 @@ function getTypeOfSchedule(element)
 {
     // Find all of the elements in that element passed
     const weekArea = element.querySelector(".week-selection");
-    const fromWeek = element.querySelector(".from-week");
-    const toWeek = element.querySelector(".to-week");
+    const weekOf = element.querySelector(".week-of");
     const monthArea = element.querySelector(".month-selection");
     const monthChoosen = element.querySelector(".month-choosen");
 
     // If the week is showing
     if (weekArea.style.display === "flex")
     {
-            // Make a option object that formats the value received 
-            const option = {month: "long", day: "2-digit", year: "numeric",};
+            // The week picker returns something like:
+            // "2026-W22"
+            // Split that into:
+            // ["2026", "22"]
+            const splitWeek = weekOf.value.split("-W");
 
-            /*
-                What this does is that it converts the values returned to a Date object,
-                then with that Date object, we turn it into a string with the toLocaleDateString.
-                for it's parameters, we give it a format of the date (US in this case), then 
-                we pass in the option object to format the date to whatever we want it to be. 
-            */
-            return fromWeek.valueAsDate.toLocaleDateString("en-US", option) + " - " + toWeek.valueAsDate.toLocaleDateString("en-US", option);
+            // Grab just the week number
+            const weekNumber = parseInt(splitWeek[1]);
+
+            // Return:
+            // Week 22
+            return "Week " + weekNumber;
         
     }
     else // Else, the month is showing instead
@@ -147,7 +148,7 @@ function generateDeleteDiv(element)
 
     // Make a img tag with it's src to the trash can
     const trashCanImage = createElement("img", undefined, "trash-can-image", undefined);
-    trashCanImage.src = "trash_can.png";
+    trashCanImage.src = "trash_can.svg";
 
     // Append the trash can to the button and button to container
     deleteButton.append(trashCanImage);
@@ -158,3 +159,59 @@ function generateDeleteDiv(element)
     
 }
 
+/**
+ * This method creates a reusable div that holds a ui image for making draggable calendar events
+ * 
+ * return: A reusable div for making draggable events
+ */
+function generateCreateEvent()
+{
+    // Container for the div that will hold all of the cells
+    const container = document.querySelector("#table-draggable-cells"); 
+
+    // Make a div that will hold the button and image
+    const eventContainer = createElement("div", undefined, "event-container", undefined);
+
+    // Make button
+    const button = createElement("button", undefined, "create-event-button", undefined)
+    
+    // Make image and give it the src location of the image
+    const img = createElement("img", undefined, "calendar-add-image", undefined)
+    img.src = "calendar_add.svg"
+
+    // Append all of this to the div
+    button.append(img);
+    eventContainer.append(button);
+
+    // Event listener when clicked
+    button.addEventListener("click", (event) =>
+    {
+        // Find the closest time slot
+        const closestTimeSlot = event.target.closest("tr").querySelector(".daypart-input");
+
+        // Find the closest ratio station
+        const closestRadioStation = event.target.closest(".section").querySelector(".client-name")
+
+        // Make a div that will be a event cell
+        const eventCell = createElement("div", undefined, "event-cell", undefined);
+
+        // Set the inner text to the radio station name and slot
+        eventCell.innerText =  closestRadioStation.value + " " + closestTimeSlot.value;
+
+        // Turn the cell into a draggable object
+        let draggable = new FullCalendar.Draggable(eventCell,{
+            
+            // Set the information about this event
+            eventData: 
+            {
+                title: eventCell.innerText,
+            }
+        });
+
+        // Append the event cell into the container
+        container.append(eventCell);
+    })
+
+    return eventContainer;
+
+}
