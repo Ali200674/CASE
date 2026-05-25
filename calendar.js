@@ -1,6 +1,4 @@
 
-
-
 // This makes an event listener for the calendar
 document.addEventListener("DOMContentLoaded", function(){
 
@@ -32,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function(){
     // Renders the calendar
     calendar.render();
 })
-
 
 
 
