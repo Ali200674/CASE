@@ -9,13 +9,13 @@ class ScheduleTable {
     defaultDayParts = ["Morning (7a-10a)", "Middays (10a-3p)", "Afternoons(3p-6:30p)", "Sa-Su 9a-2p", "M-Su 12M-12M Bonus"];
     rowHeadings = ["+ Add Daypart", "Totals:"];
 
-    //Skip dayparts and ads/week
+    // Skip dayparts and ads/week
     columnsToSkipAtStart = 2;
-    //Skip cost / other utility columns
+    // Skip cost / other utility columns
     columnsToSkipAtEnd = 3;
-    //Skip headers
+    // Skip headers
     rowsToSkipAtStart = 1;
-    //Skip weekly totals and 'add daypart'
+    // Skip weekly totals and 'add daypart'
     rowsToSkipAtEnd = 2;
 
     width = 0;
@@ -26,15 +26,17 @@ class ScheduleTable {
     columnTotals = [0, null, 0, 0, 0, 0, 0, 0, 0, null, 0];
 
     // Initialize a table with the provided date range
+    // These dates should be obtained through getScheduleDate
+    // prefillWithDefaultDayParts should always be true, toggle has not been implemented
     constructor(fromDate, toDate, prefillWithDefaultDayParts = true) {
         this.fromDate = fromDate;
         this.toDate = toDate;
         if (prefillWithDefaultDayParts) {
             this.rowHeadings = this.defaultDayParts.concat(this.rowHeadings);
         }
-        this.width = this.colHeadings.length + 2; // All columns + utilities (delete and calendar buttons)
+        this.width = this.colHeadings.length + columnsToSkipAtEnd - 1; // All columns + utilities (delete and calendar buttons)
         this.height = this.rowHeadings.length;
-        //Initialize an empty array for each row's totals
+        // Initialize an empty array for each row's totals
         for (let i = 0; i < this.height; i++) {
             this.rowTotals.push([]);
         }
@@ -171,7 +173,7 @@ class ScheduleTable {
         this.displayColumnTotals();
     }
 
-    //Creates an ad length dropdown for use in a new table.
+    // Creates an ad length dropdown for use in a new table.
     createAdLengthDropdown()
     {
         const selection = document.createElement("select");
@@ -186,7 +188,7 @@ class ScheduleTable {
         return selection;
     }
 
-    //Creates and returns an array of rows for a new table
+    // Creates and returns an array of rows for a new table
     createTrElements()
     {
         const trs = [];
@@ -201,7 +203,7 @@ class ScheduleTable {
         return trs;
     }
 
-    //Populates the first table row with column headings
+    // Populates the first table row with column headings
     populateFirstTr(firstTrEle, generateScheduleElement)
     {
         const weekOf = generateScheduleElement.querySelector(".week-of");
@@ -260,6 +262,7 @@ class ScheduleTable {
         }
     }
 
+    // Populate a table cell with content
     populateTableElement(tdEle, row, col)
     {
         let isAdsPerWeekField = (col == 1);
@@ -267,7 +270,7 @@ class ScheduleTable {
         let isCostField = (col == 11);
         let isSpecialRow = (row == this.height || row == this.height - 1);
         
-        // If it's the second to last cell in the td, add in the delete div
+        // If it's the second to last cell in the row, add in the delete div
         if (col == 12)
         {
              // Append the div with the td element (because that will be removed when clicked)
@@ -304,6 +307,7 @@ class ScheduleTable {
 
     }
 
+    // Populate a single row with cells
     populateRow(rowToPopulate, rowIndex, isNewRow = false)
     {
         let dayPartValue = "";
