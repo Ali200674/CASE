@@ -112,7 +112,6 @@ class ScheduleTable {
         //Add these values to the array of totals
         totals.unshift(adsPerWeekTotal);
         totals.push(cost);
-        console.log(totals);
         this.rowTotals[rowIndex] = totals;
         this.updateTotalsForRow(singleRow, rowIndex);
     }
@@ -121,7 +120,6 @@ class ScheduleTable {
     {
         let tbody = this.tableElement.children[0];
         let rows = tbody.children;
-        console.log(this.columnTotals);
         for (let columnIndex = 0; columnIndex <= this.columnTotals.length; columnIndex++)
         {
             let finalColumnTotal = this.columnTotals[columnIndex];
@@ -162,11 +160,9 @@ class ScheduleTable {
             // Add totals for each column to column totals
             for (let totalIndex = 0; totalIndex < this.rowTotals[rowIndex].length; totalIndex++) {
                 let rowTotal = this.rowTotals[rowIndex][totalIndex];
-                console.log("Incrementing total at ind " + totalIndex + " by " + rowTotal)
                 // Skip null column totals (we don't need to calculate a total for this column)
                 if (this.columnTotals[totalIndex] == null)
                 {
-                    console.log("null")
                     continue;
                 }
                 this.columnTotals[totalIndex] += rowTotal;
@@ -310,7 +306,6 @@ class ScheduleTable {
 
     populateRow(rowToPopulate, rowIndex, isNewRow = false)
     {
-        console.log("Populating row " + rowIndex);
         let dayPartValue = "";
         let dayPartPlaceholder = "";
         if (isNewRow)
