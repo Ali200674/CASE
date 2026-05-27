@@ -1,3 +1,4 @@
+activeScheduleTables = {}
 
 class ScheduleTable {
 
@@ -14,27 +15,28 @@ class ScheduleTable {
     columnsToSkipAtEnd = 3;
     //Skip headers
     rowsToSkipAtStart = 1;
-    //Skip weekly totals
-    rowsToSkipAtEnd = 1;
+    //Skip weekly totals and 'add daypart'
+    rowsToSkipAtEnd = 2;
 
-    width = colHeadings.length + 2; // All columns + utilities (delete and calendar buttons)
-    height = rowHeadings.length;
+    width = 0;
+    height = 0;
     tableElement = null;
 
     rowTotals = [];
     columnTotals = [0, null, 0, 0, 0, 0, 0, 0, 0, null, 0];
 
     // Initialize a table with the provided date range
-    constructor(fromDate, toDate, prefillWithDefaultDayParts) {
+    constructor(fromDate, toDate, prefillWithDefaultDayParts = true) {
         this.fromDate = fromDate;
         this.toDate = toDate;
         if (prefillWithDefaultDayParts) {
-            rowHeadings = defaultDayParts.concat(rowHeadings);
-            height = rowHeadings.height;
+            this.rowHeadings = this.defaultDayParts.concat(this.rowHeadings);
         }
+        this.width = this.colHeadings.length + 2; // All columns + utilities (delete and calendar buttons)
+        this.height = this.rowHeadings.length;
         //Initialize an empty array for each row's totals
-        for (i = 0; i < height; i++) {
-            rowTotals.push([]);
+        for (let i = 0; i < this.height; i++) {
+            this.rowTotals.push([]);
         }
     }
 
@@ -56,18 +58,19 @@ class ScheduleTable {
     /*
     Updates the ads/week and cost fields for the row provided.
     */
-    updateTotalsForRow(singleRow, totals)
+    updateTotalsForRow(singleRow, rowIndex)
     {
         const cells = singleRow.children;
+        const totals = this.rowTotals[rowIndex];
 
         const adsPerWeekCell = cells[1];
         const adsPerWeekTotal = totals[0];
-        displayTotal(adsPerWeekCell, adsPerWeekTotal, false);
+        this.displayTotal(adsPerWeekCell, adsPerWeekTotal, false);
 
-        // Move the costcell back one (because of deletion div)
-        const costCell = cells[cells.length - columnsToSkipAtEnd];
+        // Move the costcell back (because of utility divs)
+        const costCell = cells[cells.length - this.columnsToSkipAtEnd];
         const costTotal = totals[totals.length - 1];
-        displayTotal(costCell, costTotal, true);
+        this.displayTotal(costCell, costTotal, true);
     }
 
     /*
@@ -81,9 +84,10 @@ class ScheduleTable {
     calculateAndUpdateTotalsForRow(singleRow, rowIndex)
     {
         const cells = singleRow.children;
+        let totals = this.rowTotals[rowIndex];
 
         // Loop through the cells in the row, skipping special cells
-        for (let i = columnsToSkipAtStart; i < cells.length - columnsToSkipAtEnd; i++)
+        for (let i = this.columnsToSkipAtStart; i < cells.length - this.columnsToSkipAtEnd; i++)
         {
             //Get the input field contained within the table element
             let cell = cells[i].children[0];
@@ -94,7 +98,7 @@ class ScheduleTable {
             {
                 value = 0;
             }
-            rowTotals[rowIndex].push(value); // Add the value to the running total
+            totals.push(value); // Add the value to the running total
         }
 
         // Create an array of just the ad counts
@@ -106,17 +110,21 @@ class ScheduleTable {
         let cost = adsPerWeekTotal * totals.at(-1);
 
         //Add these values to the array of totals
-        rowTotals[rowIndex].unshift(adsPerWeekTotal);
-        rowTotals[rowIndex].push(cost);
-        updateTotalsForRow(singleRow, rowTotals[rowIndex]);
+        totals.unshift(adsPerWeekTotal);
+        totals.push(cost);
+        console.log(totals);
+        this.rowTotals[rowIndex] = totals;
+        this.updateTotalsForRow(singleRow, rowIndex);
     }
 
     displayColumnTotals()
     {
-        let rows = tableElement.children;
-        for (let columnIndex = 0; columnIndex <= columnTotals.length; columnIndex++)
+        let tbody = this.tableElement.children[0];
+        let rows = tbody.children;
+        console.log(this.columnTotals);
+        for (let columnIndex = 0; columnIndex <= this.columnTotals.length; columnIndex++)
         {
-            let finalColumnTotal = columnTotals[columnIndex];
+            let finalColumnTotal = this.columnTotals[columnIndex];
 
             // Skip null column totals
             if (finalColumnTotal == null) {
@@ -127,34 +135,44 @@ class ScheduleTable {
             // The weekly totals row is the last in the table. The cells containing the totals are its children
             let finalTotalCellToUpdate = rows[rows.length - 1].children[finalTotalCellIndex];
 
-            if (finalTotalCellIndex == columnTotals.length) { // Display a dollar sign in the cost total
-                displayTotal(finalTotalCellToUpdate, finalColumnTotal, true);
+            if (finalTotalCellIndex == this.columnTotals.length) { // Display a dollar sign in the cost total
+                this.displayTotal(finalTotalCellToUpdate, finalColumnTotal, true);
             } else {
-                displayTotal(finalTotalCellToUpdate, finalColumnTotal, false);
+                this.displayTotal(finalTotalCellToUpdate, finalColumnTotal, false);
             }
         }
     }
 
     getAllTotals()
     {
-        let rows = tableElement.children;
+        //Rows are wrapped in a tbody element
+        let tbody = this.tableElement.children[0];
+        let rows = tbody.children;
+        //Clear rowTotals and columnTotals
+        this.rowTotals = [];
+        this.columnTotals = [0, null, 0, 0, 0, 0, 0, 0, 0, null, 0];
+        for (let i = 0; i < this.height; i++) {
+            this.rowTotals.push([]);
+        }
         // Loop through each row in the table, skipping headers and final totals
-        for (let rowIndex = rowsToSkipAtStart; rowIndex < rows.length - rowsToSkipAtEnd; rowIndex++)
+        for (let rowIndex = this.rowsToSkipAtStart; rowIndex < rows.length - this.rowsToSkipAtEnd; rowIndex++)
         {
             // Calculate the totals for this row
-            this.calculateAndUpdateTotalsForRow(rowIndex);
+            this.calculateAndUpdateTotalsForRow(rows[rowIndex], rowIndex);
             // Add totals for each column to column totals
-            for (let totalIndex = 0; totalIndex < rowTotals.length; totalIndex++) {
-                let rowTotal = rowTotals[rowIndex][totalIndex];
+            for (let totalIndex = 0; totalIndex < this.rowTotals[rowIndex].length; totalIndex++) {
+                let rowTotal = this.rowTotals[rowIndex][totalIndex];
+                console.log("Incrementing total at ind " + totalIndex + " by " + rowTotal)
                 // Skip null column totals (we don't need to calculate a total for this column)
-                if (columnTotals[totalIndex] == null)
+                if (this.columnTotals[totalIndex] == null)
                 {
+                    console.log("null")
                     continue;
                 }
-                columnTotals[totalIndex] += rowTotal;
+                this.columnTotals[totalIndex] += rowTotal;
             }
         }
-        displayColumnTotals();
+        this.displayColumnTotals();
     }
 
     //Creates an ad length dropdown for use in a new table.
@@ -178,7 +196,7 @@ class ScheduleTable {
         const trs = [];
 
         // Add an extra row for headings
-        for (let i = 0; i < rowHeadings.length+1; i++)
+        for (let i = 0; i < this.rowHeadings.length+1; i++)
         {
             trs.push(document.createElement("tr"));
         }
@@ -191,38 +209,19 @@ class ScheduleTable {
     populateFirstTr(firstTrEle, generateScheduleElement)
     {
         const weekOf = generateScheduleElement.querySelector(".week-of");
+        let dates = [];
         if (weekOf)
         {
-            // The week picker returns something like:
-            // "2026-W22"
-            // Split that into:
-            // ["2026", "22"]
-            const splitWeek = weekOf.value.split("-W");
-            // Grab the year and week number separately
-            const year = parseInt(splitWeek[0]);
-            const weekNumber = parseInt(splitWeek[1]);
-            // Start at Jan 1st, then move forward
-            // by however many weeks were selected
-            const monday = new Date(year, 0, 1 + (weekNumber - 1) * 7);
-
-            // moving backwards until we land on Monday
-            while (monday.getDay() !== 1)
-            {
-                monday.setDate(monday.getDate() - 1);
-            }
-
-            // Make an array that will hold all 7 dates
-            // for the selected broadcast week
-            const dates = [];
+            let startDate = getScheduleDate(generateScheduleElement, true)[0];
 
             // Loop 7 times (Monday -> Sunday)
             for (let i = 0; i < 7; i++)
             {
                 //make a new copy of monday
-                const currentDate = new Date(monday);
+                const currentDate = new Date(startDate);
 
                 //move forward however many days we are into the week
-                currentDate.setDate(monday.getDate() + i);
+                currentDate.setDate(startDate.getDate() + i);
 
                 // Push formatted dates into the array
                 // Example:
@@ -236,7 +235,7 @@ class ScheduleTable {
             }
         }
 
-        for (let i = 0; i < colHeadings.length; i++)
+        for (let i = 0; i < this.colHeadings.length; i++)
         {
             const thEle = document.createElement("th");
 
@@ -244,7 +243,7 @@ class ScheduleTable {
             {
                 // Use innerHTML instead of textContent
                 // so we can add line breaks inside the table headings
-                thEle.innerHTML = colHeadings[i];
+                thEle.innerHTML = this.colHeadings[i];
 
                 // If this is one of the weekday columns,
                 // put the date above the weekday label
@@ -253,12 +252,12 @@ class ScheduleTable {
                 // MO
                 if (i >= 3 && i <= 9)
                 {
-                    thEle.innerHTML = dates[i - 3] + "<br>" + colHeadings[i];
+                    thEle.innerHTML = dates[i - 3] + "<br>" + this.colHeadings[i];
                 }
             }
             else
             {
-                thEle.textContent = colHeadings[i];
+                thEle.textContent = this.colHeadings[i];
             }
             // Add the new heading to the row
             firstTrEle.append(thEle);
@@ -270,8 +269,8 @@ class ScheduleTable {
         let isAdsPerWeekField = (col == 1);
         let isAdLengthField = (col == 2);
         let isCostField = (col == 11);
-        let isWeeklyTotalsRow = (row == this.height - 1);
-
+        let isSpecialRow = (row == this.height || row == this.height - 1);
+        
         // If it's the second to last cell in the td, add in the delete div
         if (col == 12)
         {
@@ -282,10 +281,14 @@ class ScheduleTable {
         {
             tdEle.append(generateCreateEvent());
         }
+        else if (isSpecialRow)
+        {
+            return;
+        }
         //Add ad length dropdown
         else if (isAdLengthField)
         {
-            tdEle.append(createAdLengthDropdown());
+            tdEle.append(this.createAdLengthDropdown());
         }
         //Create a blank span for ads/week
         else if (isAdsPerWeekField)
@@ -307,15 +310,18 @@ class ScheduleTable {
 
     populateRow(rowToPopulate, rowIndex, isNewRow = false)
     {
+        console.log("Populating row " + rowIndex);
+        let dayPartValue = "";
+        let dayPartPlaceholder = "";
         if (isNewRow)
         {
-            const dayPartValue = "";
-            const dayPartPlaceholder = "New Daypart";
+            dayPartValue = "";
+            dayPartPlaceholder = "New Daypart";
         }
         else
         {
-            const dayPartValue = rowHeadings[rowIndex - 1];
-            const dayPartPlaceholder = "";
+            dayPartValue = this.rowHeadings[rowIndex - 1];
+            dayPartPlaceholder = "";
         }
 
         // For each column
@@ -324,17 +330,18 @@ class ScheduleTable {
             // Make a td element
             const tdEle = document.createElement("td");
 
-            let isWeeklyTotalsRow = (rowIndex == this.height - 1);
+            let isSpecialRow = (rowIndex == this.height || rowIndex == this.height - 1);
+            let isAddDaypartRow = (rowIndex == this.height - 1);
 
-            // Don't add utilities to the last column
-            if (isWeeklyTotalsRow && col >= 12) { continue; }
+            // Don't add utilities to special rows
+            if (isSpecialRow && col >= 12) { continue; }
 
             if (col == 0)
             {
                 // Don't make the weekly totals row editable
-                if (isWeeklyTotalsRow)
+                if (isSpecialRow && !isAddDaypartRow)
                 {
-                    tdEle.textContent = rowHeadings[rowIndex - 1];
+                    tdEle.textContent = dayPartValue;
                 }
                 else
                 {
@@ -342,26 +349,26 @@ class ScheduleTable {
                     dayPartField.type = "text";
                     dayPartField.value = dayPartValue;
                     dayPartField.placeholder = dayPartPlaceholder;
-                    tdEle.append(dayPartInputField);
 
                     // If this is the fake "+ Add Daypart" row,
                     // make it readonly and style it like a button
-                    if (elementTitles[rowIndex - 1] === "+ Add Daypart")
+                    if (this.rowHeadings[rowIndex - 1] === "+ Add Daypart" && !isNewRow)
                     {
-                        dayPartInputField.readOnly = true;
-                        dayPartInputField.classList.add("add-daypart-button");
+                        dayPartField.readOnly = true;
+                        dayPartField.classList.add("add-daypart-button");
 
                         // When this fake button row is clicked,
                         // run the add row function
-                        dayPartInputField.addEventListener("click", handleAddDaypartRow);
+                        dayPartField.addEventListener("click", handleAddDaypartRow);
                     }
+                    tdEle.append(dayPartField);
                 }
                 // Add styling for daypart column
                 tdEle.classList.add("time-slot");
             }
             else
             {
-                tdEle = populateTableElement(tdEle, row, col));
+                this.populateTableElement(tdEle, rowIndex, col);
             }
 
             rowToPopulate.append(tdEle);
@@ -383,15 +390,15 @@ class ScheduleTable {
         table.append(tableBody);
 
         // Create the tr elements for the table
-        const trEles = createTrElements();
+        const trEles = this.createTrElements();
         
         // Populate the first tr with the columns
-        populateFirstTr(trEles[0], generateScheduleElement);
+        this.populateFirstTr(trEles[0], generateScheduleElement);
 
         // Populate the rest of the rows
         for (let row = 1; row < trEles.length; row++)
         {
-            trEles[row] = populateRow(trEles[row], row);
+            trEles[row] = this.populateRow(trEles[row], row);
         }
 
         // Add each row to the table
@@ -400,6 +407,7 @@ class ScheduleTable {
             tableBody.append(trEles[i]);
         }
 
+        activeScheduleTables[table] = this;
         this.tableElement = table;
 
         // Return that table
@@ -421,13 +429,13 @@ class ScheduleTable {
         const h3Wrapper = createElement("div", null, "schedule-type-wrapper");
 
         // Create a h3 heading with Type of Schedule text
-        const headingThree = createElement("h3", null, "schedule-type", getTypeOfSchedule(element));
+        const headingThree = createElement("h3", null, "schedule-type", getScheduleDate(element));
 
         // Append the h3 to the h3Wrapper div
         h3Wrapper.append(headingThree)
 
         // Append the h3 and the table to the div 
-        container.append(h3Wrapper, createWholeTable(element));
+        container.append(h3Wrapper, this.createWholeTable(element));
 
         // Return the table
         return container;
@@ -441,9 +449,8 @@ class ScheduleTable {
      */
     insertTableToDOM(element)
     {
-        
         // Build the table for that schedule
-        const newTable = buildTable(element);
+        const newTable = this.buildTable(element);
 
         //Add event listeners to the table
         newTable.addEventListener("input", handleInputEventForSchedules);
