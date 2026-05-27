@@ -134,7 +134,6 @@ function generateDeleteDiv(element)
         // Event listener for the yes button
         yesButton.onclick = () =>
         {
-
             // If the element given is a tr (meaning we will delete a row from a table)
             if (element === "tr")
             {
@@ -149,6 +148,16 @@ function generateDeleteDiv(element)
                 closestScheduleTable.height -= 1;
                 // Re-calculate the totals
                 closestScheduleTable.getAllTotals();
+            }
+            else if (element === ".section") {
+                // Remove the associated ScheduleTable
+                // .section -> .table-container -> table
+                const closestTable = closestElement.children[1].children[1];
+                console.log(closestTable);
+                delete activeScheduleTables[closestTable];
+                // Then remove the section from the DOM
+                // TODO: recalculate running totals after section removal!
+                closestElement.remove();
             }
             else // Else, just remove the element
             {
