@@ -360,6 +360,7 @@ class ScheduleTable {
                         // When this fake button row is clicked,
                         // run the add row function
                         dayPartField.addEventListener("click", handleAddDaypartRow);
+                        rowToPopulate.classList.add("add-daypart-row");
                     }
                     tdEle.append(dayPartField);
                 }
