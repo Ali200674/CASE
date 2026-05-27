@@ -16,9 +16,9 @@ function handleInputEventForSchedules(event)
         }
     }
 
-    let parentTable = event.target.parentElement.parentElement.parentElement;
+    let parentTable = event.target.parentElement.parentElement.parentElement.parentElement;
 
-    getAllTotals(parentTable);
+    activeScheduleTables[parentTable].getAllTotals();
 }
 
 // Ignore '-' in input fields when typing
@@ -117,9 +117,10 @@ function handleCreateNewSchedule(event)
         }
     }
 
-
+    const dateRangeArray = getScheduleDate(getClosestSchedule, true);
+    const newScheduleTable = new ScheduleTable(dateRangeArray[0], dateRangeArray[1]);
     // Call this function to insert the table, pass in the closest schedule
-    insertTableToDOM(getClosestSchedule);
+    newScheduleTable.insertTableToDOM(getClosestSchedule);
 }
 
 //add dayparts button
@@ -128,64 +129,20 @@ function handleAddDaypartRow(event)
     // Grab the actual row that was clicked
     const addDaypartRow = event.target.closest("tr");
 
-    // Grab the tbody that holds all the rows
-    const tableBody = addDaypartRow.closest("tbody");
+    // Grab the table that holds all the rows
+    const tableElement = addDaypartRow.closest("table");
+    const tableObject = activeScheduleTables[tableElement];
+    const tableBody = tableElement.children[0];
 
     // Create a brand new tr element
     const newRow = document.createElement("tr");
 
-    // Make 13 td elements just like a normal schedule row (include trash)
-    for (let col = 0; col < 13; col++)
-    {
-        const tdEle = document.createElement("td");
+    tableObject.populateRow(newRow, tableObject.height - 2, true);
+    tableObject.height += 1;
 
-        // First column = editable daypart name
-        if (col === 0)
-        {
-            const input = createElement("input", null, "daypart-input");
-            input.type = "text";
-            input.placeholder = "New Daypart";
-
-            tdEle.append(input);
-        }
-
-        // ads/wk column
-        else if (col === 1)
-        {
-            tdEle.append(createElement("span", null, "ads", "0"));
-        }
-
-        // Length dropdown
-        else if (col === 2)
-        {
-            tdEle.append(createAdLengthDropdown());
-        }
-
-        else if (col === 11)
-        {
-            // Cost column stays blank initially
-        }
-        else if (col === 12)
-        {
-            // Add delete button to the row
-            tdEle.append(generateDeleteDiv("tr"));
-        }
-
-        // Normal number input fields
-        else
-        {
-            const inputEle = document.createElement("input");
-            inputEle.type = "number";
-            inputEle.min = "0";
-
-            tdEle.append(inputEle);
-        }
-
-        newRow.append(tdEle);
-    }
     // Insert the new row ABOVE the "+ Add Daypart" row
     tableBody.insertBefore(newRow, addDaypartRow);
 
     // Recalculate totals after adding the new row
-    getAllTotals(tableBody);
+    tableObject.getAllTotals();
 }

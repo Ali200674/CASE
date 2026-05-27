@@ -5,9 +5,10 @@
  * It gets the value from whatever the user has choosen, formats it to a usable date, then returned as a string.
  * 
  * element: In this case, the closest element with the ".generate-new-schedule" tag to insert a new table
- * return: Returns a date based on if the user chooses the week selection or the month selection
+ * asJSDate: Whether to return the schedule date as a string (for table headers) or as an array of Date objects (for table creation)
+ * return: Returns a string or array of Dates based on if the user chooses the week selection or the month selection
  */
-function getTypeOfSchedule(element)
+function getScheduleDate(element, asJSDateRange = false)
 {
     // Find all of the elements in that element passed
     const weekArea = element.querySelector(".week-selection");
@@ -18,34 +19,60 @@ function getTypeOfSchedule(element)
     // If the week is showing
     if (weekArea.style.display === "flex")
     {
-            // The week picker returns something like:
-            // "2026-W22"
-            // Split that into:
-            // ["2026", "22"]
-            const splitWeek = weekOf.value.split("-W");
+        // The week picker returns something like:
+        // "2026-W22"
+        // Split that into:
+        // ["2026", "22"]
+        const splitWeek = weekOf.value.split("-W");
 
-            // Grab just the week number
-            const weekNumber = parseInt(splitWeek[1]);
+        // Grab the year and week number separately
+        const year = parseInt(splitWeek[0]);
+        const weekNumber = parseInt(splitWeek[1]);
 
-            // Return:
-            // Week 22
-            return "Week " + weekNumber;
-        
+        //Return the schedule week as a string if needed
+        if (!asJSDateRange)
+        {
+            return "Week " + weekNumber + ", " + year;
+        }
+        // If we're returning a date range, find the start / end dates of the week
+        // Start at Jan 1st, then move forward
+        // by however many weeks were selected
+        const startDate = new Date(year, 0, 1 + (weekNumber - 1) * 7);
+
+        //Move the date back to Monday
+        while (startDate.getDay() !== 1)
+        {
+            startDate.setDate(startDate.getDate() - 1);
+        }
+
+        //End date to return is 6 days after the start
+        const endDate = startDate.getDate() + 6;
+        return [startDate, endDate];
     }
     else // Else, the month is showing instead
     {
-       // Format the month
-        const option = {month: "long", year: "numeric",}
-        
-        // Make a Date object based on the value. split the value given into two strings (year and month) 
+        // Make a Date object based on the value. split the value given into two strings (year and month)
         // Due to the indexing of the months (0 - 11 instead of 1 - 12), decrement the month by 1
-        const monthDateObject = new Date(monthChoosen.value.substring(0, 4), monthChoosen.value.substring(5) - 1);
-        
-        // Return that month Date object as a string and formated
-        return monthDateObject.toLocaleDateString(
-            "en-US",
-            option
-        );
+        const selectedYear = monthChoosen.value.substring(0, 4);
+        const selectedMonth = monthChoosen.value.substring(5) - 1;
+        const monthStartDate = new Date(selectedYear, selectedMonth);
+
+        if (!asJSDateRange)
+        {
+            // Format the month
+            const option = {month: "long", year: "numeric"};
+            // Return that month Date object as a string and formated
+            return monthStartDate.toLocaleDateString(
+                "en-US",
+                option
+            );
+        }
+        else
+        {
+            //0th day of the next month is treated as the last day of this month
+            const monthEndDate = new Date(selectedYear, selectedMonth + 1, 0);
+            return [monthStartDate, monthEndDate];
+        }
     }
 }
 
@@ -110,22 +137,17 @@ function generateDeleteDiv(element)
             // If the element given is a tr (meaning we will delete a row from a table)
             if (element === "tr")
             {
-                // Get the tbody element (closest)
-                const closestTbody = closestElement.closest("tbody");
+                // Get the closest table element
+                const closestTable = closestElement.closest("table");
+                // Plus the associated ScheduleTable
+                const closestScheduleTable = activeScheduleTables[closestTable];
                 
-                // Remove it
+                // Remove the row
                 closestElement.remove();
 
-                // If the tbody tag has only two elements (heading and weekly totals), remove the whole table completly
-                if (closestTbody.children.length === 2)
-                {
-                   closestTbody.closest(".table-container").remove();
-                }
-                else
-                {
-                    // Re-calculate the totals
-                    getAllTotals(closestTbody);
-                }      
+                closestScheduleTable.height -= 1;
+                // Re-calculate the totals
+                closestScheduleTable.getAllTotals();
             }
             else // Else, just remove the element
             {
