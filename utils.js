@@ -46,7 +46,8 @@ function getScheduleDate(element, asJSDateRange = false)
         }
 
         //End date to return is 6 days after the start
-        const endDate = startDate.getDate() + 6;
+        let endDate = new Date(startDate)
+        endDate.setDate(startDate.getDate() + 6);
         return [startDate, endDate];
     }
     else // Else, the month is showing instead
