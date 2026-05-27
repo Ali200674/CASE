@@ -34,7 +34,7 @@ class ScheduleTable {
         if (prefillWithDefaultDayParts) {
             this.rowHeadings = this.defaultDayParts.concat(this.rowHeadings);
         }
-        this.width = this.colHeadings.length + columnsToSkipAtEnd - 1; // All columns + utilities (delete and calendar buttons)
+        this.width = this.colHeadings.length + this.columnsToSkipAtEnd - 1; // All columns + utilities (delete and calendar buttons)
         this.height = this.rowHeadings.length;
         // Initialize an empty array for each row's totals
         for (let i = 0; i < this.height; i++) {
