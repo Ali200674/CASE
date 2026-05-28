@@ -63,7 +63,13 @@ body {
     margin-right: 20px;
 }
 
+.add-daypart-row {
+    height: 50px;
+}
 
+.add-daypart-row td {
+    border: none !important;
+}
 
 .client-name {
     width: fit-content;
