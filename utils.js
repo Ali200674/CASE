@@ -236,24 +236,16 @@ function generateCreateEvent()
         // Set the inner text to the radio station name and slot
         eventCell.innerText =  closestRadioStation.value + " " + closestTimeSlot.value;
 
-        const x = event.target.closest(".section").querySelector(".generate-new-schedule");
+        const getClosestScheduleButton = event.target.closest(".section").querySelector(".generate-new-schedule");
 
-        const a = getScheduleDate(x, true);
+        const dates = getScheduleDate(getClosestScheduleButton, true);
 
-        // // Turn the cell into a draggable object
-        // let draggable = new FullCalendar.Draggable(eventCell,{
-            
-        //     // Set the information about this event
-        //     eventData: 
-        //     {
-                
-        //     }
-        // });
-
+        dates[1].setDate(dates[1].getDate() + 1)
+        
         calendar.addEvent({
             title: eventCell.innerText,
-            start: a[0].toISOString(),
-            end: a[1].toISOString()
+            start: dates[0].toISOString(),
+            end: dates[1].toISOString()
             }
         )
 
