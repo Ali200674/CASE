@@ -1,10 +1,19 @@
+/**
+ * @file Initalizes the calendar
+ * 
+ * @author Ali Izoyev
+ * @version 1.0.0
+ * @module calendar.js
+ */
+
+let calendar;
 
 // This makes an event listener for the calendar
 document.addEventListener("DOMContentLoaded", function(){
 
     // Get the div that will contain the calendar and make a new object based on this div
     let calendarEle = document.querySelector("#calendar");
-    let calendar = new FullCalendar.Calendar(calendarEle, {
+    calendar = new FullCalendar.Calendar(calendarEle, {
         // Some of these are easy to explain
         initialView: "dayGridMonth",
         editable: true,

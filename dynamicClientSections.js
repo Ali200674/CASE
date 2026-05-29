@@ -1,8 +1,9 @@
 /**
- * @file dynamicClientSection.js
+ * @file This file handles the creation of sections and and the schedule selection controls used to make a table within each section
+ * 
  * @author Ali Izoyev
  * @version 1.0.0
- * @description This file handles the creation of sections and and the schedule selection controls used to make a table within each section
+ * @module dynamicClientSections.js
  */
 
 

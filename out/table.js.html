@@ -1,4 +1,32 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: table.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: table.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * @file A class for a table
  * 
  * @author Colin Rice
@@ -59,7 +87,7 @@ class ScheduleTable {
         this.width = this.colHeadings.length + this.columnsToSkipAtEnd - 1; // All columns + utilities (delete and calendar buttons)
         this.height = this.rowHeadings.length;
         // Initialize an empty array for each row's totals
-        for (let i = 0; i < this.height; i++) {
+        for (let i = 0; i &lt; this.height; i++) {
             this.rowTotals.push([]);
         }
     }
@@ -126,7 +154,7 @@ class ScheduleTable {
         let totals = this.rowTotals[rowIndex];
 
         // Loop through the cells in the row, skipping special cells
-        for (let i = this.columnsToSkipAtStart; i < cells.length - this.columnsToSkipAtEnd; i++)
+        for (let i = this.columnsToSkipAtStart; i &lt; cells.length - this.columnsToSkipAtEnd; i++)
         {
             //Get the input field contained within the table element
             let cell = cells[i].children[0];
@@ -163,7 +191,7 @@ class ScheduleTable {
     {
         let tbody = this.tableElement.children[0];
         let rows = tbody.children;
-        for (let columnIndex = 0; columnIndex <= this.columnTotals.length; columnIndex++)
+        for (let columnIndex = 0; columnIndex &lt;= this.columnTotals.length; columnIndex++)
         {
             let finalColumnTotal = this.columnTotals[columnIndex];
 
@@ -196,16 +224,16 @@ class ScheduleTable {
         //Clear rowTotals and columnTotals
         this.rowTotals = [];
         this.columnTotals = [0, null, 0, 0, 0, 0, 0, 0, 0, null, 0];
-        for (let i = 0; i < this.height; i++) {
+        for (let i = 0; i &lt; this.height; i++) {
             this.rowTotals.push([]);
         }
         // Loop through each row in the table, skipping headers and final totals
-        for (let rowIndex = this.rowsToSkipAtStart; rowIndex < rows.length - this.rowsToSkipAtEnd; rowIndex++)
+        for (let rowIndex = this.rowsToSkipAtStart; rowIndex &lt; rows.length - this.rowsToSkipAtEnd; rowIndex++)
         {
             // Calculate the totals for this row
             this.calculateAndUpdateTotalsForRow(rows[rowIndex], rowIndex);
             // Add totals for each column to column totals
-            for (let totalIndex = 0; totalIndex < this.rowTotals[rowIndex].length; totalIndex++) {
+            for (let totalIndex = 0; totalIndex &lt; this.rowTotals[rowIndex].length; totalIndex++) {
                 let rowTotal = this.rowTotals[rowIndex][totalIndex];
                 // Skip null column totals (we don't need to calculate a total for this column)
                 if (this.columnTotals[totalIndex] == null)
@@ -224,7 +252,7 @@ class ScheduleTable {
         const selection = document.createElement("select");
         const values = [":60", ":30", ":15", ":10"];
 
-        for (let i = 0; i < values.length; i++)
+        for (let i = 0; i &lt; values.length; i++)
         {
             const option = document.createElement("option");
             option.textContent = values[i];
@@ -239,7 +267,7 @@ class ScheduleTable {
         const trs = [];
 
         // Add an extra row for headings
-        for (let i = 0; i < this.rowHeadings.length+1; i++)
+        for (let i = 0; i &lt; this.rowHeadings.length+1; i++)
         {
             trs.push(document.createElement("tr"));
         }
@@ -263,7 +291,7 @@ class ScheduleTable {
             let startDate = getScheduleDate(generateScheduleElement, true)[0];
 
             // Loop 7 times (Monday -> Sunday)
-            for (let i = 0; i < 7; i++)
+            for (let i = 0; i &lt; 7; i++)
             {
                 //make a new copy of monday
                 const currentDate = new Date(startDate);
@@ -283,7 +311,7 @@ class ScheduleTable {
             }
         }
 
-        for (let i = 0; i < this.colHeadings.length; i++)
+        for (let i = 0; i &lt; this.colHeadings.length; i++)
         {
             const thEle = document.createElement("th");
 
@@ -298,9 +326,9 @@ class ScheduleTable {
                 // Example:
                 // 5/25
                 // MO
-                if (i >= 3 && i <= 9)
+                if (i >= 3 &amp;&amp; i &lt;= 9)
                 {
-                    thEle.innerHTML = dates[i - 3] + "<br>" + this.colHeadings[i];
+                    thEle.innerHTML = dates[i - 3] + "&lt;br>" + this.colHeadings[i];
                 }
             }
             else
@@ -389,7 +417,7 @@ class ScheduleTable {
         }
 
         // For each column
-        for (let col = 0; col < this.width; col++)
+        for (let col = 0; col &lt; this.width; col++)
         {
             // Make a td element
             const tdEle = document.createElement("td");
@@ -398,12 +426,12 @@ class ScheduleTable {
             let isAddDaypartRow = (rowIndex == this.height - 1);
 
             // Don't add utilities to special rows
-            if (isSpecialRow && col >= 12) { continue; }
+            if (isSpecialRow &amp;&amp; col >= 12) { continue; }
 
             if (col == 0)
             {
                 // Don't make the weekly totals row editable
-                if (isSpecialRow && !isAddDaypartRow)
+                if (isSpecialRow &amp;&amp; !isAddDaypartRow)
                 {
                     tdEle.textContent = dayPartValue;
                 }
@@ -416,7 +444,7 @@ class ScheduleTable {
 
                     // If this is the fake "+ Add Daypart" row,
                     // make it readonly and style it like a button
-                    if (this.rowHeadings[rowIndex - 1] === "+ Add Daypart" && !isNewRow)
+                    if (this.rowHeadings[rowIndex - 1] === "+ Add Daypart" &amp;&amp; !isNewRow)
                     {
                         dayPartField.readOnly = true;
                         dayPartField.classList.add("add-daypart-button");
@@ -463,13 +491,13 @@ class ScheduleTable {
         this.populateFirstTr(trEles[0], generateScheduleElement);
 
         // Populate the rest of the rows
-        for (let row = 1; row < trEles.length; row++)
+        for (let row = 1; row &lt; trEles.length; row++)
         {
             trEles[row] = this.populateRow(trEles[row], row);
         }
 
         // Add each row to the table
-        for (let i = 0; i < trEles.length; i++)
+        for (let i = 0; i &lt; trEles.length; i++)
         {
             tableBody.append(trEles[i]);
         }
@@ -529,3 +557,26 @@ class ScheduleTable {
         element.parentNode.insertBefore(newTable, element);
     }
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="calendar.module_js.html">calendar.js</a></li><li><a href="dynamicClientSections.module_js.html">dynamicClientSections.js</a></li><li><a href="events.module_js.html">events.js</a></li><li><a href="main.module_js.html">main.js</a></li><li><a href="table.module_js.html">table.js</a></li><li><a href="utils.module_js.html">utils.js</a></li></ul><h3>Classes</h3><ul><li><a href="table.module_js-ScheduleTable.html">ScheduleTable</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed May 27 2026 21:37:35 GMT-0700 (Pacific Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
