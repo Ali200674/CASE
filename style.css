@@ -63,7 +63,13 @@ body {
     margin-right: 20px;
 }
 
+.add-daypart-row {
+    height: 50px;
+}
 
+.add-daypart-row td {
+    border: none !important;
+}
 
 .client-name {
     width: fit-content;
@@ -391,26 +397,4 @@ tr:nth-last-child(1) td
 {
     width: 1200px;
     margin: 0 auto;
-}
-
-/* This is for the div that will hold all of the event cells */
-#table-draggable-cells
-{  
-    border: 2px solid black;
-    height: 600px;
-    width: 300px;
-    margin: 40px auto 0;
-}
-
-/* A event cell */
-.event-cell
-{
-    background-color: blue;
-    color: white;
-    text-align: center;
-    margin: 10px auto 0;
-    border:1px solid black;
-    border-radius: 5px;
-    width: fit-content;
-    padding: 0 10px 0; 
 }
