@@ -256,9 +256,10 @@ class ScheduleTable {
      */
     populateFirstTr(firstTrEle, generateScheduleElement)
     {
+        const weekArea = generateScheduleElement.querySelector(".week-selection");
         const weekOf = generateScheduleElement.querySelector(".week-of");
         let dates = [];
-        if (weekOf)
+        if (weekArea.style.display == "flex")
         {
             let startDate = getScheduleDate(generateScheduleElement, true)[0];
 
@@ -287,7 +288,7 @@ class ScheduleTable {
         {
             const thEle = document.createElement("th");
 
-            if (weekOf)
+            if (weekArea.style.display == "flex")
             {
                 // Use innerHTML instead of textContent
                 // so we can add line breaks inside the table headings
