@@ -26,9 +26,32 @@ function updateCampaignTotal()
         return;
     }
 
-    //set value with something to see if it works
-    totalDisplay.textContent = "$0";
+    // keep track of the the total cost of all schedules
+    let campaignTotal = 0;
 
+    //get all schedule tables currently on the page
+    const tables = document.querySelectorAll(".table-container table");
+
+    // loop through the tables
+    for (let table of tables)
+    {
+        //get the rows
+        const rows = table.rows;
+        //get the weekly total row
+        const totalsRow = rows[rows.length - 1];
+        //get COST cell
+        const costCell = totalsRow.cells[totalsRow.cells.length - 1];
+        //remove $ and turn text into float
+        const cost = parseFloat(costCell.textContent.replace("$", ""));
+        // only add it if it is a real number
+        if (!isNaN(cost))
+        {
+            campaignTotal += cost;
+        }
+    }
+
+    //display the final campaign total in the header
+    totalDisplay.textContent = "$" + campaignTotal;
 }
 
 /*
@@ -167,6 +190,9 @@ function getAllTotals(parentTable)
             displayTotal(finalTotalCellToUpdate, finalColumnTotal, false);
         }
     }
+
+    //update the top bar after table totals are updated
+    updateCampaignTotal();
 }
 
 /**
