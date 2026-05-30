@@ -409,10 +409,10 @@ class ScheduleTable {
                 }
                 else
                 {
-                    const dayPartField = createElement("input", null, "daypart-input");
-                    dayPartField.type = "text";
+                    const dayPartField = createElement("textarea", null, "daypart-input");
                     dayPartField.value = dayPartValue;
                     dayPartField.placeholder = dayPartPlaceholder;
+                    dayPartField.rows = 1;
 
                     // If this is the fake "+ Add Daypart" row,
                     // make it readonly and style it like a button
@@ -426,6 +426,7 @@ class ScheduleTable {
                         dayPartField.addEventListener("click", handleAddDaypartRow);
                         rowToPopulate.classList.add("add-daypart-row");
                     }
+                    dayPartField.addEventListener("input", handleResizeDaypartTextarea);
                     tdEle.append(dayPartField);
                 }
                 // Add styling for daypart column
