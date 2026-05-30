@@ -11,7 +11,25 @@ function displayTotal(target, total, moneySign = false)
     {
         target.textContent = total;
     }  
-} 
+}
+
+/*
+Calculates a running total for the campaign on the topbar
+*/
+function updateCampaignTotal()
+{
+    // get the campaign total in the header
+    const totalDisplay = document.getElementById("campaign-total");
+
+    // if it doesn't exist, stop the function
+    if (!totalDisplay) {
+        return;
+    }
+
+    //set value with something to see if it works
+    totalDisplay.textContent = "$0";
+
+}
 
 /*
 Updates the ads/week and cost fields for the row provided.
