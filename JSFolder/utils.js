@@ -287,7 +287,6 @@ function generateCreateEvent()
             title: eventCell.innerText,
             start: dates[0].toISOString(),
             end: dates[1].toISOString(),
-            color: "red"
             }
         )
 
