@@ -15,3 +15,12 @@ window.onload = () =>
     const addClientButton = document.getElementById("add-client-button");
     addClientButton.addEventListener("click", createClientSection);
 }
+
+const checkSectionDiv = document.querySelector(".check-section");
+const overlay = document.querySelector(".overlay");
+
+document.querySelector(".check-section-button").addEventListener("click", () =>
+{
+    checkSectionDiv.style.display = "none";
+    overlay.style.display = "none";
+})
