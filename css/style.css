@@ -20,7 +20,7 @@ body {
 .main-header {
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 19;
     gap: 20px;
 
     display: flex;
@@ -303,7 +303,7 @@ tr:nth-last-child(1) td
 }
 
 /* This is for the confirm section (Are you sure? screen) */
-.confirm-section
+.confirm-section, .check-section
 {
     display: none;
     position: fixed;
@@ -395,4 +395,21 @@ tr:nth-last-child(1) td
 {
     width: 1200px;
     margin: 0 auto;
+}
+
+.check-section
+{
+    button
+    {
+        position: fixed;
+        top: 0px;
+        right: 0px;
+        border: none;
+        background: none;
+
+        img
+        {
+            cursor: pointer;
+        }
+    }  
 }
