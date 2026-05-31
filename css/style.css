@@ -288,6 +288,7 @@ tr:nth-last-child(1) td
     transition: all 0.2s ease;
     resize: none;
     overflow-y: hidden;
+    vertical-align: middle;
 }
 
 .daypart-input:hover {
@@ -383,7 +384,6 @@ tr:nth-last-child(1) td
     background-color: rgba(123, 44, 191, 0.08);
     border: 1px dashed var(--primary-purple) !important;
     color: var(--primary-purple);
-    vertical-align: middle;
 }
 
 .add-daypart-button:hover {
