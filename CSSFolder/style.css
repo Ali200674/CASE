@@ -416,3 +416,14 @@ tr:nth-last-child(1) td
         }
     }  
 }
+
+.schedule-type-wrapper
+{
+    display: flex;
+    flex-wrap: nowrap;
+    align-content: space-around;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+}

@@ -243,6 +243,7 @@ function generateCreateEvent()
         const stationName = event.target.closest(".section").querySelector(".client-name");
         const closestDayField = event.target.closest("tr").querySelector(".daypart-input");
         const a = document.querySelector(".check-section").querySelector("p");
+        const closestColorPicker = event.target.closest(".section").querySelector(".color-picker");
         console.log(closestDayField);
 
         if (stationName.value === "" || closestDayField.value === "") 
@@ -287,6 +288,7 @@ function generateCreateEvent()
             title: eventCell.innerText,
             start: dates[0].toISOString(),
             end: dates[1].toISOString(),
+            color: closestColorPicker.value
             }
         )
 
