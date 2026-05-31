@@ -134,13 +134,24 @@ function generateDeleteDiv(element)
         const yesButton = document.querySelector(".yes-button");
         const noButton = document.querySelector(".no-button");
         const confirmSection = document.querySelector(".confirm-section");
+        const confirmText = document.querySelector(".confirm-section").querySelector("p");
         const overlay = document.querySelector(".overlay");
         confirmSection.style.display = "block";
         overlay.style.display = "block";
 
+        if (element === "tr")
+        {
+            confirmText.textContent = "Are you sure you want to delete this row?"
+        }
+        if (element === ".section")
+        {
+            confirmText.textContent = "Are you sure you want to delete this radio station?"
+        }
+
+
         // Event listener for the yes button
         yesButton.onclick = () =>
-        {
+        {     
             // If the element given is a tr (meaning we will delete a row from a table)
             if (element === "tr")
             {
@@ -187,7 +198,7 @@ function generateDeleteDiv(element)
 
     // Make a img tag with it's src to the trash can
     const trashCanImage = createElement("img", undefined, "trash-can-image", undefined);
-    trashCanImage.src = "trash_can.svg";
+    trashCanImage.src = "/Images/trash_can.svg";
 
     // Append the trash can to the button and button to container
     deleteButton.append(trashCanImage);
@@ -216,7 +227,7 @@ function generateCreateEvent()
     
     // Make image and give it the src location of the image
     const img = createElement("img", undefined, "calendar-add-image", undefined)
-    img.src = "calendar_add.svg"
+    img.src = "/Images/calendar_add.svg"
 
     // Append all of this to the div
     button.append(img);
@@ -275,7 +286,8 @@ function generateCreateEvent()
         calendar.addEvent({
             title: eventCell.innerText,
             start: dates[0].toISOString(),
-            end: dates[1].toISOString()
+            end: dates[1].toISOString(),
+            color: "red"
             }
         )
 
