@@ -125,6 +125,7 @@ function generateDeleteDiv(element)
     // Create a event listener for the button for clicked
     deleteButton.addEventListener("click", (event) =>
     {
+    
         // Using what triggered the button, we will find the closest tag given as a paramenter
         // Note: The closest method goes up the DOM to find the element
         const closestElement = event.target.closest(element);
@@ -221,9 +222,38 @@ function generateCreateEvent()
     button.append(img);
     eventContainer.append(button);
 
+    const x = document.querySelector(".check-section");
+    const overlay = document.querySelector(".overlay");
+
     // Event listener when clicked
     button.addEventListener("click", (event) =>
     {
+        
+        const stationName = event.target.closest(".section").querySelector(".client-name");
+        const closestDayField = event.target.closest("tr").querySelector(".daypart-input");
+        const a = document.querySelector(".check-section").querySelector("p");
+        console.log(closestDayField);
+
+        if (stationName.value === "" || closestDayField.value === "") 
+        {
+            x.style.display = "block";
+            overlay.style.display = "block"
+
+            if (stationName.value === "")
+            {
+                a.textContent = "The Station Name field cannot be empty!";
+                return;
+            }
+
+            if (closestDayField.value === "")
+            {
+                a.textContent = "The DayPart field cannot be empty!";
+                return;
+            }
+
+            
+        }
+
         // Find the closest time slot
         const closestTimeSlot = event.target.closest("tr").querySelector(".daypart-input");
 

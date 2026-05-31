@@ -25,15 +25,26 @@ document.addEventListener("DOMContentLoaded", function(){
         {
             start: "prev next today",
             center: "title",
-            end: "dayGridWeek timeGridDay dayGridMonth multiMonthYear"   
+            end: "timeGridDay dayGridWeek dayGridMonth multiMonthYear"   
         }, 
 
         // Function of when a cell is clicked, it will switch to the day view of what was clicked on
         dateClick: function(info)
         {
-           calendar.changeView("timeGridDay", info.dateStr);     
-        }
-
+            currentInfo = info;
+            if (calendar.view.type === "multiMonthYear")
+            {
+                calendar.changeView("dayGridMonth", info.dateStr);  
+            }
+            else if (calendar.view.type === "dayGridMonth")
+            {
+                calendar.changeView("dayGridWeek", info.dateStr);  
+            }
+            else if (calendar.view.type === "dayGridWeek")
+            {
+                calendar.changeView("timeGridDay", info.dateStr);  
+            }  
+        },    
     })
 
     // Renders the calendar
