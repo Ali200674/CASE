@@ -49,6 +49,27 @@ document.addEventListener("DOMContentLoaded", function(){
 
     // Renders the calendar
     calendar.render();
+
+    document.querySelector("#calendar > :nth-child(2)").addEventListener("contextmenu", (event) =>
+    {
+        if (event.button === 2)
+        {
+            event.preventDefault();
+
+           if (calendar.view.type === "timeGridDay")
+            {
+                calendar.changeView("dayGridWeek");  
+            }
+            else if (calendar.view.type === "dayGridWeek")
+            {
+                calendar.changeView("dayGridMonth");  
+            }
+            else if (calendar.view.type === "dayGridMonth")
+            {
+                calendar.changeView("multiMonthYear");  
+            }  
+        }
+    })
 })
 
 
