@@ -198,7 +198,7 @@ function generateDeleteDiv(element)
 
     // Make a img tag with it's src to the trash can
     const trashCanImage = createElement("img", undefined, "trash-can-image", undefined);
-    trashCanImage.src = "/Images/trash_can.svg";
+    trashCanImage.src = "images/trash_can.svg";
 
     // Append the trash can to the button and button to container
     deleteButton.append(trashCanImage);
@@ -227,7 +227,7 @@ function generateCreateEvent()
     
     // Make image and give it the src location of the image
     const img = createElement("img", undefined, "calendar-add-image", undefined)
-    img.src = "/Images/calendar_add.svg"
+    img.src = "images/calendar_add.svg"
 
     // Append all of this to the div
     button.append(img);
