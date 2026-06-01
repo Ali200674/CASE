@@ -31,7 +31,7 @@ function handleInputEventForSchedules(event)
 
     let parentTable = event.target.parentElement.parentElement.parentElement.parentElement;
 
-    activeScheduleTables[parentTable].getAllTotals();
+    activeScheduleTables.get(parentTable).getAllTotals();
 }
 
 /**
@@ -168,7 +168,7 @@ function handleAddDaypartRow(event)
 
     // Grab the table that holds all the rows
     const tableElement = addDaypartRow.closest("table");
-    const tableObject = activeScheduleTables[tableElement];
+    const tableObject = activeScheduleTables.get(tableElement);
     const tableBody = tableElement.children[0];
 
     // Create a brand new tr element
