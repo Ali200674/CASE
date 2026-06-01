@@ -1,5 +1,5 @@
 /**
- * @file A class for a table
+ * @file Schedule table state and utilities
  * 
  * @author Colin Rice
  * @version 1.0.0
@@ -10,8 +10,9 @@
 activeScheduleTables = {}
 
 /**
- * Info
- * 
+ * A class representing an advertising schedule table.
+ * Provides a container for table state to make handling table data easier.
+ * Also provides methods for building a table and inserting it into the DOM.
  */
 class ScheduleTable {
 
@@ -38,17 +39,16 @@ class ScheduleTable {
     rowTotals = [];
     columnTotals = [0, null, 0, 0, 0, 0, 0, 0, 0, null, 0];
 
-    // 
-    // 
-    // 
     /**
-     * Initialize a table with the provided date range
-     * These dates should be obtained through getScheduleDate
-     * prefillWithDefaultDayParts should always be true, toggle has not been implemented
+     * Initializes a table with the provided date range.
+     * These dates should be obtained through getScheduleDate.
+     * prefillWithDefaultDayParts should not be set until the toggle is implemented.
+     * You must run insertTableToDOM to finish table setup.
      * 
-     * @param {*} fromDate 
-     * @param {*} toDate 
-     * @param {*} prefillWithDefaultDayParts 
+     * @constructor
+     * @param {*} fromDate - The start date of this schedule.
+     * @param {*} toDate - The end date of this schedule, inclusive.
+     * @param {*} prefillWithDefaultDayParts - Whether to add a list of default dayparts to the table.
      */
     constructor(fromDate, toDate, prefillWithDefaultDayParts = true) {
         this.fromDate = fromDate;
@@ -65,13 +65,12 @@ class ScheduleTable {
     }
 
 
-
    /**
-    * This method will display the total of a row / column.
+    * Displays the total of a row / column.
     * 
-    * @param {*} target 
-    * @param {*} total 
-    * @param {*} moneySign 
+    * @param {HTMLElement} target - The element to display the total on.
+    * @param {number} total - The total to display.
+    * @param {boolean} moneySign - Whether to 
     */
     displayTotal(target, total, moneySign = false)
     {
@@ -88,8 +87,8 @@ class ScheduleTable {
    /**
     * Updates the ads/week and cost fields for the row provided.
     * 
-    * @param {HTMLTableRowElement} singleRow 
-    * @param {number} rowIndex 
+    * @param {HTMLTableRowElement} singleRow - A row (td element) from the table.
+    * @param {number} rowIndex - The index of the row within the table.
     */
     updateTotalsForRow(singleRow, rowIndex)
     {
@@ -106,19 +105,16 @@ class ScheduleTable {
         this.displayTotal(costCell, costTotal, true);
     }
 
-    /*
-    
-    */
    /**
-    * Calculates all necessary totals for a row, updates this.rowTotals with an array containing each column value including the final total.
+    * Calculates all necessary totals for a row and updates this.rowTotals with an array containing each column value including the final total.
     * Runs updateTotalsForRow to update the ads/week and cost fields with the new totals.
     *
     * Example addition to this.rowTotals:
     * ads/week, length, mon, tues, wed, thur, fri, sat, sun, rate, cost
     * [19, 1.0, 1, 5, 2, 1, 1, 5, 4, 5, 95]
     * 
-    * @param {HTMLTableRowElement} singleRow A row (td element) from a table
-    * @param {number} rowIndex Index
+    * @param {HTMLTableRowElement} singleRow - A row (td element) from the table.
+    * @param {number} rowIndex - The index of the row within the table.
     */
     calculateAndUpdateTotalsForRow(singleRow, rowIndex)
     {
@@ -156,8 +152,8 @@ class ScheduleTable {
     }
 
     /**
-     * This method displays the totals for each column
-     * 
+     * Displays the totals for each column.
+     * Null values in this.columnTotals are ignored.
      */
     displayColumnTotals()
     {
@@ -185,8 +181,7 @@ class ScheduleTable {
     }
 
     /**
-     * Gets all of the totals in the table
-     * 
+     * Calculates and displays totals for the table.
      */
     getAllTotals()
     {
@@ -218,7 +213,9 @@ class ScheduleTable {
         this.displayColumnTotals();
     }
 
-    // Creates an ad length dropdown for use in a new table.
+    /**
+     * Creates a dropdown menu for ad length.
+     */
     createAdLengthDropdown()
     {
         const selection = document.createElement("select");
@@ -233,7 +230,9 @@ class ScheduleTable {
         return selection;
     }
 
-    // Creates and returns an array of rows for a new table
+    /**
+     * Creates the table rows.
+     */
     createTrElements()
     {
         const trs = [];
@@ -249,16 +248,17 @@ class ScheduleTable {
     }
 
     /**
-     * Populates the first table row with column headings
+     * Populates the first table row with column headings.
      * 
-     * @param {HTMLTableRowElement} firstTrEle 
-     * @param {HTMLDivElement} generateScheduleElement 
+     * @param {HTMLTableRowElement} firstTrEle - HTML element for the first row of the table
+     * @param {HTMLDivElement} generateScheduleElement - The closest button for generating a new schedule
      */
     populateFirstTr(firstTrEle, generateScheduleElement)
     {
+        const weekArea = generateScheduleElement.querySelector(".week-selection");
         const weekOf = generateScheduleElement.querySelector(".week-of");
         let dates = [];
-        if (weekOf)
+        if (weekArea.style.display == "flex")
         {
             let startDate = getScheduleDate(generateScheduleElement, true)[0];
 
@@ -287,7 +287,7 @@ class ScheduleTable {
         {
             const thEle = document.createElement("th");
 
-            if (weekOf)
+            if (weekArea.style.display == "flex")
             {
                 // Use innerHTML instead of textContent
                 // so we can add line breaks inside the table headings
@@ -314,11 +314,11 @@ class ScheduleTable {
 
 
     /**
-     * Populate a table cell with content
+     * Populates a table cell with content.
      * 
-     * @param {HTMLTableDataCellElement} tdEle 
-     * @param {number} row 
-     * @param {number} col 
+     * @param {HTMLTableDataCellElement} tdEle - The table cell to populate.
+     * @param {number} row - The index of the row this cell is in.
+     * @param {number} col - The index of the column this cell is in.
      * @returns {void}
      */
     populateTableElement(tdEle, row, col)
@@ -357,7 +357,7 @@ class ScheduleTable {
         {
             // Make a input field, give a type of number and min of 0
             const inputEle = document.createElement("input");
-            inputEle.type = "number"
+            inputEle.type = "number";
             inputEle.min = "0";
             // Append it to the td element
             tdEle.append(inputEle);
@@ -366,12 +366,12 @@ class ScheduleTable {
     }
 
     /**
-     * Populate a single row with cells
-     * 
-     * @param {HTMLElement} rowToPopulate 
-     * @param {number} rowIndex 
-     * @param {boolean} isNewRow 
-     * @returns A row that has been populated
+     * Populates a single row with cells
+     *
+     * @param {HTMLElement} rowToPopulate - The row to populate.
+     * @param {number} rowIndex - The index of the row to populate.
+     * @param {boolean} isNewRow - Whether the row is being added after the table was initially built.
+     * @returns A complete row
      */
     populateRow(rowToPopulate, rowIndex, isNewRow = false)
     {
@@ -409,10 +409,10 @@ class ScheduleTable {
                 }
                 else
                 {
-                    const dayPartField = createElement("input", null, "daypart-input");
-                    dayPartField.type = "text";
+                    const dayPartField = createElement("textarea", null, "daypart-input");
                     dayPartField.value = dayPartValue;
                     dayPartField.placeholder = dayPartPlaceholder;
+                    dayPartField.rows = 1;
 
                     // If this is the fake "+ Add Daypart" row,
                     // make it readonly and style it like a button
@@ -426,6 +426,7 @@ class ScheduleTable {
                         dayPartField.addEventListener("click", handleAddDaypartRow);
                         rowToPopulate.classList.add("add-daypart-row");
                     }
+                    dayPartField.addEventListener("input", handleResizeDaypartTextarea);
                     tdEle.append(dayPartField);
                 }
                 // Add styling for daypart column
@@ -443,10 +444,10 @@ class ScheduleTable {
 
 
     /**
-     * This method creates the whole table (schedule) and then returns it.
+     * Creates and returns the table.
      * 
-     * @param {HTMLElement} generateScheduleElement 
-     * @returns {HTMLDivElement} A div that contains the whole schedule
+     * @param {HTMLElement} generateScheduleElement - The closest element with the ".generate-new-schedule" tag.
+     * @returns {HTMLTableElement} The new table element.
      */
     createWholeTable(generateScheduleElement)
     {
@@ -482,10 +483,10 @@ class ScheduleTable {
     }
 
     /**
-     * This method creates a table and returns it.
+     * Creates and wraps a table, then returns it.
      * 
-     * @param {HTMLElement} element In this case, the closest element with the ".generate-new-schedule" tag to insert a new table
-     * @returns {HTMLTableElement} A table
+     * @param {HTMLElement} element - The closest element with the ".generate-new-schedule" tag.
+     * @returns {HTMLDivElement} A container div for the table, containing the table date range and the table itself. 
      */
     buildTable(element)
     {
@@ -514,10 +515,11 @@ class ScheduleTable {
 
 
     /**
-     * This method inserts the table into the DOM.
-     * Specifically, it gets inserted above the closest div that has the element's class
-     * 
-     * @param {HTMLElement} element In this case, the closest element with the ".generate-new-schedule" tag to insert a new table
+     * Builds and inserts the table into the DOM.
+     * Sets this.tableElement and adds the table to activeScheduleTables.
+     * The table is inserted above the element passed in.
+     *
+     * @param {HTMLElement} element - The closest element with the ".generate-new-schedule" tag.
      */
     insertTableToDOM(element)
     {

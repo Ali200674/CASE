@@ -183,3 +183,9 @@ function handleAddDaypartRow(event)
     // Recalculate totals after adding the new row
     tableObject.getAllTotals();
 }
+
+function handleResizeDaypartTextarea(event)
+{
+    event.target.style.height = "auto";
+    event.target.style.height = event.target.scrollHeight + "px";
+}
