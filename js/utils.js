@@ -158,14 +158,14 @@ function generateDeleteDiv(element)
                 // Get the closest table element
                 const closestTable = closestElement.closest("table");
                 // Plus the associated ScheduleTable
-                const closestScheduleTable = activeScheduleTables[closestTable];
+                const closestScheduleTable = activeScheduleTables.get(closestTable);
 
                 // If the last daypart is being removed
                 if (closestScheduleTable.height - 1 == 2)
                 {
                     // Remove the entire table
                     closestTable.parentElement.remove();
-                    delete activeScheduleTables[closestTable];
+                    activeScheduleTables.delete(closestTable);
                 } else {
                     // Remove the row and decrease table height
                     closestElement.remove();
@@ -179,7 +179,7 @@ function generateDeleteDiv(element)
                 // Remove the associated ScheduleTable
                 // .section -> .table-container -> table
                 const closestTable = closestElement.children[1].children[1];
-                delete activeScheduleTables[closestTable];
+                activeScheduleTables.delete(closestTable);
                 // Then remove the section from the DOM
                 // TODO: recalculate running totals after section removal!
                 closestElement.remove();

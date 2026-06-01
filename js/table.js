@@ -1,3 +1,4 @@
+
 /**
  * @file Schedule table state and utilities
  * 
@@ -6,8 +7,7 @@
  * @module table.js
  */
 
-
-activeScheduleTables = {}
+activeScheduleTables = new Map();
 
 /**
  * A class representing an advertising schedule table.
@@ -180,6 +180,31 @@ class ScheduleTable {
         }
     }
 
+    updateCampaignTotal()
+    {
+        // get the campaign total in the header
+        const totalDisplay = document.getElementById("campaign-total");
+
+        // if it doesn't exist, stop the function
+        if (!totalDisplay) {
+            return;
+        }
+
+        // keep track of the the total cost of all schedules
+        let campaignTotal = 0;
+
+        // retrieve all active ScheduleTable instances
+        const tables = activeScheduleTables.values();
+
+        for (const table of tables)
+        {
+            campaignTotal += table.columnTotals[table.columnTotals.length - 1];
+        }
+
+        //display the final campaign total in the header
+        totalDisplay.textContent = "$" + campaignTotal;
+    }
+
     /**
      * Calculates and displays totals for the table.
      */
@@ -211,6 +236,7 @@ class ScheduleTable {
             }
         }
         this.displayColumnTotals();
+        this.updateCampaignTotal();
     }
 
     /**
@@ -475,7 +501,7 @@ class ScheduleTable {
             tableBody.append(trEles[i]);
         }
 
-        activeScheduleTables[table] = this;
+        activeScheduleTables.set(table, this);
         this.tableElement = table;
 
         // Return that table
