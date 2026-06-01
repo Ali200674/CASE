@@ -304,6 +304,9 @@ tr:nth-last-child(1) td
     text-align: left;
     cursor: text;
     transition: all 0.2s ease;
+    resize: none;
+    overflow-y: hidden;
+    vertical-align: middle;
 }
 
 .daypart-input:hover {
@@ -394,15 +397,10 @@ tr:nth-last-child(1) td
 
 .add-daypart-button {
     cursor: pointer !important;
-
     text-align: center !important;
-
     font-weight: bold;
-
     background-color: rgba(123, 44, 191, 0.08);
-
     border: 1px dashed var(--primary-purple) !important;
-
     color: var(--primary-purple);
 }
 
@@ -467,7 +465,6 @@ tr:nth-last-child(1) td
     text-decoration: none;
 }
 
-
 .check-section
 {
     button
@@ -483,15 +480,4 @@ tr:nth-last-child(1) td
             cursor: pointer;
         }
     }  
-}
-
-.schedule-type-wrapper
-{
-    display: flex;
-    flex-wrap: nowrap;
-    align-content: space-around;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 20px;
 }
