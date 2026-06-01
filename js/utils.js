@@ -1,32 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: utils.js</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
-
-<body>
-
-<div id="main">
-
-    <h1 class="page-title">Source: utils.js</h1>
-
-    
-
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
+/**
  * @file Contains miscellaneous utilities used throughout
  * 
  * @author Ali Izoyev
@@ -153,6 +125,7 @@ function generateDeleteDiv(element)
     // Create a event listener for the button for clicked
     deleteButton.addEventListener("click", (event) =>
     {
+    
         // Using what triggered the button, we will find the closest tag given as a paramenter
         // Note: The closest method goes up the DOM to find the element
         const closestElement = event.target.closest(element);
@@ -161,13 +134,24 @@ function generateDeleteDiv(element)
         const yesButton = document.querySelector(".yes-button");
         const noButton = document.querySelector(".no-button");
         const confirmSection = document.querySelector(".confirm-section");
+        const confirmText = document.querySelector(".confirm-section").querySelector("p");
         const overlay = document.querySelector(".overlay");
         confirmSection.style.display = "block";
         overlay.style.display = "block";
 
+        if (element === "tr")
+        {
+            confirmText.textContent = "Are you sure you want to delete this row?"
+        }
+        if (element === ".section")
+        {
+            confirmText.textContent = "Are you sure you want to delete this radio station?"
+        }
+
+
         // Event listener for the yes button
         yesButton.onclick = () =>
-        {
+        {     
             // If the element given is a tr (meaning we will delete a row from a table)
             if (element === "tr")
             {
@@ -175,19 +159,26 @@ function generateDeleteDiv(element)
                 const closestTable = closestElement.closest("table");
                 // Plus the associated ScheduleTable
                 const closestScheduleTable = activeScheduleTables[closestTable];
-                
-                // Remove the row
-                closestElement.remove();
 
-                closestScheduleTable.height -= 1;
-                // Re-calculate the totals
-                closestScheduleTable.getAllTotals();
+                // If the last daypart is being removed
+                if (closestScheduleTable.height - 1 == 2)
+                {
+                    // Remove the entire table
+                    closestTable.parentElement.remove();
+                    delete activeScheduleTables[closestTable];
+                } else {
+                    // Remove the row and decrease table height
+                    closestElement.remove();
+                    closestScheduleTable.height -= 1;
+
+                    // Re-calculate the totals
+                    closestScheduleTable.getAllTotals();
+                }
             }
             else if (element === ".section") {
                 // Remove the associated ScheduleTable
                 // .section -> .table-container -> table
                 const closestTable = closestElement.children[1].children[1];
-                console.log(closestTable);
                 delete activeScheduleTables[closestTable];
                 // Then remove the section from the DOM
                 // TODO: recalculate running totals after section removal!
@@ -214,7 +205,7 @@ function generateDeleteDiv(element)
 
     // Make a img tag with it's src to the trash can
     const trashCanImage = createElement("img", undefined, "trash-can-image", undefined);
-    trashCanImage.src = "trash_can.svg";
+    trashCanImage.src = "images/trash_can.svg";
 
     // Append the trash can to the button and button to container
     deleteButton.append(trashCanImage);
@@ -243,15 +234,44 @@ function generateCreateEvent()
     
     // Make image and give it the src location of the image
     const img = createElement("img", undefined, "calendar-add-image", undefined)
-    img.src = "calendar_add.svg"
+    img.src = "images/calendar_add.svg"
 
     // Append all of this to the div
     button.append(img);
     eventContainer.append(button);
 
+    const x = document.querySelector(".check-section");
+    const overlay = document.querySelector(".overlay");
+
     // Event listener when clicked
     button.addEventListener("click", (event) =>
     {
+        
+        const stationName = event.target.closest(".section").querySelector(".client-name");
+        const closestDayField = event.target.closest("tr").querySelector(".daypart-input");
+        const a = document.querySelector(".check-section").querySelector("p");
+        console.log(closestDayField);
+
+        if (stationName.value === "" || closestDayField.value === "") 
+        {
+            x.style.display = "block";
+            overlay.style.display = "block"
+
+            if (stationName.value === "")
+            {
+                a.textContent = "The Station Name field cannot be empty!";
+                return;
+            }
+
+            if (closestDayField.value === "")
+            {
+                a.textContent = "The DayPart field cannot be empty!";
+                return;
+            }
+
+            
+        }
+
         // Find the closest time slot
         const closestTimeSlot = event.target.closest("tr").querySelector(".daypart-input");
 
@@ -264,43 +284,23 @@ function generateCreateEvent()
         // Set the inner text to the radio station name and slot
         eventCell.innerText =  closestRadioStation.value + " " + closestTimeSlot.value;
 
-        // Turn the cell into a draggable object
-        let draggable = new FullCalendar.Draggable(eventCell,{
-            
-            // Set the information about this event
-            eventData: 
-            {
-                title: eventCell.innerText,
-            }
-        });
+        const getClosestScheduleButton = event.target.closest(".section").querySelector(".generate-new-schedule");
 
-        // Append the event cell into the container
-        container.append(eventCell);
+        const dates = getScheduleDate(getClosestScheduleButton, true);
+
+        dates[1].setDate(dates[1].getDate() + 1)
+        
+        calendar.addEvent({
+            title: eventCell.innerText,
+            start: dates[0].toISOString(),
+            end: dates[1].toISOString(),
+            }
+        )
+
+        // // Append the event cell into the container
+        // container.append(eventCell);
     })
 
     return eventContainer;
 
 }
-</code></pre>
-        </article>
-    </section>
-
-
-
-
-</div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="calendar.module_js.html">calendar.js</a></li><li><a href="dynamicClientSections.module_js.html">dynamicClientSections.js</a></li><li><a href="events.module_js.html">events.js</a></li><li><a href="main.module_js.html">main.js</a></li><li><a href="table.module_js.html">table.js</a></li><li><a href="utils.module_js.html">utils.js</a></li></ul><h3>Classes</h3><ul><li><a href="table.module_js-ScheduleTable.html">ScheduleTable</a></li></ul>
-</nav>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed May 27 2026 21:37:35 GMT-0700 (Pacific Daylight Time)
-</footer>
-
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
-</body>
-</html>

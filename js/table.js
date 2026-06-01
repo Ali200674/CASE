@@ -1,45 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: table.js</title>
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
-
-<body>
-
-<div id="main">
-
-    <h1 class="page-title">Source: table.js</h1>
-
-    
-
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @file A class for a table
+/**
+ * @file Schedule table state and utilities
  * 
  * @author Colin Rice
  * @version 1.0.0
  * @module table.js
  */
 
-
 activeScheduleTables = {}
 
 /**
- * Info
- * 
+ * A class representing an advertising schedule table.
+ * Provides a container for table state to make handling table data easier.
+ * Also provides methods for building a table and inserting it into the DOM.
  */
 class ScheduleTable {
 
@@ -66,17 +39,16 @@ class ScheduleTable {
     rowTotals = [];
     columnTotals = [0, null, 0, 0, 0, 0, 0, 0, 0, null, 0];
 
-    // 
-    // 
-    // 
     /**
-     * Initialize a table with the provided date range
-     * These dates should be obtained through getScheduleDate
-     * prefillWithDefaultDayParts should always be true, toggle has not been implemented
+     * Initializes a table with the provided date range.
+     * These dates should be obtained through getScheduleDate.
+     * prefillWithDefaultDayParts should not be set until the toggle is implemented.
+     * You must run insertTableToDOM to finish table setup.
      * 
-     * @param {*} fromDate 
-     * @param {*} toDate 
-     * @param {*} prefillWithDefaultDayParts 
+     * @constructor
+     * @param {*} fromDate - The start date of this schedule.
+     * @param {*} toDate - The end date of this schedule, inclusive.
+     * @param {*} prefillWithDefaultDayParts - Whether to add a list of default dayparts to the table.
      */
     constructor(fromDate, toDate, prefillWithDefaultDayParts = true) {
         this.fromDate = fromDate;
@@ -87,19 +59,18 @@ class ScheduleTable {
         this.width = this.colHeadings.length + this.columnsToSkipAtEnd - 1; // All columns + utilities (delete and calendar buttons)
         this.height = this.rowHeadings.length;
         // Initialize an empty array for each row's totals
-        for (let i = 0; i &lt; this.height; i++) {
+        for (let i = 0; i < this.height; i++) {
             this.rowTotals.push([]);
         }
     }
 
 
-
    /**
-    * This method will display the total of a row / column.
+    * Displays the total of a row / column.
     * 
-    * @param {*} target 
-    * @param {*} total 
-    * @param {*} moneySign 
+    * @param {HTMLElement} target - The element to display the total on.
+    * @param {number} total - The total to display.
+    * @param {boolean} moneySign - Whether to 
     */
     displayTotal(target, total, moneySign = false)
     {
@@ -116,8 +87,8 @@ class ScheduleTable {
    /**
     * Updates the ads/week and cost fields for the row provided.
     * 
-    * @param {HTMLTableRowElement} singleRow 
-    * @param {number} rowIndex 
+    * @param {HTMLTableRowElement} singleRow - A row (td element) from the table.
+    * @param {number} rowIndex - The index of the row within the table.
     */
     updateTotalsForRow(singleRow, rowIndex)
     {
@@ -134,19 +105,16 @@ class ScheduleTable {
         this.displayTotal(costCell, costTotal, true);
     }
 
-    /*
-    
-    */
    /**
-    * Calculates all necessary totals for a row, updates this.rowTotals with an array containing each column value including the final total.
+    * Calculates all necessary totals for a row and updates this.rowTotals with an array containing each column value including the final total.
     * Runs updateTotalsForRow to update the ads/week and cost fields with the new totals.
     *
     * Example addition to this.rowTotals:
     * ads/week, length, mon, tues, wed, thur, fri, sat, sun, rate, cost
     * [19, 1.0, 1, 5, 2, 1, 1, 5, 4, 5, 95]
     * 
-    * @param {HTMLTableRowElement} singleRow A row (td element) from a table
-    * @param {number} rowIndex Index
+    * @param {HTMLTableRowElement} singleRow - A row (td element) from the table.
+    * @param {number} rowIndex - The index of the row within the table.
     */
     calculateAndUpdateTotalsForRow(singleRow, rowIndex)
     {
@@ -154,7 +122,7 @@ class ScheduleTable {
         let totals = this.rowTotals[rowIndex];
 
         // Loop through the cells in the row, skipping special cells
-        for (let i = this.columnsToSkipAtStart; i &lt; cells.length - this.columnsToSkipAtEnd; i++)
+        for (let i = this.columnsToSkipAtStart; i < cells.length - this.columnsToSkipAtEnd; i++)
         {
             //Get the input field contained within the table element
             let cell = cells[i].children[0];
@@ -184,14 +152,14 @@ class ScheduleTable {
     }
 
     /**
-     * This method displays the totals for each column
-     * 
+     * Displays the totals for each column.
+     * Null values in this.columnTotals are ignored.
      */
     displayColumnTotals()
     {
         let tbody = this.tableElement.children[0];
         let rows = tbody.children;
-        for (let columnIndex = 0; columnIndex &lt;= this.columnTotals.length; columnIndex++)
+        for (let columnIndex = 0; columnIndex <= this.columnTotals.length; columnIndex++)
         {
             let finalColumnTotal = this.columnTotals[columnIndex];
 
@@ -212,9 +180,46 @@ class ScheduleTable {
         }
     }
 
+    updateCampaignTotal()
+    {
+        // get the campaign total in the header
+        const totalDisplay = document.getElementById("campaign-total");
+
+        // if it doesn't exist, stop the function
+        if (!totalDisplay) {
+            return;
+        }
+
+        // keep track of the the total cost of all schedules
+        let campaignTotal = 0;
+
+        //get all schedule tables currently on the page
+        const tables = document.querySelectorAll(".table-container table");
+
+        // loop through the tables
+        for (let table of tables)
+        {
+            //get the rows
+            const rows = table.rows;
+            //get the weekly total row
+            const totalsRow = rows[rows.length - 1];
+            //get COST cell
+            const costCell = totalsRow.cells[totalsRow.cells.length - 1];
+            //remove $ and turn text into float
+            const cost = parseFloat(costCell.textContent.replace("$", ""));
+            // only add it if it is a real number
+            if (!isNaN(cost))
+            {
+                campaignTotal += cost;
+            }
+        }
+
+        //display the final campaign total in the header
+        totalDisplay.textContent = "$" + campaignTotal;
+    }
+
     /**
-     * Gets all of the totals in the table
-     * 
+     * Calculates and displays totals for the table.
      */
     getAllTotals()
     {
@@ -224,16 +229,16 @@ class ScheduleTable {
         //Clear rowTotals and columnTotals
         this.rowTotals = [];
         this.columnTotals = [0, null, 0, 0, 0, 0, 0, 0, 0, null, 0];
-        for (let i = 0; i &lt; this.height; i++) {
+        for (let i = 0; i < this.height; i++) {
             this.rowTotals.push([]);
         }
         // Loop through each row in the table, skipping headers and final totals
-        for (let rowIndex = this.rowsToSkipAtStart; rowIndex &lt; rows.length - this.rowsToSkipAtEnd; rowIndex++)
+        for (let rowIndex = this.rowsToSkipAtStart; rowIndex < rows.length - this.rowsToSkipAtEnd; rowIndex++)
         {
             // Calculate the totals for this row
             this.calculateAndUpdateTotalsForRow(rows[rowIndex], rowIndex);
             // Add totals for each column to column totals
-            for (let totalIndex = 0; totalIndex &lt; this.rowTotals[rowIndex].length; totalIndex++) {
+            for (let totalIndex = 0; totalIndex < this.rowTotals[rowIndex].length; totalIndex++) {
                 let rowTotal = this.rowTotals[rowIndex][totalIndex];
                 // Skip null column totals (we don't need to calculate a total for this column)
                 if (this.columnTotals[totalIndex] == null)
@@ -244,15 +249,18 @@ class ScheduleTable {
             }
         }
         this.displayColumnTotals();
+        this.updateCampaignTotal();
     }
 
-    // Creates an ad length dropdown for use in a new table.
+    /**
+     * Creates a dropdown menu for ad length.
+     */
     createAdLengthDropdown()
     {
         const selection = document.createElement("select");
         const values = [":60", ":30", ":15", ":10"];
 
-        for (let i = 0; i &lt; values.length; i++)
+        for (let i = 0; i < values.length; i++)
         {
             const option = document.createElement("option");
             option.textContent = values[i];
@@ -261,13 +269,15 @@ class ScheduleTable {
         return selection;
     }
 
-    // Creates and returns an array of rows for a new table
+    /**
+     * Creates the table rows.
+     */
     createTrElements()
     {
         const trs = [];
 
         // Add an extra row for headings
-        for (let i = 0; i &lt; this.rowHeadings.length+1; i++)
+        for (let i = 0; i < this.rowHeadings.length+1; i++)
         {
             trs.push(document.createElement("tr"));
         }
@@ -277,21 +287,22 @@ class ScheduleTable {
     }
 
     /**
-     * Populates the first table row with column headings
+     * Populates the first table row with column headings.
      * 
-     * @param {HTMLTableRowElement} firstTrEle 
-     * @param {HTMLDivElement} generateScheduleElement 
+     * @param {HTMLTableRowElement} firstTrEle - HTML element for the first row of the table
+     * @param {HTMLDivElement} generateScheduleElement - The closest button for generating a new schedule
      */
     populateFirstTr(firstTrEle, generateScheduleElement)
     {
+        const weekArea = generateScheduleElement.querySelector(".week-selection");
         const weekOf = generateScheduleElement.querySelector(".week-of");
         let dates = [];
-        if (weekOf)
+        if (weekArea.style.display == "flex")
         {
             let startDate = getScheduleDate(generateScheduleElement, true)[0];
 
             // Loop 7 times (Monday -> Sunday)
-            for (let i = 0; i &lt; 7; i++)
+            for (let i = 0; i < 7; i++)
             {
                 //make a new copy of monday
                 const currentDate = new Date(startDate);
@@ -311,11 +322,11 @@ class ScheduleTable {
             }
         }
 
-        for (let i = 0; i &lt; this.colHeadings.length; i++)
+        for (let i = 0; i < this.colHeadings.length; i++)
         {
             const thEle = document.createElement("th");
 
-            if (weekOf)
+            if (weekArea.style.display == "flex")
             {
                 // Use innerHTML instead of textContent
                 // so we can add line breaks inside the table headings
@@ -326,9 +337,9 @@ class ScheduleTable {
                 // Example:
                 // 5/25
                 // MO
-                if (i >= 3 &amp;&amp; i &lt;= 9)
+                if (i >= 3 && i <= 9)
                 {
-                    thEle.innerHTML = dates[i - 3] + "&lt;br>" + this.colHeadings[i];
+                    thEle.innerHTML = dates[i - 3] + "<br>" + this.colHeadings[i];
                 }
             }
             else
@@ -342,11 +353,11 @@ class ScheduleTable {
 
 
     /**
-     * Populate a table cell with content
+     * Populates a table cell with content.
      * 
-     * @param {HTMLTableDataCellElement} tdEle 
-     * @param {number} row 
-     * @param {number} col 
+     * @param {HTMLTableDataCellElement} tdEle - The table cell to populate.
+     * @param {number} row - The index of the row this cell is in.
+     * @param {number} col - The index of the column this cell is in.
      * @returns {void}
      */
     populateTableElement(tdEle, row, col)
@@ -385,7 +396,7 @@ class ScheduleTable {
         {
             // Make a input field, give a type of number and min of 0
             const inputEle = document.createElement("input");
-            inputEle.type = "number"
+            inputEle.type = "number";
             inputEle.min = "0";
             // Append it to the td element
             tdEle.append(inputEle);
@@ -394,12 +405,12 @@ class ScheduleTable {
     }
 
     /**
-     * Populate a single row with cells
-     * 
-     * @param {HTMLElement} rowToPopulate 
-     * @param {number} rowIndex 
-     * @param {boolean} isNewRow 
-     * @returns A row that has been populated
+     * Populates a single row with cells
+     *
+     * @param {HTMLElement} rowToPopulate - The row to populate.
+     * @param {number} rowIndex - The index of the row to populate.
+     * @param {boolean} isNewRow - Whether the row is being added after the table was initially built.
+     * @returns A complete row
      */
     populateRow(rowToPopulate, rowIndex, isNewRow = false)
     {
@@ -417,7 +428,7 @@ class ScheduleTable {
         }
 
         // For each column
-        for (let col = 0; col &lt; this.width; col++)
+        for (let col = 0; col < this.width; col++)
         {
             // Make a td element
             const tdEle = document.createElement("td");
@@ -426,25 +437,25 @@ class ScheduleTable {
             let isAddDaypartRow = (rowIndex == this.height - 1);
 
             // Don't add utilities to special rows
-            if (isSpecialRow &amp;&amp; col >= 12) { continue; }
+            if (isSpecialRow && col >= 12) { continue; }
 
             if (col == 0)
             {
                 // Don't make the weekly totals row editable
-                if (isSpecialRow &amp;&amp; !isAddDaypartRow)
+                if (isSpecialRow && !isAddDaypartRow)
                 {
                     tdEle.textContent = dayPartValue;
                 }
                 else
                 {
-                    const dayPartField = createElement("input", null, "daypart-input");
-                    dayPartField.type = "text";
+                    const dayPartField = createElement("textarea", null, "daypart-input");
                     dayPartField.value = dayPartValue;
                     dayPartField.placeholder = dayPartPlaceholder;
+                    dayPartField.rows = 1;
 
                     // If this is the fake "+ Add Daypart" row,
                     // make it readonly and style it like a button
-                    if (this.rowHeadings[rowIndex - 1] === "+ Add Daypart" &amp;&amp; !isNewRow)
+                    if (this.rowHeadings[rowIndex - 1] === "+ Add Daypart" && !isNewRow)
                     {
                         dayPartField.readOnly = true;
                         dayPartField.classList.add("add-daypart-button");
@@ -454,6 +465,7 @@ class ScheduleTable {
                         dayPartField.addEventListener("click", handleAddDaypartRow);
                         rowToPopulate.classList.add("add-daypart-row");
                     }
+                    dayPartField.addEventListener("input", handleResizeDaypartTextarea);
                     tdEle.append(dayPartField);
                 }
                 // Add styling for daypart column
@@ -471,10 +483,10 @@ class ScheduleTable {
 
 
     /**
-     * This method creates the whole table (schedule) and then returns it.
+     * Creates and returns the table.
      * 
-     * @param {HTMLElement} generateScheduleElement 
-     * @returns {HTMLDivElement} A div that contains the whole schedule
+     * @param {HTMLElement} generateScheduleElement - The closest element with the ".generate-new-schedule" tag.
+     * @returns {HTMLTableElement} The new table element.
      */
     createWholeTable(generateScheduleElement)
     {
@@ -491,13 +503,13 @@ class ScheduleTable {
         this.populateFirstTr(trEles[0], generateScheduleElement);
 
         // Populate the rest of the rows
-        for (let row = 1; row &lt; trEles.length; row++)
+        for (let row = 1; row < trEles.length; row++)
         {
             trEles[row] = this.populateRow(trEles[row], row);
         }
 
         // Add each row to the table
-        for (let i = 0; i &lt; trEles.length; i++)
+        for (let i = 0; i < trEles.length; i++)
         {
             tableBody.append(trEles[i]);
         }
@@ -510,10 +522,10 @@ class ScheduleTable {
     }
 
     /**
-     * This method creates a table and returns it.
+     * Creates and wraps a table, then returns it.
      * 
-     * @param {HTMLElement} element In this case, the closest element with the ".generate-new-schedule" tag to insert a new table
-     * @returns {HTMLTableElement} A table
+     * @param {HTMLElement} element - The closest element with the ".generate-new-schedule" tag.
+     * @returns {HTMLDivElement} A container div for the table, containing the table date range and the table itself. 
      */
     buildTable(element)
     {
@@ -527,7 +539,7 @@ class ScheduleTable {
         const headingThree = createElement("h3", null, "schedule-type", getScheduleDate(element));
 
         // Append the h3 to the h3Wrapper div
-        h3Wrapper.append(headingThree)
+        h3Wrapper.append(headingThree);
 
         // Append the h3 and the table to the div 
         container.append(h3Wrapper, this.createWholeTable(element));
@@ -538,10 +550,11 @@ class ScheduleTable {
 
 
     /**
-     * This method inserts the table into the DOM.
-     * Specifically, it gets inserted above the closest div that has the element's class
-     * 
-     * @param {HTMLElement} element In this case, the closest element with the ".generate-new-schedule" tag to insert a new table
+     * Builds and inserts the table into the DOM.
+     * Sets this.tableElement and adds the table to activeScheduleTables.
+     * The table is inserted above the element passed in.
+     *
+     * @param {HTMLElement} element - The closest element with the ".generate-new-schedule" tag.
      */
     insertTableToDOM(element)
     {
@@ -557,26 +570,3 @@ class ScheduleTable {
         element.parentNode.insertBefore(newTable, element);
     }
 }
-</code></pre>
-        </article>
-    </section>
-
-
-
-
-</div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="calendar.module_js.html">calendar.js</a></li><li><a href="dynamicClientSections.module_js.html">dynamicClientSections.js</a></li><li><a href="events.module_js.html">events.js</a></li><li><a href="main.module_js.html">main.js</a></li><li><a href="table.module_js.html">table.js</a></li><li><a href="utils.module_js.html">utils.js</a></li></ul><h3>Classes</h3><ul><li><a href="table.module_js-ScheduleTable.html">ScheduleTable</a></li></ul>
-</nav>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Wed May 27 2026 21:37:35 GMT-0700 (Pacific Daylight Time)
-</footer>
-
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
-</body>
-</html>

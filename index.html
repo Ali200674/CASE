@@ -4,23 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>P48 Marketing</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="css/style.css" />
     <!-- For calendar -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/index.global.min.js'></script>
-    <script src = "calendar.js" defer></script>
+    <script src = "js/calendar.js" defer></script>
     
-    <script src = "utils.js"></script>
-    <script src = "events.js"></script>
-    <script src = "table.js"></script>
-    <script src = "dynamicClientSections.js"></script>
-    <script src = "main.js" defer></script>
+    <script src = "js/utils.js"></script>
+    <script src = "js/events.js"></script>
+    <script src = "js/table.js"></script>
+    <script src = "js/dynamicClientSections.js"></script>
+    <script src = "js/main.js" defer></script>
   </head>
   <body>
     <!-- NOTE: 
         Added client Name and campaign start and end fields
          -->
     <header class="main-header">
-      <img src="P48_Logo.png" alt="P48 Logo" class="header-logo">
+      <img src="images/p48_logo.png" alt="P48 Logo" class="header-logo">
 
       <input 
         id="client-name-input"
@@ -57,7 +57,7 @@
         <option>97.1 The Fan (WBNS)</option>
       </select>
     -->
-      <button id="add-client-button">Add New Table</button>
+      <button id="add-client-button">Add New Station</button>
     </div>
 
     <!-- preliminary attempt at making a dropdown in the section-->
@@ -78,13 +78,13 @@
       <button class = "no-button">No</button>
     </div>
 
+    <div class = "check-section">
+      <button class = "check-section-button"><img src="images/exit_button.svg" alt=""></button>
+      <p></p>
+    </div>
+
     <!-- This is for the calendar -->
     <div id = "calendar"></div>
 
-    <!-- This div will contain all of the cells to be dragged into the schedule -->
-    <div id = "table-draggable-cells">
-      <!-- For testing styles -->
-      <!-- <div class = "event-cell">hello</div> -->
-    </div>
   </body>
 </html>
