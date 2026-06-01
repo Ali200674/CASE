@@ -25,6 +25,7 @@ body {
 
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     padding: 10px 40px;
     background-color: #ffffff;
     border-bottom: 3px solid black;
@@ -50,12 +51,24 @@ body {
 }
 
 .header-client-name {
+    width: fit-content;
+    min-width: 220px;
+    padding: 10px 20px;
+    border: 1px solid black;
+    background-color: #fff;
+    text-align: center;
+    transition: all 0.2s ease;
+    box-shadow: 2px 2px 0px rgba(0,0,0,1);
     font-size: 1.2rem;
     font-weight: bold;
-    padding: 8px 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    min-width: 220px;
+    font-family: inherit;
+    outline: none;
+}
+
+.header-client-name:focus {
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.15);
+    text-align: left;
 }
 
 .header-logo {
@@ -105,6 +118,9 @@ body {
     text-align: center;
     margin: 40px auto 0;
     gap: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Button to make schedule */
@@ -395,8 +411,54 @@ tr:nth-last-child(1) td
 /* This is for the calendar itself */
 #calendar
 {
-    width: 1200px;
-    margin: 0 auto;
+    width: 90%;
+    max-width: 1400px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--section-shadow);
+}
+
+/* FullCalendar Button Styles */
+.fc .fc-button-primary {
+    background-color: #333;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    padding: 8px 16px;
+}
+
+.fc .fc-button-primary:hover {
+    background-color: var(--primary-purple);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(123, 44, 191, 0.3);
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active, 
+.fc .fc-button-primary:not(:disabled):active {
+    background-color: var(--hover-purple);
+}
+
+
+
+.fc .fc-toolbar-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.fc th.fc-col-header-cell {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    padding: 12px 0;
+}
+
+.fc .fc-col-header-cell-cushion {
+    color: #333;
+    text-decoration: none;
 }
 
 
