@@ -7,7 +7,7 @@
  * @module table.js
  */
 
-activeScheduleTables = {}
+activeScheduleTables = new Map();
 
 /**
  * A class representing an advertising schedule table.
@@ -193,25 +193,12 @@ class ScheduleTable {
         // keep track of the the total cost of all schedules
         let campaignTotal = 0;
 
-        //get all schedule tables currently on the page
-        const tables = document.querySelectorAll(".table-container table");
+        // retrieve all active ScheduleTable instances
+        const tables = activeScheduleTables.values();
 
-        // loop through the tables
-        for (let table of tables)
+        for (const table of tables)
         {
-            //get the rows
-            const rows = table.rows;
-            //get the weekly total row
-            const totalsRow = rows[rows.length - 1];
-            //get COST cell
-            const costCell = totalsRow.cells[totalsRow.cells.length - 1];
-            //remove $ and turn text into float
-            const cost = parseFloat(costCell.textContent.replace("$", ""));
-            // only add it if it is a real number
-            if (!isNaN(cost))
-            {
-                campaignTotal += cost;
-            }
+            campaignTotal += table.columnTotals[table.columnTotals.length - 1];
         }
 
         //display the final campaign total in the header
@@ -514,7 +501,7 @@ class ScheduleTable {
             tableBody.append(trEles[i]);
         }
 
-        activeScheduleTables[table] = this;
+        activeScheduleTables.set(table, this);
         this.tableElement = table;
 
         // Return that table
