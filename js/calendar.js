@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function(){
         editable: true,
         droppable: true,
         selectable: true,
+        firstDay: 1,
     
         // For more option, look at the docs
         headerToolbar:

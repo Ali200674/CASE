@@ -24,64 +24,64 @@ function getScheduleDate(element, asJSDateRange = false)
     const monthChoosen = element.querySelector(".month-choosen");
 
     // If the week is showing
-    if (weekArea.style.display === "flex")
-    {
-        // The week picker returns something like:
-        // "2026-W22"
-        // Split that into:
-        // ["2026", "22"]
-        const splitWeek = weekOf.value.split("-W");
+    // if (weekArea.style.display === "flex")
+    // {
+    //     // The week picker returns something like:
+    //     // "2026-W22"
+    //     // Split that into:
+    //     // ["2026", "22"]
+    //     const splitWeek = weekOf.value.split("-W");
 
-        // Grab the year and week number separately
-        const year = parseInt(splitWeek[0]);
-        const weekNumber = parseInt(splitWeek[1]);
+    //     // Grab the year and week number separately
+    //     const year = parseInt(splitWeek[0]);
+    //     const weekNumber = parseInt(splitWeek[1]);
 
-        //Return the schedule week as a string if needed
-        if (!asJSDateRange)
-        {
-            return "Week " + weekNumber + ", " + year;
-        }
-        // If we're returning a date range, find the start / end dates of the week
-        // Start at Jan 1st, then move forward
-        // by however many weeks were selected
-        const startDate = new Date(year, 0, 1 + (weekNumber - 1) * 7);
+    //     //Return the schedule week as a string if needed
+    //     if (!asJSDateRange)
+    //     {
+    //         return "Week " + weekNumber + ", " + year;
+    //     }
+    //     // If we're returning a date range, find the start / end dates of the week
+    //     // Start at Jan 1st, then move forward
+    //     // by however many weeks were selected
+    //     const startDate = new Date(year, 0, 1 + (weekNumber - 1) * 7);
 
-        //Move the date back to Monday
-        while (startDate.getDay() !== 1)
-        {
-            startDate.setDate(startDate.getDate() - 1);
-        }
+    //     //Move the date back to Monday
+    //     while (startDate.getDay() !== 1)
+    //     {
+    //         startDate.setDate(startDate.getDate() - 1);
+    //     }
 
-        //End date to return is 6 days after the start
-        let endDate = new Date(startDate)
-        endDate.setDate(startDate.getDate() + 6);
-        return [startDate, endDate];
-    }
-    else // Else, the month is showing instead
-    {
-        // Make a Date object based on the value. split the value given into two strings (year and month)
-        // Due to the indexing of the months (0 - 11 instead of 1 - 12), decrement the month by 1
-        const selectedYear = monthChoosen.value.substring(0, 4);
-        const selectedMonth = monthChoosen.value.substring(5) - 1;
-        const monthStartDate = new Date(selectedYear, selectedMonth);
+    //     //End date to return is 6 days after the start
+    //     let endDate = new Date(startDate)
+    //     endDate.setDate(startDate.getDate() + 6);
+    //     return [startDate, endDate];
+    // }
+    // else // Else, the month is showing instead
+    // {
+    //     // Make a Date object based on the value. split the value given into two strings (year and month)
+    //     // Due to the indexing of the months (0 - 11 instead of 1 - 12), decrement the month by 1
+    //     const selectedYear = monthChoosen.value.substring(0, 4);
+    //     const selectedMonth = monthChoosen.value.substring(5) - 1;
+    //     const monthStartDate = new Date(selectedYear, selectedMonth);
 
-        if (!asJSDateRange)
-        {
-            // Format the month
-            const option = {month: "long", year: "numeric"};
-            // Return that month Date object as a string and formated
-            return monthStartDate.toLocaleDateString(
-                "en-US",
-                option
-            );
-        }
-        else
-        {
-            //0th day of the next month is treated as the last day of this month
-            const monthEndDate = new Date(selectedYear, selectedMonth + 1, 0);
-            return [monthStartDate, monthEndDate];
-        }
-    }
+    //     if (!asJSDateRange)
+    //     {
+    //         // Format the month
+    //         const option = {month: "long", year: "numeric"};
+    //         // Return that month Date object as a string and formated
+    //         return monthStartDate.toLocaleDateString(
+    //             "en-US",
+    //             option
+    //         );
+    //     }
+    //     else
+    //     {
+    //         //0th day of the next month is treated as the last day of this month
+    //         const monthEndDate = new Date(selectedYear, selectedMonth + 1, 0);
+    //         return [monthStartDate, monthEndDate];
+    //     }
+    // }
 }
 
 /**
@@ -250,7 +250,7 @@ function generateCreateEvent()
         const stationName = event.target.closest(".section").querySelector(".client-name");
         const closestDayField = event.target.closest("tr").querySelector(".daypart-input");
         const a = document.querySelector(".check-section").querySelector("p");
-        const closestColorPicker = event.target.closest(".section").querySelector(".color-picker");
+        const closestColorPicker = event.target.closest(".table-container").querySelector(".color-picker");
         console.log(closestDayField);
 
         if (stationName.value === "" || closestDayField.value === "") 
@@ -286,10 +286,12 @@ function generateCreateEvent()
         eventCell.innerText =  closestRadioStation.value + " " + closestTimeSlot.value;
 
         const getClosestScheduleButton = event.target.closest(".section").querySelector(".generate-new-schedule");
-
+        
         const dates = getScheduleDate(getClosestScheduleButton, true);
 
         dates[1].setDate(dates[1].getDate() + 1)
+
+        console.log(dates[0] + " " + dates[1])
         
         calendar.addEvent({
             title: eventCell.innerText,

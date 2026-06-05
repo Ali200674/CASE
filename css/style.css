@@ -176,6 +176,8 @@ body {
     border-radius: 12px;
     box-shadow: var(--section-shadow);
     transition: transform 0.3s ease;
+    overflow-y: scroll;
+    max-height: 1000px;
 }
 
 input {
@@ -480,4 +482,13 @@ tr:nth-last-child(1) td
             cursor: pointer;
         }
     }  
+}
+
+.schedule-type-wrapper
+{
+    display: flex;
+    align-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
 }

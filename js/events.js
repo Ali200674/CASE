@@ -29,9 +29,13 @@ function handleInputEventForSchedules(event)
         }
     }
 
-    let parentTable = event.target.parentElement.parentElement.parentElement.parentElement;
+    if (event.target.type !== "color")
+    {
+        let parentTable = event.target.parentElement.parentElement.parentElement.parentElement;
 
-    activeScheduleTables.get(parentTable).getAllTotals();
+        activeScheduleTables.get(parentTable).getAllTotals();
+
+    }   
 }
 
 /**
@@ -102,54 +106,57 @@ function handleChangeEventForScheduleTypes(event)
  */
 function handleCreateNewSchedule(event)
 {
-    // Get the button
+    
+    // // Get the button
     const getTarget = event.target;
 
     // Get the closest tag with ".generate-new-schedule" class
     const getClosestSchedule = getTarget.closest(".generate-new-schedule");
 
-    // Within that tag, find all of these classes
-    const weekSelection = getClosestSchedule.querySelector(".week-selection")
-    const weekOf = getClosestSchedule.querySelector(".week-of")
-    const errorMessage = getClosestSchedule.querySelector(".error-message")
-    const monthChoosen = getClosestSchedule.querySelector(".month-choosen")
-    const monthSelection = getClosestSchedule.querySelector(".month-selection")
+    // // Within that tag, find all of these classes
+    // This will be commented out. 
+    // const weekSelection = getClosestSchedule.querySelector(".week-selection")
+    // const weekOf = getClosestSchedule.querySelector(".week-of")
+    // const errorMessage = getClosestSchedule.querySelector(".error-message")
+    // const monthChoosen = getClosestSchedule.querySelector(".month-choosen")
+    // const monthSelection = getClosestSchedule.querySelector(".month-selection")
 
-    // All of these are for the closest tag with the ".generate-new-schedule" class. 
-    // If week is showing
-    if (weekSelection.style.display === "flex")
-    {
-        // If either are null
-        if (weekOf.value === "") 
-        { 
-            // Show error message and stop button
-            errorMessage.style.display = "block";
-            return; 
-        }
-        else // Else, both are not null and don't show message
-        {
-            errorMessage.style.display = "none"; 
-        } 
-    }
+    // // All of these are for the closest tag with the ".generate-new-schedule" class. 
+    // // If week is showing
+    // if (weekSelection.style.display === "flex")
+    // {
+    //     // If either are null
+    //     if (weekOf.value === "") 
+    //     { 
+    //         // Show error message and stop button
+    //         errorMessage.style.display = "block";
+    //         return; 
+    //     }
+    //     else // Else, both are not null and don't show message
+    //     {
+    //         errorMessage.style.display = "none"; 
+    //     } 
+    // }
 
-    // If month is showing
-    if (monthSelection.style.display === "block")
-    {
-        // If month is null
-        if (monthChoosen.valueAsDate === null) 
-        {
-            // Show error and stop
-            errorMessage.style.display = "block";
-            return; 
-        }
-        else // Else, not null and don't show message
-        {
-            errorMessage.style.display = "none";
-        }
-    }
+    // // If month is showing
+    // if (monthSelection.style.display === "block")
+    // {
+    //     // If month is null
+    //     if (monthChoosen.valueAsDate === null) 
+    //     {
+    //         // Show error and stop
+    //         errorMessage.style.display = "block";
+    //         return; 
+    //     }
+    //     else // Else, not null and don't show message
+    //     {
+    //         errorMessage.style.display = "none";
+    //     }
+    // }
 
-    const dateRangeArray = getScheduleDate(getClosestSchedule, true);
-    const newScheduleTable = new ScheduleTable(dateRangeArray[0], dateRangeArray[1]);
+    const tempDates = ["2", "2"]
+    // const dateRangeArray = getScheduleDate(getClosestSchedule, true);
+    const newScheduleTable = new ScheduleTable(tempDates[0], tempDates[1]);
     // Call this function to insert the table, pass in the closest schedule
     newScheduleTable.insertTableToDOM(getClosestSchedule);
 }
