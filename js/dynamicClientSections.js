@@ -76,23 +76,23 @@ function generateNewSchedule()
     const container = createElement("div", undefined, "generate-new-schedule", undefined);
 
     // Make p tag that holds the text "Type of Schedule"
-    const pTypeOfSchedule = createElement("p", undefined, undefined, "Type Of Schedule:");
+    // const pTypeOfSchedule = createElement("p", undefined, undefined, "Type Of Schedule:");
 
-    container.append(pTypeOfSchedule);
+    // container.append(pTypeOfSchedule);
 
     // Create selections
-    const selections = createSelections();
+    // const selections = createSelections();
 
-    // Create each containers that holds the dates, the week container and month container
-    const dateSelectors = createDateSelectionContainer();
-    const weekContainer = createWeekContainer()
-    const monthContainer = createMonthContainer();
+    // // Create each containers that holds the dates, the week container and month container
+    // const dateSelectors = createDateSelectionContainer();
+    // const weekContainer = createWeekContainer()
+    // const monthContainer = createMonthContainer();
 
-    // Append those variables
-    dateSelectors.append(weekContainer);
-    dateSelectors.append(monthContainer);
-    container.append(selections);
-    container.append(dateSelectors);
+    // // Append those variables
+    // dateSelectors.append(weekContainer);
+    // dateSelectors.append(monthContainer);
+    // container.append(selections);
+    // container.append(dateSelectors);
 
     // Make a button to make a table
     const createSchedule = createElement("button", undefined, "make-schedule", "Generate New Schedule")
@@ -111,7 +111,7 @@ function generateNewSchedule()
         It will find the closest tag with the ".generate-new-schedule" class, and show the week, month and if needed,
         the error message
     */
-    selections.addEventListener("change", handleChangeEventForScheduleTypes);
+    // selections.addEventListener("change", handleChangeEventForScheduleTypes);
 
     // Return this div
     return container;

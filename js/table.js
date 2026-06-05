@@ -281,58 +281,57 @@ class ScheduleTable {
      */
     populateFirstTr(firstTrEle, generateScheduleElement)
     {
-        const weekArea = generateScheduleElement.querySelector(".week-selection");
-        const weekOf = generateScheduleElement.querySelector(".week-of");
-        let dates = [];
-        if (weekArea.style.display == "flex")
-        {
-            let startDate = getScheduleDate(generateScheduleElement, true)[0];
+        // const weekArea = generateScheduleElement.querySelector(".week-selection");
+        // const weekOf = generateScheduleElement.querySelector(".week-of");
+        // let dates = [];
+        // if (weekArea.style.display == "flex")
+        // {
+        //     let startDate = getScheduleDate(generateScheduleElement, true)[0];
 
-            // Loop 7 times (Monday -> Sunday)
-            for (let i = 0; i < 7; i++)
-            {
-                //make a new copy of monday
-                const currentDate = new Date(startDate);
+        //     // Loop 7 times (Monday -> Sunday)
+        //     for (let i = 0; i < 7; i++)
+        //     {
+        //         //make a new copy of monday
+        //         const currentDate = new Date(startDate);
 
-                //move forward however many days we are into the week
-                currentDate.setDate(startDate.getDate() + i);
+        //         //move forward however many days we are into the week
+        //         currentDate.setDate(startDate.getDate() + i);
 
-                // Push formatted dates into the array
-                // Example:
-                // "5/25"
-                dates.push(
-                    currentDate.toLocaleDateString("en-US", {
-                        month: "numeric",
-                        day: "numeric"
-                    })
-                );
-            }
-        }
+        //         // Push formatted dates into the array
+        //         // Example:
+        //         // "5/25"
+        //         dates.push(
+        //             currentDate.toLocaleDateString("en-US", {
+        //                 month: "numeric",
+        //                 day: "numeric"
+        //             })
+        //         );
+        //     }
+        // }
 
         for (let i = 0; i < this.colHeadings.length; i++)
         {
             const thEle = document.createElement("th");
 
-            if (weekArea.style.display == "flex")
-            {
-                // Use innerHTML instead of textContent
-                // so we can add line breaks inside the table headings
-                thEle.innerHTML = this.colHeadings[i];
+            // if (weekArea.style.display == "flex")
+            // {
+            //     // Use innerHTML instead of textContent
+            //     // so we can add line breaks inside the table headings
+            //     thEle.innerHTML = this.colHeadings[i];
 
-                // If this is one of the weekday columns,
-                // put the date above the weekday label
-                // Example:
-                // 5/25
-                // MO
-                if (i >= 3 && i <= 9)
-                {
-                    thEle.innerHTML = dates[i - 3] + "<br>" + this.colHeadings[i];
-                }
-            }
-            else
-            {
-                thEle.textContent = this.colHeadings[i];
-            }
+            //     // If this is one of the weekday columns,
+            //     // put the date above the weekday label
+            //     // Example:
+            //     // 5/25
+            //     // MO
+            //     if (i >= 3 && i <= 9)
+            //     {
+            //         thEle.innerHTML = dates[i - 3] + "<br>" + this.colHeadings[i];
+            //     }
+            // }
+           
+            thEle.textContent = this.colHeadings[i];
+            
             // Add the new heading to the row
             firstTrEle.append(thEle);
         }
@@ -362,7 +361,7 @@ class ScheduleTable {
         }
         else if (col == 13)
         {
-            tdEle.append(generateCreateEvent());
+            // tdEle.append(generateCreateEvent());
         }
         else if (isSpecialRow)
         {
@@ -520,16 +519,19 @@ class ScheduleTable {
         const container = createElement("div", null, "table-container")
 
         // Create a div for the type of schedule h3 heading
-        const h3Wrapper = createElement("div", null, "schedule-type-wrapper");
+        const colorPickerWrapper = createElement("div", null, "schedule-type-wrapper");
 
         // Create a h3 heading with Type of Schedule text
-        const headingThree = createElement("h3", null, "schedule-type", getScheduleDate(element));
+        // const headingThree = createElement("h3", null, "schedule-type", getScheduleDate(element));
+
+        const colorPicker = createElement("input", null, "color-picker", null);
+        colorPicker.type = "color";
 
         // Append the h3 to the h3Wrapper div
-        h3Wrapper.append(headingThree);
+        colorPickerWrapper.append(colorPicker);
 
         // Append the h3 and the table to the div 
-        container.append(h3Wrapper, this.createWholeTable(element));
+        container.append(colorPickerWrapper, this.createWholeTable(element));
 
         // Return the table
         return container;
