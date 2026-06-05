@@ -519,7 +519,7 @@ class ScheduleTable {
         const container = createElement("div", null, "table-container")
 
         // Create a div for the type of schedule h3 heading
-        const colorPickerWrapper = createElement("div", null, "schedule-type-wrapper");
+        const subHeadingWrapper = createElement("div", null, "schedule-type-wrapper");
 
         // Create a h3 heading with Type of Schedule text
         // const headingThree = createElement("h3", null, "schedule-type", getScheduleDate(element));
@@ -528,10 +528,11 @@ class ScheduleTable {
         colorPicker.type = "color";
 
         // Append the h3 to the h3Wrapper div
-        colorPickerWrapper.append(colorPicker);
+        subHeadingWrapper.append(colorPicker);
+        subHeadingWrapper.append(generateCreateEvent()) // Add event button to top of table
 
         // Append the h3 and the table to the div 
-        container.append(colorPickerWrapper, this.createWholeTable(element));
+        container.append(subHeadingWrapper, this.createWholeTable(element));
 
         // Return the table
         return container;

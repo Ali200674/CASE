@@ -492,3 +492,21 @@ tr:nth-last-child(1) td
     gap: 10px;
     margin-bottom: 20px;
 }
+
+/* For week that the user clicks */
+.selected-week {
+  background-color: lightcyan !important;
+}
+
+/* For events to be spaced properly */
+.fc-daygrid-event {
+    margin-bottom: 2px !important; 
+}
+
+/* For confirm button */
+#confirm
+{
+    display: flex;
+    padding: 10px;
+    margin: 0 auto;  
+}

@@ -223,6 +223,13 @@ function generateDeleteDiv(element)
  */
 function generateCreateEvent()
 {
+    let closestTable;
+    let closestStationName;
+    let closestColorPicker;
+    const a = document.querySelector(".check-section").querySelector("p");
+    const x = document.querySelector(".check-section");
+    const overlay = document.querySelector(".overlay");
+
     // Container for the div that will hold all of the cells
     const container = document.querySelector("#table-draggable-cells"); 
 
@@ -236,34 +243,110 @@ function generateCreateEvent()
     const img = createElement("img", undefined, "calendar-add-image", undefined)
     img.src = "images/calendar_add.svg"
 
+    // Add event listener to calendar image
+    button.addEventListener("click", (event) =>
+    {
+        // Get the closest station name
+        closestStationName = event.target.closest(".section").querySelector(".client-name");
+
+        // If empty, notify the user and stop
+        if (closestStationName.value === "")
+        {
+            x.style.display = "block";
+            overlay.style.display = "block"
+            a.textContent = "The Station Name field cannot be empty!";
+            return;
+        }
+
+        // Get these variables and set the calendar to year and activate week numbers
+        closestTable = event.target.closest(".table-container").querySelector("tbody");
+        closestColorPicker = event.target.closest(".table-container").querySelector(".color-picker");
+        console.log(closestStationName);
+        calendar.setOption("weekNumbers", true)
+        calendar.changeView("multiMonthYear")
+        isCreatingSchedule = true; // Set the calendar variable to true
+    })
+
+    // Add an event listener to the button at the bottom of calendar
+    document.querySelector("#confirm").addEventListener("click", () =>{
+
+    // If we are creating the schedule
+    if (isCreatingSchedule)
+    {
+        // Get all rows of table and make array
+        const rows = closestTable.querySelectorAll("tr");
+
+        const textareas = []
+
+        // If the rows contain a textarea, add it to array
+        for (let i = 0; i < rows.length - 2; i++)
+        {
+            if (rows[i].querySelector("textarea"))
+            {
+                textareas.push(rows[i].querySelector("textarea"))            
+            }
+        }
+
+        // Make index variable
+        let index = 0;
+
+        // For each textarea
+        for (let i = 0; i < textareas.length; i++)
+        {
+            // Go through the map
+            for (const [start, end] of dateRangeSelected)
+            {
+                // Get the text area row from the array and add it to the calendar
+                const textarea = textareas[i];
+
+                calendar.addEvent({
+                    title: closestStationName.value + ": " + textarea.value,
+                    start,
+                    end,
+                    color: closestColorPicker.value,
+                    allDay: true
+                })
+
+                index++;
+            }
+
+        }
+
+        // Reset all of these
+        isCreatingSchedule = false;
+        dateRangeSelected.clear();
+        set.clear();
+        calendar.setOption("weekNumbers", false)
+        closestTable = null;
+        closestStationName = null;
+        calendar.render()
+    }
+    })
+
     // Append all of this to the div
     button.append(img);
     eventContainer.append(button);
 
-    const x = document.querySelector(".check-section");
-    const overlay = document.querySelector(".overlay");
+    return eventContainer;
+
+}
+/*
+
+ 
 
     // Event listener when clicked
     button.addEventListener("click", (event) =>
     {
         
-        const stationName = event.target.closest(".section").querySelector(".client-name");
+        
         const closestDayField = event.target.closest("tr").querySelector(".daypart-input");
-        const a = document.querySelector(".check-section").querySelector("p");
-        const closestColorPicker = event.target.closest(".table-container").querySelector(".color-picker");
+       
+        
         console.log(closestDayField);
 
         if (stationName.value === "" || closestDayField.value === "") 
         {
-            x.style.display = "block";
-            overlay.style.display = "block"
-
-            if (stationName.value === "")
-            {
-                a.textContent = "The Station Name field cannot be empty!";
-                return;
-            }
-
+           
             if (closestDayField.value === "")
             {
                 a.textContent = "The DayPart field cannot be empty!";
@@ -305,6 +388,4 @@ function generateCreateEvent()
         // container.append(eventCell);
     })
 
-    return eventContainer;
-
-}
+*/
