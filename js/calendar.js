@@ -57,7 +57,11 @@ document.addEventListener("DOMContentLoaded", function(){
             {
                 if (calendar.view.type === "multiMonthYear")
                 {
-                    calendar.changeView("dayGridMonth", info.dateStr);  
+                    calendar.changeView("dayGridYear", info.dateStr);  
+                }
+                else if (calendar.view.type === "dayGridYear")
+                {
+                    calendar.changeView("dayGridMonth", info.dateStr)  
                 }
                 else if (calendar.view.type === "dayGridMonth")
                 {
