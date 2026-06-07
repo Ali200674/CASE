@@ -135,11 +135,15 @@ document.querySelector("#calendar > :nth-child(2)").addEventListener("contextmen
             {
                 calendar.changeView("dayGridWeek");  
             }
-            else if (calendar.view.type === "dayGridWeek")
+            else if (this.calendar.view.type === "dayGridWeek")
             {
-                calendar.changeView("dayGridMonth");  
+                 calendar.changeView("dayGridMonth");  
             }
-            else if (calendar.view.type === "dayGridMonth")
+            else if (this.calendar.view.type === "dayGridMonth")
+            {
+                calendar.changeView("dayGridYear")
+            }
+            else if (calendar.view.type === "dayGridYear")
             {
                 calendar.changeView("multiMonthYear");  
             }  
