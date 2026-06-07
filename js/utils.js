@@ -216,6 +216,11 @@ function generateDeleteDiv(element)
     
 }
 
+let closestTable;
+let closestStationName;
+let closestColorPicker;
+
+
 /**
  * Creates a reusable div that holds a UI image for making draggable calendar events
  * 
@@ -223,9 +228,7 @@ function generateDeleteDiv(element)
  */
 function generateCreateEvent()
 {
-    let closestTable;
-    let closestStationName;
-    let closestColorPicker;
+    
     const a = document.querySelector(".check-section").querySelector("p");
     const x = document.querySelector(".check-section");
     const overlay = document.querySelector(".overlay");
@@ -267,62 +270,6 @@ function generateCreateEvent()
         isCreatingSchedule = true; // Set the calendar variable to true
     })
 
-    // Add an event listener to the button at the bottom of calendar
-    document.querySelector("#confirm").addEventListener("click", () =>{
-
-    // If we are creating the schedule
-    if (isCreatingSchedule)
-    {
-        // Get all rows of table and make array
-        const rows = closestTable.querySelectorAll("tr");
-
-        const textareas = []
-
-        // If the rows contain a textarea, add it to array
-        for (let i = 0; i < rows.length - 2; i++)
-        {
-            if (rows[i].querySelector("textarea"))
-            {
-                textareas.push(rows[i].querySelector("textarea"))            
-            }
-        }
-
-        // Make index variable
-        let index = 0;
-
-        // For each textarea
-        for (let i = 0; i < textareas.length; i++)
-        {
-            // Go through the map
-            for (const [start, end] of dateRangeSelected)
-            {
-                // Get the text area row from the array and add it to the calendar
-                const textarea = textareas[i];
-
-                calendar.addEvent({
-                    title: closestStationName.value + ": " + textarea.value,
-                    start,
-                    end,
-                    color: closestColorPicker.value,
-                    allDay: true
-                })
-
-                index++;
-            }
-
-        }
-
-        // Reset all of these
-        isCreatingSchedule = false;
-        dateRangeSelected.clear();
-        set.clear();
-        calendar.setOption("weekNumbers", false)
-        closestTable = null;
-        closestStationName = null;
-        calendar.render()
-    }
-    })
-
     // Append all of this to the div
     button.append(img);
     eventContainer.append(button);
@@ -330,62 +277,3 @@ function generateCreateEvent()
     return eventContainer;
 
 }
-/*
-
- 
-
-    // Event listener when clicked
-    button.addEventListener("click", (event) =>
-    {
-        
-        
-        const closestDayField = event.target.closest("tr").querySelector(".daypart-input");
-       
-        
-        console.log(closestDayField);
-
-        if (stationName.value === "" || closestDayField.value === "") 
-        {
-           
-            if (closestDayField.value === "")
-            {
-                a.textContent = "The DayPart field cannot be empty!";
-                return;
-            }
-
-            
-        }
-
-        // Find the closest time slot
-        const closestTimeSlot = event.target.closest("tr").querySelector(".daypart-input");
-
-        // Find the closest ratio station
-        const closestRadioStation = event.target.closest(".section").querySelector(".client-name")
-
-        // Make a div that will be a event cell
-        const eventCell = createElement("div", undefined, "event-cell", undefined);
-
-        // Set the inner text to the radio station name and slot
-        eventCell.innerText =  closestRadioStation.value + " " + closestTimeSlot.value;
-
-        const getClosestScheduleButton = event.target.closest(".section").querySelector(".generate-new-schedule");
-        
-        const dates = getScheduleDate(getClosestScheduleButton, true);
-
-        dates[1].setDate(dates[1].getDate() + 1)
-
-        console.log(dates[0] + " " + dates[1])
-        
-        calendar.addEvent({
-            title: eventCell.innerText,
-            start: dates[0].toISOString(),
-            end: dates[1].toISOString(),
-            color: closestColorPicker.value
-            }
-        )
-
-        // // Append the event cell into the container
-        // container.append(eventCell);
-    })
-
-*/

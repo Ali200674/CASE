@@ -504,9 +504,16 @@ tr:nth-last-child(1) td
 }
 
 /* For confirm button */
-#confirm
+#buttons-bottom
 {
     display: flex;
+    justify-content: center;
     padding: 10px;
-    margin: 0 auto;  
+    margin: 0 auto;
+    gap: 20px;
+
+    button
+    {
+        padding: 10px;
+    }  
 }
