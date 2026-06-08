@@ -260,7 +260,7 @@ class P48Schedule
                 this.createEventBlock(
                     closestStationName.value + ": " + closestTableName.value, 
                     start,
-                    end,
+                    actualEnd,
                     closestColorPicker.value,
                     true,
                     rowsText
@@ -373,7 +373,7 @@ class P48Schedule
     createEventBlock(titleEvent, startDate, endDate, color, allDay, descriptionOfEvent)
     {
         if (startDate == null || !(startDate instanceof Date) ) {throw new Error("The start date is not a Date object or is null")}
-        if (endDate == null || !(endDate instanceof Date)) {throw new Error("The start date is not a Date object or is null")}
+        if (endDate == null || !(endDate instanceof Date)) {throw new Error("The end date is not a Date object or is null")}
 
         this.#calendar.addEvent({
             title: titleEvent ?? "Event",
