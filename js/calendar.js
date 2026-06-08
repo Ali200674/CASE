@@ -9,10 +9,10 @@
 let calendar;
 
 document.addEventListener("DOMContentLoaded", function() {
-    calendar = new P48Schedule();
+    calendar = new ScheduleCalendar();
 })
 
-class P48Schedule
+class ScheduleCalendar
 {
     // VARIABLES
     #calendar = null;
@@ -32,8 +32,8 @@ class P48Schedule
     
     
     /**
-     * This contructor initializes the calendar.
-     * 
+     * Creates a new P48Schedule instance and initializes calendar state,
+     * event handlers and UI elements. 
      */
     constructor()
     {
@@ -42,9 +42,9 @@ class P48Schedule
         this.#tableInfoDiv = document.querySelector("#table-info");
 
         this.#initializeCalendar();
-        this.#initializeRightMouseFunction()
-        this.#confirmFunction();
-        this.#cancelFunction();
+        this.#setupRightMouseHandler()
+        this.#setupConfirmButton();
+        this.#setupCancelButton();
     }
 
     // Method for initializing the calendar
@@ -163,7 +163,7 @@ class P48Schedule
     }
 
     // // Using right mouse for calendar view modes (short cut)
-    #initializeRightMouseFunction()
+    #setupRightMouseHandler()
     {
         this.#rightMouse = document.querySelector("#calendar > :nth-child(2)")
         
@@ -212,7 +212,7 @@ class P48Schedule
     }
 
     // When user clicks confirm button
-    #confirmFunction()
+    #setupConfirmButton()
     {
         this.#confirmButton = document.querySelector("#confirm");
         this.#confirmButton.addEventListener("click", () =>
@@ -276,7 +276,7 @@ class P48Schedule
     }
 
     // When user clicks cancel
-    #cancelFunction()
+    #setupCancelButton()
     {
         this.#cancelButton = document.querySelector("#cancel")
         this.#cancelButton.addEventListener("click", () => this.#resetCalendar())
@@ -365,7 +365,7 @@ class P48Schedule
      * @param {string} titleEvent The title of the event. If none is given, the title will be "Event"
      * @param {Date} startDate A Date object that represents the start of the event. 
      * @param {Date} endDate A Date object that represents the end of the event
-     * @param {string} color A color for the event as a string. An input type color element will also work. if none is given, it will default to a blue color (#3788d8)
+     * @param {string} color A color for the event as a string. An input type color element with .value property will also work. if none is given, it will default to a blue color (#3788d8)
      * @param {boolean} allDay A boolean if the event will be all day or not, if the boolean is not true, it will default to false and the time will be 1 hour 
      * @param {string} descriptionOfEvent A description of the event. If none is given, it will default to a empty string
      * @throws {Error} If the start and endDate variables are null or if they are not an instance of Date
