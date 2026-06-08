@@ -352,6 +352,16 @@ class ScheduleCalendar
     }
 
     /**
+     * Returns whether the client is making a schedule
+     * 
+     * @returns {boolean} True if the client is making a schedule. Otherwiese false.
+     */
+    getIsCreatingSchedule()
+    {
+        return this.#isCreatingSchedule;
+    }
+
+    /**
      * Creates an event block and places it on the calendar.
      * 
      * There are a lot of parameters that can be passed through.
