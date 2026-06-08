@@ -517,3 +517,28 @@ tr:nth-last-child(1) td
         padding: 10px;
     }  
 }
+
+#table-info, #placeholder
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-self: center;
+    align-items: center;
+    font-size: 30px;
+    text-align: center;
+}
+
+#table-info
+{
+    width: 100%;
+    
+    border: 1px solid black;
+    padding: 20px;
+}
+
+.table-name
+{
+    padding: 10px;
+
+}

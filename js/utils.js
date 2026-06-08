@@ -216,9 +216,11 @@ function generateDeleteDiv(element)
     
 }
 
+// These variables will be used in the event creation. 
 let closestTable;
 let closestStationName;
 let closestColorPicker;
+let closestTableName;
 
 
 /**
@@ -229,8 +231,8 @@ let closestColorPicker;
 function generateCreateEvent()
 {
     
-    const a = document.querySelector(".check-section").querySelector("p");
-    const x = document.querySelector(".check-section");
+    const checkSectionText = document.querySelector(".check-section").querySelector("p");
+    const checkSectionDiv = document.querySelector(".check-section");
     const overlay = document.querySelector(".overlay");
 
     // Container for the div that will hold all of the cells
@@ -251,23 +253,29 @@ function generateCreateEvent()
     {
         // Get the closest station name
         closestStationName = event.target.closest(".section").querySelector(".client-name");
+        closestTableName = event.target.closest(".section").querySelector(".table-name");
 
         // If empty, notify the user and stop
         if (closestStationName.value === "")
         {
-            x.style.display = "block";
+            checkSectionDiv.style.display = "block";
             overlay.style.display = "block"
-            a.textContent = "The Station Name field cannot be empty!";
+            checkSectionText.textContent = "The Station Name field cannot be empty!";
             return;
+        } else if (closestTableName.value === "")
+        {
+            checkSectionDiv.style.display = "block";
+            overlay.style.display = "block"
+            checkSectionText.textContent = "Table name cannot be empty!"
         }
-
+    
         // Get these variables and set the calendar to year and activate week numbers
         closestTable = event.target.closest(".table-container").querySelector("tbody");
         closestColorPicker = event.target.closest(".table-container").querySelector(".color-picker");
         console.log(closestStationName);
-        calendar.setOption("weekNumbers", true)
-        calendar.changeView("multiMonthYear")
-        isCreatingSchedule = true; // Set the calendar variable to true
+        calendar.setOptionForCalendar("weekNumbers", true)
+        calendar.changeViewMode("multiMonthYear")
+        calendar.setIsCreatingSchedule(true) // Set the calendar variable to true
     })
 
     // Append all of this to the div
@@ -277,3 +285,4 @@ function generateCreateEvent()
     return eventContainer;
 
 }
+

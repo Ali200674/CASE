@@ -524,10 +524,15 @@ class ScheduleTable {
         // Create a h3 heading with Type of Schedule text
         // const headingThree = createElement("h3", null, "schedule-type", getScheduleDate(element));
 
+        const tableName = createElement("input", null, "table-name", null);
+        tableName.type = "text";
+        tableName.placeholder = "Enter In Something..."
+
         const colorPicker = createElement("input", null, "color-picker", null);
         colorPicker.type = "color";
 
         // Append the h3 to the h3Wrapper div
+        subHeadingWrapper.append(tableName);
         subHeadingWrapper.append(colorPicker);
         subHeadingWrapper.append(generateCreateEvent()) // Add event button to top of table
 

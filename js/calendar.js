@@ -8,230 +8,387 @@
 
 let calendar;
 
+document.addEventListener("DOMContentLoaded", function() {
+    calendar = new P48Schedule();
+})
 
-// Make these variables for later use
-let dateRangeSelected = new Map(); // Map for applying the rows into dates
-let isCreatingSchedule = false;
-let set = new Set(); // Set for checking if a date in the calendar is between a specific week the user chooses
+class P48Schedule
+{
+    // VARIABLES
+    #calendar = null;
 
+    // Data structures (Map and Set)
+    #dateRangeSelected = null;
+    #daysInSelectedWeek = null;
 
-// This makes an event listener for the calendar
-document.addEventListener("DOMContentLoaded", function(){
+    // Boolean
+    #isCreatingSchedule = false;
 
-    // Get the div that will contain the calendar and make a new object based on this div
-    let calendarEle = document.querySelector("#calendar");
-    calendar = new FullCalendar.Calendar(calendarEle, {
-        // Some of these are easy to explain
-        initialView: "dayGridMonth",
-        editable: true,
-        droppable: true,
-        selectable: true,
-        firstDay: 1,
-        eventOrder: "-type",
+    // Others
+    #rightMouse = null;
+    #cancelButton = null;
+    #confirmButton = null;
+    #tableInfoDiv = null;
+    
+    
+    /**
+     * This contructor initializes the calendar.
+     * 
+     */
+    constructor()
+    {
+        this.#dateRangeSelected = new Map();
+        this.#daysInSelectedWeek = new Set();
+        this.#tableInfoDiv = document.querySelector("#table-info");
 
+        this.#initializeCalendar();
+        this.#initializeRightMouseFunction()
+        this.#confirmFunction();
+        this.#cancelFunction();
+    }
 
+    // Method for initializing the calendar
+    #initializeCalendar() 
+    {
+        let calendarEle = document.querySelector("#calendar");
+            this.#calendar = new FullCalendar.Calendar(calendarEle, {
+                // Some of these are easy to explain
+                initialView: "dayGridMonth",
+                editable: true,
+                droppable: true,
+                selectable: true,
+                firstDay: 1,
+                eventOrder: "-type",  
+
+                headerToolbar: this.#initializeToolBar(),
+                buttonText: this.#changeViewModeText(),
+                dateClick: (info) => this.#initializeDateClick(info),
+                dayCellClassNames: (info) => this.#initializeDayCellClassNames(info),
+                eventClick: (eventClickInfo) => {this.#initializeEventClick(eventClickInfo)}
+                
+        })
+
+       this.#calendar.render();
+    }
+
+    // PRIVATE METHODS
+
+    // Method for event clicking
+    #initializeEventClick(eventClickInfo)
+    {
+        return this.#tableInfoDiv.innerHTML = eventClickInfo.event.extendedProps.description;
+    }
+
+    // Method for tool bar
+    #initializeToolBar() 
+    {
         // For more option, look at the docs
-        headerToolbar:
-        {
+        return {
             start: "prev next today",
             center: "title",
             end: "timeGridDay dayGridWeek dayGridMonth dayGridYear multiMonthYear"  
-        },
-       
+        }
+    }
+
+    // Method for view modes
+    #changeViewModeText() 
+    {
         // Change the button text of the view modes
-        buttonText:
-        {
+        return {
             timeGridDay: "Day View",
             dayGridWeek: "Week View",
             dayGridMonth: "Month View",
             dayGridYear: "Year View",
             multiMonthYear: "Overview"
-        },
-
-
-        // Function of when a cell is clicked, it will switch to the day view of what was clicked on
-        dateClick: function(info)
-        {
-            // If we are not creating a schedule, use the mouse short cuts
-            if (!isCreatingSchedule)
-            {
-                if (calendar.view.type === "multiMonthYear")
-                {
-                    calendar.changeView("dayGridMonth", info.dateStr);  
-                }
-                else if (calendar.view.type === "dayGridMonth")
-                {
-                    calendar.changeView("dayGridWeek", info.dateStr);  
-                }
-                else if (calendar.view.type === "dayGridWeek")
-                {
-                    calendar.changeView("timeGridDay", info.dateStr);  
-                }
-
-
-               
-            }
-            else // Else, we are and make a start and end Date object
-            {
-                // Get the start date and end date
-                const start = new Date(info.date);
-                const end = new Date(info.date);
-
-
-                // Set the end date to last day of the week
-                end.setDate(end.getDate() + 6)
-
-
-                // Make a current date to get all dates between start and end
-                const current = new Date(start);
-
-
-                // Get all dates between the start and end dates and put them into the set
-                while (current <= end)
-                {
-                    set.add(new Date(current).toDateString());
-
-                    current.setDate(current.getDate() + 1);    
-                }
-
-
-                // Add both to map and render the calendar
-                dateRangeSelected.set(start, end)
-                calendar.render();
-            }  
-        },
-       
-        // Runs when the calendar renders, view changes, etc.
-        dayCellClassNames(info)
-        {
-       
-        // // Using the set, return the class if the date is within the set
-        return set.has(info.date.toDateString()) ? ["selected-week"] : []
-
         }
-    })
-   
+    }
 
-
-// Renders the calendar
-calendar.render();
-
-
-// Using right mouse for calendar view modes (short cut)
-document.querySelector("#calendar > :nth-child(2)").addEventListener("contextmenu", (event) =>
-{
-    if (!isCreatingSchedule)
+    // Left mouse clicking method 
+    #initializeDateClick(info)
     {
-        if (event.button === 2)
+        // If we are not creating a schedule, use the mouse short cuts
+        if (!this.#isCreatingSchedule)
         {
-            event.preventDefault();
-
-
-            if (calendar.view.type === "timeGridDay")
+            if (this.#calendar.view.type === "multiMonthYear")
             {
-                calendar.changeView("dayGridWeek");  
+                this.#calendar.changeView("dayGridYear", info.dateStr);  
             }
-            else if (calendar.view.type === "dayGridWeek")
+            else if (this.#calendar.view.type === "dayGridYear")
             {
-                calendar.changeView("dayGridMonth");  
+                this.#calendar.changeView("dayGridMonth", info.dateStr)
             }
-            else if (calendar.view.type === "dayGridMonth")
+            else if (this.#calendar.view.type === "dayGridMonth")
             {
-                calendar.changeView("multiMonthYear");  
-            }  
+                this.#calendar.changeView("dayGridWeek", info.dateStr);  
+            }
+            else if (this.#calendar.view.type === "dayGridWeek")
+            {
+                this.#calendar.changeView("timeGridDay", info.dateStr);  
+            }
         }
-    }  
-})
+        else // Else, we are and make a start and end Date object
+        {
+            // Get the start date and end date
+            const start = new Date(info.date);
+            const end = new Date(info.date);
 
 
-let startDate = document.querySelector("#campaign-start");
-let endDate = document.querySelector("#campaign-end");
-
-function updateDateRange()
-{
-    calendar.setOption("validRange", {
-        start: startDate.value || undefined,
-        end: endDate.value || undefined
-    })
-}
+            // Set the end date to last day of the week
+            end.setDate(end.getDate() + 6)
 
 
-startDate.addEventListener("change", updateDateRange);
-endDate.addEventListener("change", updateDateRange)
+            // Make a current date to get all dates between start and end
+            const current = new Date(start);
 
 
-// For the cancel button at bottom.
-document.querySelector("#cancel").addEventListener("click", () =>
-{
-    isCreatingSchedule = false;
+            // Get all dates between the start and end dates and put them into the set
+            while (current <= end)
+            {
+                this.#daysInSelectedWeek.add(new Date(current).toDateString());
 
-    dateRangeSelected.clear();
-    set.clear();
+                current.setDate(current.getDate() + 1);    
+            }
 
 
-    calendar.setOption("weekNumbers", false)
-   
-    closestTable = null;
-    closestStationName = null;
-})
+            // Add both to map and render the calendar
+            this.#dateRangeSelected.set(start, end)
+            this.#calendar.render();
+        }  
+    }
 
-// Add an event listener to the button at the bottom of calendar
-document.querySelector("#confirm").addEventListener("click",() => {
-    // If we are creating the schedule
-    if (isCreatingSchedule)
+    // Method for if there is the selected day in the set
+    #initializeDayCellClassNames(info)
     {
-        // Get all rows of table and make array
-        const rows = closestTable.querySelectorAll("tr");
+        return this.#daysInSelectedWeek.has(info.date.toDateString()) ? "selected-week" : ""
+    }
 
-        const textareas = []
-
-        // If the rows contain a textarea, add it to array
-        for (let i = 0; i < rows.length - 2; i++)
+    // // Using right mouse for calendar view modes (short cut)
+    #initializeRightMouseFunction()
+    {
+        this.#rightMouse = document.querySelector("#calendar > :nth-child(2)")
+        
+        this.#rightMouse.addEventListener("contextmenu", (event) =>
         {
-            if (rows[i].querySelector("textarea"))
+            if (!this.#isCreatingSchedule)
             {
-                textareas.push(rows[i].querySelector("textarea"))            
-            }
-        }
+                if (event.button === 2)
+                {
+                    event.preventDefault();
 
-        // Make index variable
-        let index = 0;
+                    if (this.#calendar.view.type === "timeGridDay")
+                    {
+                        this.changeViewMode("dayGridWeek");  
+                    }
+                    else if (this.#calendar.view.type === "dayGridWeek")
+                    {
+                        this.changeViewMode("dayGridMonth");  
+                    }
+                    else if (this.#calendar.view.type === "dayGridMonth")
+                    {
+                        this.changeViewMode("dayGridYear"); 
+                    }
+                    else if (this.#calendar.view.type === "dayGridYear")
+                    {
+                        this.changeViewMode("multiMonthYear");  
+                    }  
+                }
+            }  
+        })
+    }
 
-        // For each textarea
-        for (let i = 0; i < textareas.length; i++)
+    // To set all variables and set the mode to not creating events
+    #resetCalendar()
+    {
+        this.setIsCreatingSchedule(false);
+
+        this.#dateRangeSelected.clear();
+        this.#daysInSelectedWeek.clear();
+
+
+        this.setOptionForCalendar("weekNumbers", false)
+
+        closestTable = null;
+        closestStationName = null;
+    }
+
+    // When user clicks confirm button
+    #confirmFunction()
+    {
+        this.#confirmButton = document.querySelector("#confirm");
+        this.#confirmButton.addEventListener("click", () =>
         {
+            // If we are creating the schedule
+        if (this.#isCreatingSchedule)
+        {
+            // Get all rows of table and make array
+            const rows = closestTable.querySelectorAll("tr");
+
+            const textareas = []
+
+            // If the rows contain a textarea, add it to array
+            for (let i = 0; i < rows.length - 2; i++)
+            {
+                if (rows[i].querySelector("textarea"))
+                {
+                    textareas.push(rows[i].querySelector("textarea"))            
+                }
+            }
+
+            // Make index variable
+            let index = 0;
+            
+            // Make variable told hold each row text
+            let rowsText = "";
+
+            // For each textarea
+            for (let i = 0; i < textareas.length; i++)
+            {
+                rowsText += textareas[i].value + "<br>"
+            }
+
             // Go through the map
-            for (const [start, end] of dateRangeSelected)
+            for (const [start, end] of this.#dateRangeSelected)
             {
                 // Get the text area row from the array and add it to the calendar
-                const textarea = textareas[i];
+                // const textarea = textareas[i];
 
                 // Make a temp date that actually includes the last date
                 const actualEnd = new Date(end);
                 actualEnd.setDate(actualEnd.getDate() + 1)
 
-                calendar.addEvent({
-                    title: closestStationName.value + ": " + textarea.value,
-                    start: start.toISOString(),
-                    end: actualEnd.toISOString(),
-                    color: closestColorPicker.value,
-                    allDay: true,
-                })
+
+                this.createEventBlock(
+                    closestStationName.value + ": " + closestTableName.value, 
+                    start,
+                    end,
+                    closestColorPicker.value,
+                    true,
+                    rowsText
+                )
 
                 index++;
             }
 
+            this.#resetCalendar()
         }
-
-        // Reset all of these
-        isCreatingSchedule = false;
-        dateRangeSelected.clear();
-        set.clear();
-        calendar.setOption("weekNumbers", false)
-        closestTable = null;
-        closestStationName = null;
+    
+        })   
     }
-}) 
-})
+
+    // When user clicks cancel
+    #cancelFunction()
+    {
+        this.#cancelButton = document.querySelector("#cancel")
+        this.#cancelButton.addEventListener("click", () => this.#resetCalendar())
+    }
+
+    // Code is commented for now
+    #changeCalendarDateRange()
+    {
+        // let startDate = document.querySelector("#campaign-start");
+        // let endDate = document.querySelector("#campaign-end");
+
+        // function updateDateRange()
+        // {
+        //     calendar.setOption("validRange", {
+        //         start: startDate.value || undefined,
+        //         end: endDate.value || undefined
+        //     })
+        // }
+
+
+        // startDate.addEventListener("change", updateDateRange);
+        // endDate.addEventListener("change", updateDateRange)
+    }
+  
+    // PUBLIC METHODS
+    /**
+     * Changes an option of the calendar after initialization. 
+     * 
+     * This method takes in two parameters. The first parameter is the name of 
+     * the calendar option that you want to change. The second option is to 
+     * what you want to change it to. 
+     * 
+     * @param {string} optionName The calendar option you want to change
+     * @param {*} value The value you want to assign the first parameter
+     */
+    setOptionForCalendar(optionName, value)
+    {
+        this.#calendar.setOption(optionName, value)
+    }
+
+    /**
+     * Changes the view mode of the calendar after initialization.
+     * 
+     * This method takes in one parameter. That parameter is the view mode you want
+     * the calendar to show.
+     *  
+     * There is a list of view modes that work for this calendar.
+     * Some of those include timeGridDay dayGridWeek dayGridMonth dayGridYear multiMonthYear
+     * 
+     * @param {string} mode The view mode the calendar switches to
+     * @throws {Error} Throws if the value passed is not a string 
+     */
+    changeViewMode(mode)
+    {
+        if (typeof mode !== "string") {throw new Error("Value passed is not a string")}
+
+        this.#calendar.changeView(mode);
+    }
+
+    /**
+     * Sets the isCreatingSchedule boolean to the value given.
+     * 
+     * Only works with boolean, nothing else.
+     * 
+     * @param {boolean} bool The value the isCreatingSchedule will be set to.
+     * @throws {Error} Throws if the value passed is not a boolean 
+     */
+    setIsCreatingSchedule(bool)
+    {
+        if (typeof bool !== "boolean") {throw new Error("Value given is not boolean.")}
+
+        this.#isCreatingSchedule = bool;
+    }
+
+    /**
+     * Creates an event block and places it on the calendar.
+     * 
+     * There are a lot of parameters that can be passed through.
+     * 
+     * If a specific parameter is not wanted, simply pass in undefined to give a default
+     * value for that parameter. Default values are explained in each parameter description
+     * 
+     * This method requires at least a two Date objects for the event
+     * to be placed in the calendar. If either or both is not passed, It will throw an error
+     *  
+     * @param {string} titleEvent The title of the event. If none is given, the title will be "Event"
+     * @param {Date} startDate A Date object that represents the start of the event. 
+     * @param {Date} endDate A Date object that represents the end of the event
+     * @param {string} color A color for the event as a string. An input type color element will also work. if none is given, it will default to a blue color (#3788d8)
+     * @param {boolean} allDay A boolean if the event will be all day or not, if the boolean is not true, it will default to false and the time will be 1 hour 
+     * @param {string} descriptionOfEvent A description of the event. If none is given, it will default to a empty string
+     * @throws {Error} If the start and endDate variables are null or if they are not an instance of Date
+     */
+    createEventBlock(titleEvent, startDate, endDate, color, allDay, descriptionOfEvent)
+    {
+        if (startDate == null || !(startDate instanceof Date) ) {throw new Error("The start date is not a Date object or is null")}
+        if (endDate == null || !(endDate instanceof Date)) {throw new Error("The start date is not a Date object or is null")}
+
+        this.#calendar.addEvent({
+            title: titleEvent ?? "Event",
+            start: startDate.toISOString(),
+            end: endDate.toISOString(),
+            color: color ?? "#3788d8",
+            allDay: allDay ?? false,
+            extendedProps:
+            {
+                description: descriptionOfEvent ?? ""
+            }
+        })
+    }
+}
+
+
 
 
