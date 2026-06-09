@@ -221,7 +221,7 @@ let closestTable;
 let closestStationName;
 let closestColorPicker;
 let closestTableName;
-
+const checkSectionText = document.querySelector(".check-section").querySelector("p");
 
 /**
  * Creates a reusable div that holds a UI image for making draggable calendar events
@@ -231,7 +231,6 @@ let closestTableName;
 function generateCreateEvent()
 {
     
-    const checkSectionText = document.querySelector(".check-section").querySelector("p");
     const checkSectionDiv = document.querySelector(".check-section");
     const overlay = document.querySelector(".overlay");
 
@@ -251,9 +250,25 @@ function generateCreateEvent()
     // Add event listener to calendar image
     button.addEventListener("click", (event) =>
     {
+        
         // Get the closest station name
         closestStationName = event.target.closest(".section").querySelector(".client-name");
         closestTableName = event.target.closest(".section").querySelector(".table-name");
+        closestTable = event.target.closest(".table-container").querySelector("tbody");
+
+        const rows = closestTable.querySelectorAll("tr > td:first-child");
+
+        // If the rows contain a textarea, add it to array
+        for (let i = 0; i < rows.length - 2; i++)
+        {
+            if (rows[i].querySelector("textarea").value === "")
+            {
+                checkSectionDiv.style.display = "block";
+                overlay.style.display = "block"
+                checkSectionText.textContent = "Daypart Field(s) cannot be empty!";
+                return
+            }
+        }
 
         // If empty, notify the user and stop
         if (closestStationName.value === "")
@@ -268,9 +283,9 @@ function generateCreateEvent()
             overlay.style.display = "block"
             checkSectionText.textContent = "Table name cannot be empty!"
         }
+        
     
         // Get these variables and set the calendar to year and activate week numbers
-        closestTable = event.target.closest(".table-container").querySelector("tbody");
         closestColorPicker = event.target.closest(".table-container").querySelector(".color-picker");
         console.log(closestStationName);
         calendar.setOptionForCalendar("weekNumbers", true)

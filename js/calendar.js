@@ -214,6 +214,7 @@ class ScheduleCalendar
     // When user clicks confirm button
     #setupConfirmButton()
     {
+        
         this.#confirmButton = document.querySelector("#confirm");
         this.#confirmButton.addEventListener("click", () =>
         {
@@ -221,7 +222,7 @@ class ScheduleCalendar
         if (this.#isCreatingSchedule)
         {
             // Get all rows of table and make array
-            const rows = closestTable.querySelectorAll("tr");
+            const rows = closestTable.querySelectorAll("tr > td:first-child");
 
             const textareas = []
 
@@ -229,8 +230,8 @@ class ScheduleCalendar
             for (let i = 0; i < rows.length - 2; i++)
             {
                 if (rows[i].querySelector("textarea"))
-                {
-                    textareas.push(rows[i].querySelector("textarea"))            
+                {   
+                    textareas.push(rows[i].querySelector("textarea")); 
                 }
             }
 
@@ -354,7 +355,7 @@ class ScheduleCalendar
     /**
      * Returns whether the client is making a schedule
      * 
-     * @returns {boolean} True if the client is making a schedule. Otherwiese false.
+     * @returns {boolean} True if the client is making a schedule. Otherwise false.
      */
     getIsCreatingSchedule()
     {
