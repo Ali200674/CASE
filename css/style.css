@@ -428,7 +428,7 @@ tr:nth-last-child(1) td
 }
 
 /* FullCalendar Button Styles */
-.fc .fc-button-primary, .confirm-section button{
+.fc .fc-button-primary, .confirm-section button, #buttons-bottom button{
     background-color: #333;
     color: white;
     border: none;
@@ -436,16 +436,17 @@ tr:nth-last-child(1) td
     font-weight: 600;
     transition: all 0.2s ease;
     padding: 8px 16px;
+    cursor: pointer;
 }
 
-.fc .fc-button-primary:hover, .confirm-section button:hover{
+.fc .fc-button-primary:hover, .confirm-section button:hover, #buttons-bottom button:hover{
     background-color: var(--primary-purple);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(123, 44, 191, 0.3);
 }
 
 .fc .fc-button-primary:not(:disabled).fc-button-active, 
-.fc .fc-button-primary:not(:disabled):active, .confirm-section button:active{
+.fc .fc-button-primary:not(:disabled):active, .confirm-section button:active, #buttons-bottom button:active{
     background-color: var(--hover-purple);
 }
 
