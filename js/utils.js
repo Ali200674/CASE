@@ -289,7 +289,7 @@ function generateCreateEvent()
         closestColorPicker = event.target.closest(".table-container").querySelector(".color-picker");
         console.log(closestStationName);
         calendar.setOptionForCalendar("weekNumbers", true)
-        calendar.changeViewMode("multiMonthYear")
+        calendar.changeViewMode("dayGridYear")
         calendar.setIsCreatingSchedule(true) // Set the calendar variable to true
     })
 
