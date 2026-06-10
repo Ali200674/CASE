@@ -8,6 +8,7 @@
  */
 
 activeScheduleTables = new Map();
+activeEventsMap = new Map();
 
 /**
  * A class representing an advertising schedule table.
@@ -16,8 +17,7 @@ activeScheduleTables = new Map();
  */
 class ScheduleTable {
 
-    fromDate = null;
-    toDate = null;
+    events = new Set();
 
     colHeadings = ["DAYPART", "ads/wk", "Length", "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN", "RATE", "COST"];
     defaultDayParts = ["Morning (7a-10a)", "Middays (10a-3p)", "Afternoons(3p-6:30p)", "Sa-Su 9a-2p", "M-Su 12M-12M Bonus"];
@@ -63,7 +63,6 @@ class ScheduleTable {
             this.rowTotals.push([]);
         }
     }
-
 
    /**
     * Displays the total of a row / column.
@@ -564,4 +563,5 @@ class ScheduleTable {
         // Insert the table ABOVE the element (or before this element comes up)
         element.parentNode.insertBefore(newTable, element);
     }
+
 }

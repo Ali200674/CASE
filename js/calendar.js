@@ -64,8 +64,7 @@ class ScheduleCalendar
                 buttonText: this.#changeViewModeText(),
                 dateClick: (info) => this.#initializeDateClick(info),
                 dayCellClassNames: (info) => this.#initializeDayCellClassNames(info),
-                eventClick: (eventClickInfo) => {this.#initializeEventClick(eventClickInfo)}
-                
+                eventClick: (eventClickInfo) => this.#initializeEventClick(eventClickInfo)
         })
 
        this.#calendar.render();
@@ -76,7 +75,8 @@ class ScheduleCalendar
     // Method for event clicking
     #initializeEventClick(eventClickInfo)
     {
-        return this.#tableInfoDiv.innerHTML = eventClickInfo.event.extendedProps.description;
+        activeEventsMap.get(eventClickInfo.event.id).tableElement.parentElement.parentElement.scrollIntoView();
+        //return this.#tableInfoDiv.innerHTML = eventClickInfo.event.extendedProps.description;
     }
 
     // Method for tool bar
@@ -132,23 +132,19 @@ class ScheduleCalendar
             const start = new Date(info.date);
             const end = new Date(info.date);
 
-
             // Set the end date to last day of the week
             end.setDate(end.getDate() + 6)
 
-
             // Make a current date to get all dates between start and end
             const current = new Date(start);
-
 
             // Get all dates between the start and end dates and put them into the set
             while (current <= end)
             {
                 this.#daysInSelectedWeek.add(new Date(current).toDateString());
-
+                
                 current.setDate(current.getDate() + 1);    
             }
-
 
             // Add both to map and render the calendar
             this.#dateRangeSelected.set(start, end)
@@ -204,8 +200,7 @@ class ScheduleCalendar
         this.#dateRangeSelected.clear();
         this.#daysInSelectedWeek.clear();
 
-
-        this.setOptionForCalendar("weekNumbers", false)
+        this.setOptionForCalendar("weekNumbers", false);
 
         closestTable = null;
         closestStationName = null;
@@ -238,7 +233,7 @@ class ScheduleCalendar
             // Make index variable
             let index = 0;
             
-            // Make variable told hold each row text
+            // Holds each row's text
             let rowsText = "";
 
             // For each textarea
@@ -258,7 +253,7 @@ class ScheduleCalendar
                 actualEnd.setDate(actualEnd.getDate() + 1)
 
 
-                this.createEventBlock(
+                let event = this.createEventBlock(
                     closestStationName.value + ": " + closestTableName.value, 
                     start,
                     actualEnd,
@@ -266,6 +261,10 @@ class ScheduleCalendar
                     true,
                     rowsText
                 )
+
+                let tableInstance = activeScheduleTables.get(closestTable.parentElement);
+                activeEventsMap.set(event.id, tableInstance);
+                tableInstance.events.add(event);
 
                 index++;
             }
@@ -301,7 +300,15 @@ class ScheduleCalendar
         // startDate.addEventListener("change", updateDateRange);
         // endDate.addEventListener("change", updateDateRange)
     }
-  
+
+    // UUID generation magic that doesn't require a secure context
+    #generateEventUUID()
+    {
+        return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+            (c ^ window.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+    }
+
     // PUBLIC METHODS
     /**
      * Changes an option of the calendar after initialization. 
@@ -379,6 +386,7 @@ class ScheduleCalendar
      * @param {string} color A color for the event as a string. An input type color element with .value property will also work. if none is given, it will default to a blue color (#3788d8)
      * @param {boolean} allDay A boolean if the event will be all day or not, if the boolean is not true, it will default to false and the time will be 1 hour 
      * @param {string} descriptionOfEvent A description of the event. If none is given, it will default to a empty string
+     * @returns A FullCalendar Event object representing the event that was added
      * @throws {Error} If the start and endDate variables are null or if they are not an instance of Date
      */
     createEventBlock(titleEvent, startDate, endDate, color, allDay, descriptionOfEvent)
@@ -386,12 +394,13 @@ class ScheduleCalendar
         if (startDate == null || !(startDate instanceof Date) ) {throw new Error("The start date is not a Date object or is null")}
         if (endDate == null || !(endDate instanceof Date)) {throw new Error("The end date is not a Date object or is null")}
 
-        this.#calendar.addEvent({
+        return this.#calendar.addEvent({
             title: titleEvent ?? "Event",
             start: startDate.toISOString(),
             end: endDate.toISOString(),
             color: color ?? "#3788d8",
             allDay: allDay ?? false,
+            id: this.#generateEventUUID(),
             extendedProps:
             {
                 description: descriptionOfEvent ?? ""
