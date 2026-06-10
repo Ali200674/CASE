@@ -358,6 +358,14 @@ class ScheduleCalendar
     {
         if (typeof bool !== "boolean") {throw new Error("Value given is not boolean.")}
 
+        if (bool)
+        {
+            this.#confirmButton.style.display = "block";
+            this.#cancelButton.style.display = "block";
+        } else {
+            this.#confirmButton.style.display = "none";
+            this.#cancelButton.style.display = "none";
+        }
         this.#isCreatingSchedule = bool;
     }
 

@@ -514,6 +514,7 @@ tr:nth-last-child(1) td
 
     button
     {
+        display: none;
         padding: 10px;
     }  
 }
