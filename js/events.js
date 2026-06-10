@@ -29,7 +29,7 @@ function handleInputEventForSchedules(event)
         }
     }
 
-    if (event.target.type !== "color")
+    if (event.target.type !== "color" && !(event.target.classList.contains("table-name")))
     {
         let parentTable = event.target.parentElement.parentElement.parentElement.parentElement;
 

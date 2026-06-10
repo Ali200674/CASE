@@ -105,6 +105,18 @@ function createElement(type, id, classes, text="")
     return newElement;
 }
 
+function removeTable(tableElement)
+{
+    let tableToRemove = activeScheduleTables.get(tableElement)
+    for (const event of tableToRemove.events)
+    {
+        activeEventsMap.delete(event.id);
+        event.remove(); // Remove all calendar events for this table
+    }
+    activeScheduleTables.delete(tableElement);
+    tableElement.parentElement.remove();
+}
+
 /**
  * This method creates a reusable delete button element with a trash can icon. It also activates a popup behavior that is already
  * in the html. When the trash can is clicked, the user will be ask to confirm deletion before removing the target element (element as parameter)
@@ -151,7 +163,7 @@ function generateDeleteDiv(element)
 
         // Event listener for the yes button
         yesButton.onclick = () =>
-        {     
+        {
             // If the element given is a tr (meaning we will delete a row from a table)
             if (element === "tr")
             {
@@ -164,8 +176,7 @@ function generateDeleteDiv(element)
                 if (closestScheduleTable.height - 1 == 2)
                 {
                     // Remove the entire table
-                    closestTable.parentElement.remove();
-                    activeScheduleTables.delete(closestTable);
+                    removeTable(closestTable);
                 } else {
                     // Remove the row and decrease table height
                     closestElement.remove();
@@ -176,10 +187,12 @@ function generateDeleteDiv(element)
                 }
             }
             else if (element === ".section") {
-                // Remove the associated ScheduleTable
-                // .section -> .table-container -> table
-                const closestTable = closestElement.children[1].children[1];
-                activeScheduleTables.delete(closestTable);
+                for (const childTable of closestElement.querySelectorAll('.table-container')) {
+                    // Remove all ScheduleTables in this section
+                    // table-container -> table
+                    const closestTable = childTable.children[1];
+                    removeTable(closestTable);
+                }
                 // Then remove the section from the DOM
                 // TODO: recalculate running totals after section removal!
                 closestElement.remove();
@@ -216,6 +229,13 @@ function generateDeleteDiv(element)
     
 }
 
+// These variables will be used in the event creation. 
+let closestTable;
+let closestStationName;
+let closestColorPicker;
+let closestTableName;
+const checkSectionText = document.querySelector(".check-section").querySelector("p");
+
 /**
  * Creates a reusable div that holds a UI image for making draggable calendar events
  * 
@@ -223,6 +243,10 @@ function generateDeleteDiv(element)
  */
 function generateCreateEvent()
 {
+    
+    const checkSectionDiv = document.querySelector(".check-section");
+    const overlay = document.querySelector(".overlay");
+
     // Container for the div that will hold all of the cells
     const container = document.querySelector("#table-draggable-cells"); 
 
@@ -236,75 +260,57 @@ function generateCreateEvent()
     const img = createElement("img", undefined, "calendar-add-image", undefined)
     img.src = "images/calendar_add.svg"
 
+    // Add event listener to calendar image
+    button.addEventListener("click", (event) =>
+    {
+        
+        // Get the closest station name
+        closestStationName = event.target.closest(".section").querySelector(".client-name");
+        closestTableName = event.target.closest(".table-container").querySelector(".table-name");
+        closestTable = event.target.closest(".table-container").querySelector("tbody");
+
+        const rows = closestTable.querySelectorAll("tr > td:first-child");
+
+        // If the rows contain a textarea, add it to array
+        for (let i = 0; i < rows.length - 2; i++)
+        {
+            if (rows[i].querySelector("textarea").value === "")
+            {
+                checkSectionDiv.style.display = "block";
+                overlay.style.display = "block"
+                checkSectionText.textContent = "Daypart Field(s) cannot be empty!";
+                return
+            }
+        }
+
+        // If empty, notify the user and stop
+        if (closestStationName.value === "")
+        {
+            checkSectionDiv.style.display = "block";
+            overlay.style.display = "block"
+            checkSectionText.textContent = "The Station Name field cannot be empty!";
+            return;
+        } else if (closestTableName.value === "")
+        {
+            checkSectionDiv.style.display = "block";
+            overlay.style.display = "block"
+            checkSectionText.textContent = "Table name cannot be empty!"
+        }
+
+
+        // Get these variables and set the calendar to year and activate week numbers
+        closestColorPicker = event.target.closest(".table-container").querySelector(".color-picker");
+        console.log(closestStationName);
+        calendar.setOptionForCalendar("weekNumbers", true)
+        calendar.changeViewMode("dayGridYear")
+        calendar.setIsCreatingSchedule(true) // Set the calendar variable to true
+    })
+
     // Append all of this to the div
     button.append(img);
     eventContainer.append(button);
 
-    const x = document.querySelector(".check-section");
-    const overlay = document.querySelector(".overlay");
-
-    // Event listener when clicked
-    button.addEventListener("click", (event) =>
-    {
-        
-        const stationName = event.target.closest(".section").querySelector(".client-name");
-        const closestDayField = event.target.closest("tr").querySelector(".daypart-input");
-        const a = document.querySelector(".check-section").querySelector("p");
-        const closestColorPicker = event.target.closest(".table-container").querySelector(".color-picker");
-        console.log(closestDayField);
-
-        if (stationName.value === "" || closestDayField.value === "") 
-        {
-            x.style.display = "block";
-            overlay.style.display = "block"
-
-            if (stationName.value === "")
-            {
-                a.textContent = "The Station Name field cannot be empty!";
-                return;
-            }
-
-            if (closestDayField.value === "")
-            {
-                a.textContent = "The DayPart field cannot be empty!";
-                return;
-            }
-
-            
-        }
-
-        // Find the closest time slot
-        const closestTimeSlot = event.target.closest("tr").querySelector(".daypart-input");
-
-        // Find the closest ratio station
-        const closestRadioStation = event.target.closest(".section").querySelector(".client-name")
-
-        // Make a div that will be a event cell
-        const eventCell = createElement("div", undefined, "event-cell", undefined);
-
-        // Set the inner text to the radio station name and slot
-        eventCell.innerText =  closestRadioStation.value + " " + closestTimeSlot.value;
-
-        const getClosestScheduleButton = event.target.closest(".section").querySelector(".generate-new-schedule");
-        
-        const dates = getScheduleDate(getClosestScheduleButton, true);
-
-        dates[1].setDate(dates[1].getDate() + 1)
-
-        console.log(dates[0] + " " + dates[1])
-        
-        calendar.addEvent({
-            title: eventCell.innerText,
-            start: dates[0].toISOString(),
-            end: dates[1].toISOString(),
-            color: closestColorPicker.value
-            }
-        )
-
-        // // Append the event cell into the container
-        // container.append(eventCell);
-    })
-
     return eventContainer;
 
 }
+

@@ -8,6 +8,7 @@
  */
 
 activeScheduleTables = new Map();
+activeEventsMap = new Map();
 
 /**
  * A class representing an advertising schedule table.
@@ -16,8 +17,7 @@ activeScheduleTables = new Map();
  */
 class ScheduleTable {
 
-    fromDate = null;
-    toDate = null;
+    events = new Set();
 
     colHeadings = ["DAYPART", "ads/wk", "Length", "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN", "RATE", "COST"];
     defaultDayParts = ["Morning (7a-10a)", "Middays (10a-3p)", "Afternoons(3p-6:30p)", "Sa-Su 9a-2p", "M-Su 12M-12M Bonus"];
@@ -63,7 +63,6 @@ class ScheduleTable {
             this.rowTotals.push([]);
         }
     }
-
 
    /**
     * Displays the total of a row / column.
@@ -519,19 +518,25 @@ class ScheduleTable {
         const container = createElement("div", null, "table-container")
 
         // Create a div for the type of schedule h3 heading
-        const colorPickerWrapper = createElement("div", null, "schedule-type-wrapper");
+        const subHeadingWrapper = createElement("div", null, "schedule-type-wrapper");
 
         // Create a h3 heading with Type of Schedule text
         // const headingThree = createElement("h3", null, "schedule-type", getScheduleDate(element));
+
+        const tableName = createElement("input", null, "table-name", null);
+        tableName.type = "text";
+        tableName.placeholder = "Enter In Something..."
 
         const colorPicker = createElement("input", null, "color-picker", null);
         colorPicker.type = "color";
 
         // Append the h3 to the h3Wrapper div
-        colorPickerWrapper.append(colorPicker);
+        subHeadingWrapper.append(tableName);
+        subHeadingWrapper.append(colorPicker);
+        subHeadingWrapper.append(generateCreateEvent()) // Add event button to top of table
 
         // Append the h3 and the table to the div 
-        container.append(colorPickerWrapper, this.createWholeTable(element));
+        container.append(subHeadingWrapper, this.createWholeTable(element));
 
         // Return the table
         return container;
@@ -558,4 +563,5 @@ class ScheduleTable {
         // Insert the table ABOVE the element (or before this element comes up)
         element.parentNode.insertBefore(newTable, element);
     }
+
 }
