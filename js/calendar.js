@@ -42,7 +42,7 @@ class ScheduleCalendar
         this.#tableInfoDiv = document.querySelector("#table-info");
 
         this.#initializeCalendar();
-        this.#setupRightMouseHandler()
+        this.#setupRightMouseHandler();
         this.#setupConfirmButton();
         this.#setupCancelButton();
     }
@@ -64,7 +64,7 @@ class ScheduleCalendar
                 buttonText: this.#changeViewModeText(),
                 dateClick: (info) => this.#initializeDateClick(info),
                 dayCellClassNames: (info) => this.#initializeDayCellClassNames(info),
-                eventClick: this.#initializeEventClick
+                eventClick: (info) => this.#initializeEventClick(info)
         })
 
        this.#calendar.render();
@@ -135,8 +135,8 @@ class ScheduleCalendar
         else // Else, we are and make a start and end Date object
         {
             // Get the start date and end date
-            const start = new Date(info.date);
-            const end = new Date(info.date);
+            let start = new Date(info.date);
+            let end = new Date(info.date);
 
             // Set the end date to last day of the week
             end.setDate(end.getDate() + 6)
@@ -147,9 +147,16 @@ class ScheduleCalendar
             // Get all dates between the start and end dates and put them into the set
             while (current <= end)
             {
-                this.#daysInSelectedWeek.add(new Date(current).toDateString());
-                
-                current.setDate(current.getDate() + 1);    
+                let dateToAdd = new Date(current).toDateString();
+                if (this.#daysInSelectedWeek.has(dateToAdd)) //Prevent duplicate events by ending date selection here
+                {
+                    current.setDate(current.getDate() - 1);
+                    end = current;
+                    break;
+                }
+                this.#daysInSelectedWeek.add(dateToAdd);
+
+                current.setDate(current.getDate() + 1);
             }
 
             // Add both to map and render the calendar
