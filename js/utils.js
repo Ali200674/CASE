@@ -110,6 +110,7 @@ function removeTable(tableElement)
     let tableToRemove = activeScheduleTables.get(tableElement)
     for (const event of tableToRemove.events)
     {
+        activeEventsMap.delete(event.id);
         event.remove(); // Remove all calendar events for this table
     }
     activeScheduleTables.delete(tableElement);
@@ -186,10 +187,10 @@ function generateDeleteDiv(element)
                 }
             }
             else if (element === ".section") {
-                for (const childTable of closestElement.querySelector('.table-container')) {
+                for (const childTable of closestElement.querySelectorAll('.table-container')) {
                     // Remove all ScheduleTables in this section
                     // table-container -> table
-                    const closestTable = closestElement.children[1];
+                    const closestTable = childTable.children[1];
                     removeTable(closestTable);
                 }
                 // Then remove the section from the DOM
@@ -265,7 +266,7 @@ function generateCreateEvent()
         
         // Get the closest station name
         closestStationName = event.target.closest(".section").querySelector(".client-name");
-        closestTableName = event.target.closest(".section").querySelector(".table-name");
+        closestTableName = event.target.closest(".table-container").querySelector(".table-name");
         closestTable = event.target.closest(".table-container").querySelector("tbody");
 
         const rows = closestTable.querySelectorAll("tr > td:first-child");

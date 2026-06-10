@@ -258,7 +258,7 @@ class ScheduleCalendar
                     actualEnd.setDate(actualEnd.getDate() + 1)
 
                     let event = this.createEventBlock(
-                        closestStationName.value + ": " + closestTableName.value, 
+                        closestStationName.value + ": " + closestTableName.value,
                         start,
                         actualEnd,
                         closestColorPicker.value,
