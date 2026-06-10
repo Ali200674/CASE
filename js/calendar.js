@@ -64,7 +64,7 @@ class ScheduleCalendar
                 buttonText: this.#changeViewModeText(),
                 dateClick: (info) => this.#initializeDateClick(info),
                 dayCellClassNames: (info) => this.#initializeDayCellClassNames(info),
-                eventClick: (eventClickInfo) => this.#initializeEventClick(eventClickInfo)
+                eventClick: this.#initializeEventClick
         })
 
        this.#calendar.render();
@@ -75,7 +75,13 @@ class ScheduleCalendar
     // Method for event clicking
     #initializeEventClick(eventClickInfo)
     {
-        activeEventsMap.get(eventClickInfo.event.id).tableElement.parentElement.parentElement.scrollIntoView();
+        //activeEventsMap.get(eventClickInfo.event.id).tableElement.parentElement.parentElement.scrollIntoView();
+        const checkSectionDiv = document.querySelector(".check-section");
+        const overlay = document.querySelector(".overlay");
+        const checkSectionText = document.querySelector(".check-section").querySelector("p");
+        checkSectionDiv.style.display = "block";
+        overlay.style.display = "block";
+        checkSectionText.innerHTML = eventClickInfo.event.extendedProps.description;
         //return this.#tableInfoDiv.innerHTML = eventClickInfo.event.extendedProps.description;
     }
 
@@ -209,70 +215,66 @@ class ScheduleCalendar
     // When user clicks confirm button
     #setupConfirmButton()
     {
-        
         this.#confirmButton = document.querySelector("#confirm");
         this.#confirmButton.addEventListener("click", () =>
         {
             // If we are creating the schedule
-        if (this.#isCreatingSchedule)
-        {
-            // Get all rows of table and make array
-            const rows = closestTable.querySelectorAll("tr > td:first-child");
-
-            const textareas = []
-
-            // If the rows contain a textarea, add it to array
-            for (let i = 0; i < rows.length - 2; i++)
+            if (this.#isCreatingSchedule)
             {
-                if (rows[i].querySelector("textarea"))
-                {   
-                    textareas.push(rows[i].querySelector("textarea")); 
+                // Get all rows of table and make array
+                const rows = closestTable.querySelectorAll("tr > td:first-child");
+
+                const textareas = []
+
+                // If the rows contain a textarea, add it to array
+                for (let i = 0; i < rows.length - 2; i++)
+                {
+                    if (rows[i].querySelector("textarea"))
+                    {
+                        textareas.push(rows[i].querySelector("textarea")); 
+                    }
                 }
+
+                // Make index variable
+                let index = 0;
+
+                // Make variable told hold each row text
+                let rowsText = "";
+
+                // For each textarea
+                for (let i = 0; i < textareas.length; i++)
+                {
+                    rowsText += textareas[i].value + "<br>";
+                }
+
+                // Go through the map
+                for (const [start, end] of this.#dateRangeSelected)
+                {
+                    // Get the text area row from the array and add it to the calendar
+                    // const textarea = textareas[i];
+
+                    // Make a temp date that actually includes the last date
+                    const actualEnd = new Date(end);
+                    actualEnd.setDate(actualEnd.getDate() + 1)
+
+                    let event = this.createEventBlock(
+                        closestStationName.value + ": " + closestTableName.value, 
+                        start,
+                        actualEnd,
+                        closestColorPicker.value,
+                        true,
+                        rowsText
+                    )
+
+                    let tableInstance = activeScheduleTables.get(closestTable.parentElement);
+                    activeEventsMap.set(event.id, tableInstance);
+                    tableInstance.events.add(event);
+                    index++;
+                }
+
+                this.#resetCalendar()
             }
-
-            // Make index variable
-            let index = 0;
-            
-            // Holds each row's text
-            let rowsText = "";
-
-            // For each textarea
-            for (let i = 0; i < textareas.length; i++)
-            {
-                rowsText += textareas[i].value + "<br>"
-            }
-
-            // Go through the map
-            for (const [start, end] of this.#dateRangeSelected)
-            {
-                // Get the text area row from the array and add it to the calendar
-                // const textarea = textareas[i];
-
-                // Make a temp date that actually includes the last date
-                const actualEnd = new Date(end);
-                actualEnd.setDate(actualEnd.getDate() + 1)
-
-
-                let event = this.createEventBlock(
-                    closestStationName.value + ": " + closestTableName.value, 
-                    start,
-                    actualEnd,
-                    closestColorPicker.value,
-                    true,
-                    rowsText
-                )
-
-                let tableInstance = activeScheduleTables.get(closestTable.parentElement);
-                activeEventsMap.set(event.id, tableInstance);
-                tableInstance.events.add(event);
-
-                index++;
-            }
-
-            this.#resetCalendar()
-        }
-    
-        })   
+        })
     }
 
     // When user clicks cancel
