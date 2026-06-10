@@ -105,6 +105,17 @@ function createElement(type, id, classes, text="")
     return newElement;
 }
 
+function removeTable(tableElement)
+{
+    let tableToRemove = activeScheduleTables.get(tableElement)
+    for (const event of tableToRemove.events)
+    {
+        event.remove(); // Remove all calendar events for this table
+    }
+    activeScheduleTables.delete(tableElement);
+    tableElement.parentElement.remove();
+}
+
 /**
  * This method creates a reusable delete button element with a trash can icon. It also activates a popup behavior that is already
  * in the html. When the trash can is clicked, the user will be ask to confirm deletion before removing the target element (element as parameter)
@@ -151,7 +162,7 @@ function generateDeleteDiv(element)
 
         // Event listener for the yes button
         yesButton.onclick = () =>
-        {     
+        {
             // If the element given is a tr (meaning we will delete a row from a table)
             if (element === "tr")
             {
@@ -164,8 +175,7 @@ function generateDeleteDiv(element)
                 if (closestScheduleTable.height - 1 == 2)
                 {
                     // Remove the entire table
-                    closestTable.parentElement.remove();
-                    activeScheduleTables.delete(closestTable);
+                    removeTable(closestTable);
                 } else {
                     // Remove the row and decrease table height
                     closestElement.remove();
@@ -176,10 +186,12 @@ function generateDeleteDiv(element)
                 }
             }
             else if (element === ".section") {
-                // Remove the associated ScheduleTable
-                // .section -> .table-container -> table
-                const closestTable = closestElement.children[1].children[1];
-                activeScheduleTables.delete(closestTable);
+                for (const childTable of closestElement.querySelector('.table-container')) {
+                    // Remove all ScheduleTables in this section
+                    // table-container -> table
+                    const closestTable = closestElement.children[1];
+                    removeTable(closestTable);
+                }
                 // Then remove the section from the DOM
                 // TODO: recalculate running totals after section removal!
                 closestElement.remove();
@@ -283,8 +295,8 @@ function generateCreateEvent()
             overlay.style.display = "block"
             checkSectionText.textContent = "Table name cannot be empty!"
         }
-        
-    
+
+
         // Get these variables and set the calendar to year and activate week numbers
         closestColorPicker = event.target.closest(".table-container").querySelector(".color-picker");
         console.log(closestStationName);
