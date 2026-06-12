@@ -311,6 +311,7 @@ function generateCreateEvent()
         calendar.setOptionForCalendar("weekNumbers", true)
         calendar.changeViewMode("dayGridYear")
         calendar.setIsCreatingSchedule(true) // Set the calendar variable to true
+        document.getElementById("calendar").scrollIntoView({behavior:"smooth"});
     })
 
     // Append all of this to the div

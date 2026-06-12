@@ -215,6 +215,8 @@ class ScheduleCalendar
 
         this.setOptionForCalendar("weekNumbers", false);
 
+        closestTable.parentElement.parentElement.parentElement.scrollIntoView({behavior:"smooth"});
+
         closestTable = null;
         closestStationName = null;
     }
