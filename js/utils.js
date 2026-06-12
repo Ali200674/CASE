@@ -263,7 +263,14 @@ function generateCreateEvent()
     // Add event listener to calendar image
     button.addEventListener("click", (event) =>
     {
-        
+        if (calendar.getIsCreatingSchedule())
+        {
+            checkSectionDiv.style.display = "block";
+            overlay.style.display = "block";
+            checkSectionText.innerHTML = "A date range is already being selected!";
+            return;
+        }
+
         // Get the closest station name
         closestStationName = event.target.closest(".section").querySelector(".client-name");
         closestTableName = event.target.closest(".table-container").querySelector(".table-name");
@@ -278,7 +285,7 @@ function generateCreateEvent()
             {
                 checkSectionDiv.style.display = "block";
                 overlay.style.display = "block"
-                checkSectionText.textContent = "Daypart Field(s) cannot be empty!";
+                checkSectionText.innerHTML = "Daypart Field(s) cannot be empty!";
                 return
             }
         }
@@ -288,13 +295,13 @@ function generateCreateEvent()
         {
             checkSectionDiv.style.display = "block";
             overlay.style.display = "block"
-            checkSectionText.textContent = "The Station Name field cannot be empty!";
+            checkSectionText.innerHTML = "The Station Name field cannot be empty!";
             return;
         } else if (closestTableName.value === "")
         {
             checkSectionDiv.style.display = "block";
             overlay.style.display = "block"
-            checkSectionText.textContent = "Table name cannot be empty!"
+            checkSectionText.innerHTML = "Table name cannot be empty!"
         }
 
 
