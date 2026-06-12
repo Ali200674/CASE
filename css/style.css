@@ -470,7 +470,7 @@ tr:nth-last-child(1) td
 
 .check-section
 {
-    button
+    .check-section-button
     {
         position: fixed;
         top: 0px;
@@ -483,6 +483,14 @@ tr:nth-last-child(1) td
             cursor: pointer;
         }
     }  
+
+    
+    .event-deletion
+    {
+        margin: 0 auto;
+        text-align: center;
+    }
+
 }
 
 .schedule-type-wrapper

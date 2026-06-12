@@ -300,7 +300,6 @@ function generateCreateEvent()
 
         // Get these variables and set the calendar to year and activate week numbers
         closestColorPicker = event.target.closest(".table-container").querySelector(".color-picker");
-        console.log(closestStationName);
         calendar.setOptionForCalendar("weekNumbers", true)
         calendar.changeViewMode("dayGridYear")
         calendar.setIsCreatingSchedule(true) // Set the calendar variable to true
