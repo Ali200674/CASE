@@ -303,6 +303,8 @@ function generateCreateEvent()
         calendar.setOptionForCalendar("weekNumbers", true)
         calendar.changeViewMode("dayGridYear")
         calendar.setIsCreatingSchedule(true) // Set the calendar variable to true
+        
+        // Get all the previous events in the calendar for later comparison with to be added ones.
         calendar.getAllActiveEvents(); 
     })
 
