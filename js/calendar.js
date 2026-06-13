@@ -20,6 +20,7 @@ class ScheduleCalendar
     // Data structures (Map and Set)
     #dateRangeSelected = null;
     #daysInSelectedWeek = null;
+    #eventsInCalendar = null;
     
 
     // Boolean
@@ -48,6 +49,7 @@ class ScheduleCalendar
     {
         this.#dateRangeSelected = new Map();
         this.#daysInSelectedWeek = new Set();
+        this.#eventsInCalendar = new Set();
 
         this.#endDate = document.querySelector("#campaign-end");
         this.#startDate = document.querySelector("#campaign-start");
@@ -89,6 +91,34 @@ class ScheduleCalendar
     }
 
     // PRIVATE METHODS
+
+    // Update second set will all current events on table
+   getAllActiveEvents()
+    {
+        // Get all events
+        const events = this.#calendar.getEvents();
+
+        // Loop through them and add them to the set (including the days between the start and end)
+        for (const event of events)
+        {
+            // Get start
+            const startEvent = new Date(event.start);
+
+            // Get end
+            const eventEnd = new Date(event.end);
+
+            // Set the day one forward
+            eventEnd.setDate(eventEnd.getDate() - 1);
+
+            // Get the days between the start and end date
+            while (startEvent <= eventEnd)
+            {
+                this.#eventsInCalendar.add(startEvent.toDateString());
+
+                startEvent.setDate(startEvent.getDate() + 1);
+            }
+        }
+    }
 
     // Method for event clicking
     #initializeEventClick(eventClickInfo)
@@ -146,7 +176,6 @@ class ScheduleCalendar
     // Left mouse clicking method 
     #initializeDateClick(info)
     {
-
         // If we are not creating a schedule, use the mouse short cuts
         if (!this.#isCreatingSchedule)
         {
@@ -183,30 +212,62 @@ class ScheduleCalendar
             // Get all dates between the start and end dates and put them into the set
             while (current <= end)
             {
-                let dateToAdd = new Date(current).toDateString();
-                if (this.#daysInSelectedWeek.has(dateToAdd)) //Prevent duplicate events by ending date selection here
+                // Get the current date
+                let dateToAdd = new Date(current).toDateString();   
+
+                // If the day is in the set that has all previous events
+                if (!this.#eventsInCalendar.has(dateToAdd))
                 {
-                    // current.setDate(current.getDate() - 1);
-                    // end = current;
-                    break;
+
+                    if (start == null)
+                    {
+                        start = new Date(current); // If the date isn't in the set it's valid, so set that as the new start date
+                    }
+
+                    // Add both days to the set that activates the colors, and the one that holds all events for checking
+                    this.#daysInSelectedWeek.add(dateToAdd);
+                    this.#eventsInCalendar.add(dateToAdd); 
                 }
-                this.#daysInSelectedWeek.add(dateToAdd);
+                else 
+                { 
+                
+                  if (start != null && current.getTime() != start.getTime()) // Don't do anything if we don't have dates to select (+ special case if the current date is the start of the desired range)
+                   {
+                        const validEndDate = new Date(current);  // Don't select this day
+                        validEndDate.setDate(validEndDate.getDate() - 1); // Only select the valid dates so far
 
+                        // Leave this commented out for now. Looks like it works without this, but don't delete it.
+                        // If it's at least a one day event. add it to the map
+                        // if (validEndDate.getTime() >= start.getTime())
+                        // {
+                            this.#dateRangeSelected.set(start.toDateString(), validEndDate.toDateString());    
+                        // }  
+                        
+                    }
+                    
+                    start = null; // Clear the start date until another valid date is found  
+
+                }
+                
+                // Move forward
                 current.setDate(current.getDate() + 1);
+               
             } 
-
-            // If we have a previous date and that date is the same as the next start date clicked, move the start date forward by on
-            if (this.#previousDate && this.#previousDate.toDateString() === start.toDateString())
-            {
-                start.setDate(start.getDate() + 1);
-            }
 
             // Add both to map and render the calendar
            
-            this.#dateRangeSelected.set(start.toDateString(), end.toDateString())
-            
+            // Add the last valid date range to map and render the calendar
+            if (start != null)
+            {
+                const validEndDate = new Date(current);
+                validEndDate.setDate(validEndDate.getDate() - 1);
 
-            this.#previousDate = end;
+                this.#dateRangeSelected.set(
+                    start.toDateString(),
+                    validEndDate.toDateString()
+                )
+                
+            }
 
             this.#calendar.render();
         }  
@@ -259,6 +320,7 @@ class ScheduleCalendar
 
         this.#dateRangeSelected.clear();
         this.#daysInSelectedWeek.clear();
+        this.#eventsInCalendar.clear();
         this.#previousDate = null;
 
         this.setOptionForCalendar("weekNumbers", false);

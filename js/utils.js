@@ -303,6 +303,7 @@ function generateCreateEvent()
         calendar.setOptionForCalendar("weekNumbers", true)
         calendar.changeViewMode("dayGridYear")
         calendar.setIsCreatingSchedule(true) // Set the calendar variable to true
+        calendar.getAllActiveEvents(); 
     })
 
     // Append all of this to the div
