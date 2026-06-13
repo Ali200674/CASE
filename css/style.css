@@ -507,10 +507,22 @@ tr:nth-last-child(1) td
 /* For confirm button */
 #buttons-bottom
 {
-    display: flex;
+    display: none;
     justify-content: center;
     padding: 10px;
-    margin: 0 auto;
+
+    /* to get it to stick to bottom */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 25;
+    background-color: rgba(123, 44, 191, 0.08);
+    border-top: 2px solid black;
+    box-shadow: 0 -2px 8px rgba(0,0,0,.15);
+    backdrop-filter: blur(7px);
+    padding-bottom: 10px;
+
     gap: 20px;
 
     button

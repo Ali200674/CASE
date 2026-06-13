@@ -215,6 +215,8 @@ class ScheduleCalendar
 
         this.setOptionForCalendar("weekNumbers", false);
 
+        closestTable.parentElement.parentElement.parentElement.scrollIntoView({behavior:"smooth"});
+
         closestTable = null;
         closestStationName = null;
     }
@@ -367,9 +369,15 @@ class ScheduleCalendar
 
         if (bool)
         {
+            //show the bottom bar
+            document.querySelector("#buttons-bottom").style.display = "flex";
+
             this.#confirmButton.style.display = "block";
             this.#cancelButton.style.display = "block";
         } else {
+            // hide the bottom bar
+            document.querySelector("#buttons-bottom").style.display = "none";
+
             this.#confirmButton.style.display = "none";
             this.#cancelButton.style.display = "none";
         }

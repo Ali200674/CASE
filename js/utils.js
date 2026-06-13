@@ -8,83 +8,6 @@
  */
 
 /**
- * This method gets the type of schedule from whatever the user is using to add in a schedule (week or month)
- * It gets the value from whatever the user has choosen, formats it to a usable date, then returned as a string.
- * 
- * @param {HTMLElement} element In this case, the closest element with the ".generate-new-schedule" tag to insert a new table
- * @param {boolean} asJSDateRange Whether to return the schedule date as a string (for table headers) or as an array of Date objects (for table creation)
- * @returns {string | Date[]} Returns a string or array of Dates based on if the user chooses the week selection or the month selection
- */
-function getScheduleDate(element, asJSDateRange = false)
-{
-    // Find all of the elements in that element passed
-    const weekArea = element.querySelector(".week-selection");
-    const weekOf = element.querySelector(".week-of");
-    const monthArea = element.querySelector(".month-selection");
-    const monthChoosen = element.querySelector(".month-choosen");
-
-    // If the week is showing
-    // if (weekArea.style.display === "flex")
-    // {
-    //     // The week picker returns something like:
-    //     // "2026-W22"
-    //     // Split that into:
-    //     // ["2026", "22"]
-    //     const splitWeek = weekOf.value.split("-W");
-
-    //     // Grab the year and week number separately
-    //     const year = parseInt(splitWeek[0]);
-    //     const weekNumber = parseInt(splitWeek[1]);
-
-    //     //Return the schedule week as a string if needed
-    //     if (!asJSDateRange)
-    //     {
-    //         return "Week " + weekNumber + ", " + year;
-    //     }
-    //     // If we're returning a date range, find the start / end dates of the week
-    //     // Start at Jan 1st, then move forward
-    //     // by however many weeks were selected
-    //     const startDate = new Date(year, 0, 1 + (weekNumber - 1) * 7);
-
-    //     //Move the date back to Monday
-    //     while (startDate.getDay() !== 1)
-    //     {
-    //         startDate.setDate(startDate.getDate() - 1);
-    //     }
-
-    //     //End date to return is 6 days after the start
-    //     let endDate = new Date(startDate)
-    //     endDate.setDate(startDate.getDate() + 6);
-    //     return [startDate, endDate];
-    // }
-    // else // Else, the month is showing instead
-    // {
-    //     // Make a Date object based on the value. split the value given into two strings (year and month)
-    //     // Due to the indexing of the months (0 - 11 instead of 1 - 12), decrement the month by 1
-    //     const selectedYear = monthChoosen.value.substring(0, 4);
-    //     const selectedMonth = monthChoosen.value.substring(5) - 1;
-    //     const monthStartDate = new Date(selectedYear, selectedMonth);
-
-    //     if (!asJSDateRange)
-    //     {
-    //         // Format the month
-    //         const option = {month: "long", year: "numeric"};
-    //         // Return that month Date object as a string and formated
-    //         return monthStartDate.toLocaleDateString(
-    //             "en-US",
-    //             option
-    //         );
-    //     }
-    //     else
-    //     {
-    //         //0th day of the next month is treated as the last day of this month
-    //         const monthEndDate = new Date(selectedYear, selectedMonth + 1, 0);
-    //         return [monthStartDate, monthEndDate];
-    //     }
-    // }
-}
-
-/**
  * Creates and returns an element with the given type, id, and class.
  * 
  * @param {string} type The type of the element. Must be a valid HTML tag
@@ -247,9 +170,6 @@ function generateCreateEvent()
     const checkSectionDiv = document.querySelector(".check-section");
     const overlay = document.querySelector(".overlay");
 
-    // Container for the div that will hold all of the cells
-    const container = document.querySelector("#table-draggable-cells"); 
-
     // Make a div that will hold the button and image
     const eventContainer = createElement("div", undefined, "event-container", undefined);
 
@@ -263,7 +183,14 @@ function generateCreateEvent()
     // Add event listener to calendar image
     button.addEventListener("click", (event) =>
     {
-        
+        if (calendar.getIsCreatingSchedule())
+        {
+            checkSectionDiv.style.display = "block";
+            overlay.style.display = "block";
+            checkSectionText.innerHTML = "A date range is already being selected!";
+            return;
+        }
+
         // Get the closest station name
         closestStationName = event.target.closest(".section").querySelector(".client-name");
         closestTableName = event.target.closest(".table-container").querySelector(".table-name");
@@ -278,7 +205,7 @@ function generateCreateEvent()
             {
                 checkSectionDiv.style.display = "block";
                 overlay.style.display = "block"
-                checkSectionText.textContent = "Daypart Field(s) cannot be empty!";
+                checkSectionText.innerHTML = "Daypart Field(s) cannot be empty!";
                 return
             }
         }
@@ -288,13 +215,13 @@ function generateCreateEvent()
         {
             checkSectionDiv.style.display = "block";
             overlay.style.display = "block"
-            checkSectionText.textContent = "The Station Name field cannot be empty!";
+            checkSectionText.innerHTML = "The Station Name field cannot be empty!";
             return;
         } else if (closestTableName.value === "")
         {
             checkSectionDiv.style.display = "block";
             overlay.style.display = "block"
-            checkSectionText.textContent = "Table name cannot be empty!"
+            checkSectionText.innerHTML = "Table name cannot be empty!"
         }
 
 
@@ -304,6 +231,7 @@ function generateCreateEvent()
         calendar.setOptionForCalendar("weekNumbers", true)
         calendar.changeViewMode("dayGridYear")
         calendar.setIsCreatingSchedule(true) // Set the calendar variable to true
+        document.getElementById("calendar").scrollIntoView({behavior:"smooth"});
     })
 
     // Append all of this to the div
