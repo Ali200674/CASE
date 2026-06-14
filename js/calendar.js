@@ -159,7 +159,6 @@ class ScheduleCalendar
             
             this.#calendar.getEventById(this.#selectedDate.event.id).remove();
 
-            // activeEventsMap.delete(this.#selectedDate.event.id);
             checkSectionDiv.style.display = "none";
             overlay.style.display = "none";
             this.#deleteEventButton.style.display = "none"
