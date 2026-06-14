@@ -123,21 +123,20 @@ class ScheduleCalendar
     // Method for event clicking
     #initializeEventClick(eventClickInfo)
     {
-        //activeEventsMap.get(eventClickInfo.event.id).tableElement.parentElement.parentElement.scrollIntoView();
-        const checkSectionDiv = document.querySelector(".check-section");
-        const overlay = document.querySelector(".overlay");
-        const checkSectionText = document.querySelector(".check-section").querySelector("p");
+        if (!this.#isCreatingSchedule)
+        {
+            //activeEventsMap.get(eventClickInfo.event.id).tableElement.parentElement.parentElement.scrollIntoView();
+            const checkSectionDiv = document.querySelector(".check-section");
+            const overlay = document.querySelector(".overlay");
+            const checkSectionText = document.querySelector(".check-section").querySelector("p");
 
-        checkSectionDiv.style.display = "block";
-        overlay.style.display = "block";
-        this.#deleteEventButton.style.display = "block"
-        this.#selectedDate = eventClickInfo;
+            checkSectionDiv.style.display = "block";
+            overlay.style.display = "block";
+            this.#deleteEventButton.style.display = "block"
+            this.#selectedDate = eventClickInfo;
 
-        
-
-        checkSectionText.innerHTML = "Event Information:<br><br>" + eventClickInfo.event.extendedProps.description;
-            
-        //return this.#tableInfoDiv.innerHTML = eventClickInfo.event.extendedProps.description;
+            checkSectionText.innerHTML = "Event Information:<br><br>" + eventClickInfo.event.extendedProps.description;
+        }
     }
 
     #initializeDeleteButton()
@@ -421,21 +420,6 @@ class ScheduleCalendar
         this.#cancelButton = document.querySelector("#cancel")
         this.#cancelButton.addEventListener("click", () => this.#resetCalendar())
     }
-
-    // Code is commented for now
-    // #changeCalendarDateRange()
-    // { 
-    //     this.#startDate.addEventListener("change", () => this.#updateDateRange());
-    //     this.#endDate.addEventListener("change", () => this.#updateDateRange())
-    // }
-
-    // #updateDateRange()
-    // {
-    //     this.setOptionForCalendar("validRange", {
-    //         start: this.#startDate.value || undefined,
-    //         end: this.#endDate.value || undefined
-    //     })
-    // }
 
     // UUID generation magic that doesn't require a secure context
     #generateEventUUID()

@@ -222,6 +222,7 @@ function generateCreateEvent()
             checkSectionDiv.style.display = "block";
             overlay.style.display = "block"
             checkSectionText.innerHTML = "Table name cannot be empty!"
+            return;
         }
 
 
