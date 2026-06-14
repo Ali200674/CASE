@@ -95,11 +95,11 @@ class ScheduleCalendar
     // Update second set will all current events on table
    getAllActiveEvents()
     {
-        // Get all events
-        const events = this.#calendar.getEvents();
-
+        // Get all events of the closest table
+        const tableInstance = activeScheduleTables.get(closestTable.parentElement);
+        
         // Loop through them and add them to the set (including the days between the start and end)
-        for (const event of events)
+        for (const event of tableInstance.events)
         {
             // Get start
             const startEvent = new Date(event.start);
