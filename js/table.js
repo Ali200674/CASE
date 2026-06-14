@@ -525,7 +525,7 @@ class ScheduleTable {
 
         const tableName = createElement("input", null, "table-name", null);
         tableName.type = "text";
-        tableName.placeholder = "Enter In Something..."
+        tableName.placeholder = "Table Name"
 
         const colorPicker = createElement("input", null, "color-picker", null);
         colorPicker.type = "color";

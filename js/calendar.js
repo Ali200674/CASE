@@ -97,7 +97,7 @@ class ScheduleCalendar
     {
         // Get all events of the closest table
         const tableInstance = activeScheduleTables.get(closestTable.parentElement);
-        
+
         // Loop through them and add them to the set (including the days between the start and end)
         for (const event of tableInstance.events)
         {
@@ -133,6 +133,8 @@ class ScheduleCalendar
         this.#deleteEventButton.style.display = "block"
         this.#selectedDate = eventClickInfo;
 
+        
+
         checkSectionText.innerHTML = "Event Information:<br><br>" + eventClickInfo.event.extendedProps.description;
             
         //return this.#tableInfoDiv.innerHTML = eventClickInfo.event.extendedProps.description;
@@ -142,7 +144,23 @@ class ScheduleCalendar
     {
         this.#deleteEventButton.addEventListener("click", () =>
         {
+
+            const clickedEvent = this.#selectedDate.event.id;
+
+            const schedule = activeEventsMap.get(clickedEvent);
+         
+            schedule.events.forEach(event =>
+                {
+                    if (event.id === clickedEvent)
+                    {
+                        schedule.events.delete(event);
+                    }
+                }
+            )
+            
             this.#calendar.getEventById(this.#selectedDate.event.id).remove();
+
+            // activeEventsMap.delete(this.#selectedDate.event.id);
             checkSectionDiv.style.display = "none";
             overlay.style.display = "none";
             this.#deleteEventButton.style.display = "none"
