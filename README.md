@@ -1,2 +1,2 @@
 # CASE
-Cost Analysis and Scheduling Environment tool built for GRCC SDEV280
+Cost Analysis and Scheduling Environment web app built for P48
