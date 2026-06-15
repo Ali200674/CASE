@@ -556,9 +556,9 @@ class ScheduleTable {
         const newTable = this.buildTable(element);
 
         //Add event listeners to the table
-        newTable.addEventListener("input", debounceEvent(handleInputEventForSchedules, 500));
-        newTable.addEventListener("paste", debounceEvent(handlePasteEventForSchedules, 500));
-        newTable.addEventListener("keydown", debounceEvent(handleKeyDownEventForSchedules, 500));
+        newTable.addEventListener("input", debounceEvent(handleInputEventForSchedules, 100));
+        newTable.addEventListener("paste", debounceEvent(handlePasteEventForSchedules, 100));
+        newTable.addEventListener("keydown", debounceEvent(handleKeyDownEventForSchedules, 100));
 
         // Insert the table ABOVE the element (or before this element comes up)
         element.parentNode.insertBefore(newTable, element);
