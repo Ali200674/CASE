@@ -20,15 +20,25 @@ class ScheduleCalendar
     // Data structures (Map and Set)
     #dateRangeSelected = null;
     #daysInSelectedWeek = null;
+    #eventsInCalendar = null;
+    
 
     // Boolean
     #isCreatingSchedule = false;
-
+    
+    
     // Others
     #rightMouse = null;
+
     #cancelButton = null;
     #confirmButton = null;
+
     #tableInfoDiv = null;
+    #endDate = null;
+    #startDate = null;
+    #selectedDate = null;
+    #deleteEventButton = null;
+    #previousDate = null;
     
     
     /**
@@ -39,17 +49,27 @@ class ScheduleCalendar
     {
         this.#dateRangeSelected = new Map();
         this.#daysInSelectedWeek = new Set();
-        this.#tableInfoDiv = document.querySelector("#table-info");
+        this.#eventsInCalendar = new Set();
 
+        this.#endDate = document.querySelector("#campaign-end");
+        this.#startDate = document.querySelector("#campaign-start");
+
+        this.#deleteEventButton = document.querySelector(".event-deletion");
+        
+        this.#tableInfoDiv = document.querySelector("#table-info");
+        
+        this.#initializeDeleteButton();
+        // this.#changeCalendarDateRange();
         this.#initializeCalendar();
         this.#setupRightMouseHandler();
         this.#setupConfirmButton();
         this.#setupCancelButton();
     }
-
+    
     // Method for initializing the calendar
     #initializeCalendar() 
     {
+
         let calendarEle = document.querySelector("#calendar");
             this.#calendar = new FullCalendar.Calendar(calendarEle, {
                 // Some of these are easy to explain
@@ -64,7 +84,7 @@ class ScheduleCalendar
                 buttonText: this.#changeViewModeText(),
                 dateClick: (info) => this.#initializeDateClick(info),
                 dayCellClassNames: (info) => this.#initializeDayCellClassNames(info),
-                eventClick: (info) => this.#initializeEventClick(info)
+                eventClick: (info) => this.#initializeEventClick(info),
         })
 
        this.#calendar.render();
@@ -72,17 +92,75 @@ class ScheduleCalendar
 
     // PRIVATE METHODS
 
+    // Update second set will all current events on table
+    getAllActiveEvents()
+    {
+        // Get all events of the closest table
+        const tableInstance = activeScheduleTables.get(closestTable.parentElement);
+
+        // Loop through them and add them to the set (including the days between the start and end)
+        for (const eventId of tableInstance.events)
+        {
+            event = this.getEventById(eventId);
+
+            // Get start
+            const startEvent = new Date(event.start);
+
+            // Get end
+            const eventEnd = new Date(event.end);
+
+            // Set the day one forward
+            eventEnd.setDate(eventEnd.getDate() - 1);
+
+            // Get the days between the start and end date
+            while (startEvent <= eventEnd)
+            {
+                this.#eventsInCalendar.add(startEvent.toDateString());
+
+                startEvent.setDate(startEvent.getDate() + 1);
+            }
+        }
+    }
+
+    #getAllDaypartValues(table)
+    {
+        return table.rowHeadings.slice(0, -2).join("<br>");
+    }
+
     // Method for event clicking
     #initializeEventClick(eventClickInfo)
     {
-        //activeEventsMap.get(eventClickInfo.event.id).tableElement.parentElement.parentElement.scrollIntoView();
-        const checkSectionDiv = document.querySelector(".check-section");
-        const overlay = document.querySelector(".overlay");
-        const checkSectionText = document.querySelector(".check-section").querySelector("p");
-        checkSectionDiv.style.display = "block";
-        overlay.style.display = "block";
-        checkSectionText.innerHTML = eventClickInfo.event.extendedProps.description;
-        //return this.#tableInfoDiv.innerHTML = eventClickInfo.event.extendedProps.description;
+        if (!this.#isCreatingSchedule)
+        {
+            const checkSectionDiv = document.querySelector(".check-section");
+            const overlay = document.querySelector(".overlay");
+            const checkSectionText = document.querySelector(".check-section").querySelector("p");
+            const associatedTable = activeEventsMap.get(eventClickInfo.event.id);
+
+            checkSectionDiv.style.display = "block";
+            overlay.style.display = "block";
+            this.#deleteEventButton.style.display = "block"
+            this.#selectedDate = eventClickInfo;
+
+            checkSectionText.innerHTML = "Event Information:<br><br>" + this.#getAllDaypartValues(associatedTable);
+        }
+    }
+
+    #initializeDeleteButton()
+    {
+        this.#deleteEventButton.addEventListener("click", () =>
+        {
+            const clickedEvent = this.#selectedDate.event.id;
+            const schedule = activeEventsMap.get(clickedEvent);
+
+            schedule.events.delete(clickedEvent);
+            this.getEventById(clickedEvent).remove();
+            activeEventsMap.delete(clickedEvent);
+
+            checkSectionDiv.style.display = "none";
+            overlay.style.display = "none";
+            this.#deleteEventButton.style.display = "none";
+        })
     }
 
     // Method for tool bar
@@ -130,10 +208,11 @@ class ScheduleCalendar
             else if (this.#calendar.view.type === "dayGridWeek")
             {
                 this.#calendar.changeView("timeGridDay", info.dateStr);  
-            }
+            }   
         }
         else // Else, we are and make a start and end Date object
         {
+
             // Get the start date and end date
             let start = new Date(info.date);
             let end = new Date(info.date);
@@ -147,20 +226,63 @@ class ScheduleCalendar
             // Get all dates between the start and end dates and put them into the set
             while (current <= end)
             {
-                let dateToAdd = new Date(current).toDateString();
-                if (this.#daysInSelectedWeek.has(dateToAdd)) //Prevent duplicate events by ending date selection here
-                {
-                    current.setDate(current.getDate() - 1);
-                    end = current;
-                    break;
-                }
-                this.#daysInSelectedWeek.add(dateToAdd);
+                // Get the current date
+                let dateToAdd = new Date(current).toDateString();   
 
+                // If the day is in the set that has all previous events
+                if (!this.#eventsInCalendar.has(dateToAdd))
+                {
+
+                    if (start == null)
+                    {
+                        start = new Date(current); // If the date isn't in the set it's valid, so set that as the new start date
+                    }
+
+                    // Add both days to the set that activates the colors, and the one that holds all events for checking
+                    this.#daysInSelectedWeek.add(dateToAdd);
+                    this.#eventsInCalendar.add(dateToAdd); 
+                }
+                else 
+                { 
+                
+                  if (start != null && current.getTime() != start.getTime()) // Don't do anything if we don't have dates to select (+ special case if the current date is the start of the desired range)
+                   {
+                        const validEndDate = new Date(current);  // Don't select this day
+                        validEndDate.setDate(validEndDate.getDate() - 1); // Only select the valid dates so far
+
+                        // Leave this commented out for now. Looks like it works without this, but don't delete it.
+                        // If it's at least a one day event. add it to the map
+                        // if (validEndDate.getTime() >= start.getTime())
+                        // {
+                            this.#dateRangeSelected.set(start.toDateString(), validEndDate.toDateString());    
+                        // }  
+                        
+                    }
+                    
+                    start = null; // Clear the start date until another valid date is found  
+
+                }
+                
+                // Move forward
                 current.setDate(current.getDate() + 1);
-            }
+               
+            } 
 
             // Add both to map and render the calendar
-            this.#dateRangeSelected.set(start, end)
+           
+            // Add the last valid date range to map and render the calendar
+            if (start != null)
+            {
+                const validEndDate = new Date(current);
+                validEndDate.setDate(validEndDate.getDate() - 1);
+
+                this.#dateRangeSelected.set(
+                    start.toDateString(),
+                    validEndDate.toDateString()
+                )
+                
+            }
+
             this.#calendar.render();
         }  
     }
@@ -168,7 +290,7 @@ class ScheduleCalendar
     // Method for if there is the selected day in the set
     #initializeDayCellClassNames(info)
     {
-        return this.#daysInSelectedWeek.has(info.date.toDateString()) ? "selected-week" : ""
+        return this.#daysInSelectedWeek.has(info.date.toDateString()) ? "selected-week" : ""  
     }
 
     // // Using right mouse for calendar view modes (short cut)
@@ -212,6 +334,8 @@ class ScheduleCalendar
 
         this.#dateRangeSelected.clear();
         this.#daysInSelectedWeek.clear();
+        this.#eventsInCalendar.clear();
+        this.#previousDate = null;
 
         this.setOptionForCalendar("weekNumbers", false);
 
@@ -230,54 +354,35 @@ class ScheduleCalendar
             // If we are creating the schedule
             if (this.#isCreatingSchedule)
             {
-                // Get all rows of table and make array
+                // Get all rows of table
                 const rows = closestTable.querySelectorAll("tr > td:first-child");
-
-                const textareas = []
-
-                // If the rows contain a textarea, add it to array
-                for (let i = 0; i < rows.length - 2; i++)
-                {
-                    if (rows[i].querySelector("textarea"))
-                    {
-                        textareas.push(rows[i].querySelector("textarea")); 
-                    }
-                }
 
                 // Make index variable
                 let index = 0;
-
-                // Make variable told hold each row text
-                let rowsText = "";
-
-                // For each textarea
-                for (let i = 0; i < textareas.length; i++)
-                {
-                    rowsText += textareas[i].value + "<br>";
-                }
 
                 // Go through the map
                 for (const [start, end] of this.#dateRangeSelected)
                 {
                     // Get the text area row from the array and add it to the calendar
                     // const textarea = textareas[i];
+                    const startDate = new Date(start);
 
                     // Make a temp date that actually includes the last date
-                    const actualEnd = new Date(end);
-                    actualEnd.setDate(actualEnd.getDate() + 1)
-
-                    let event = this.createEventBlock(
-                        closestStationName.value + ": " + closestTableName.value,
-                        start,
-                        actualEnd,
-                        closestColorPicker.value,
-                        true,
-                        rowsText
-                    )
+                    const endDate = new Date(end);
+                    endDate.setDate(endDate.getDate() + 1);
 
                     let tableInstance = activeScheduleTables.get(closestTable.parentElement);
+                    let event = this.createEventBlock(
+                        closestStationName.value + ": " + closestTableName.value,
+                        startDate,
+                        endDate,
+                        closestColorPicker.value,
+                        true,
+                        this.#getAllDaypartValues(tableInstance)
+                    );
+
                     activeEventsMap.set(event.id, tableInstance);
-                    tableInstance.events.add(event);
+                    tableInstance.events.add(event.id);
                     index++;
                 }
 
@@ -291,25 +396,6 @@ class ScheduleCalendar
     {
         this.#cancelButton = document.querySelector("#cancel")
         this.#cancelButton.addEventListener("click", () => this.#resetCalendar())
-    }
-
-    // Code is commented for now
-    #changeCalendarDateRange()
-    {
-        // let startDate = document.querySelector("#campaign-start");
-        // let endDate = document.querySelector("#campaign-end");
-
-        // function updateDateRange()
-        // {
-        //     calendar.setOption("validRange", {
-        //         start: startDate.value || undefined,
-        //         end: endDate.value || undefined
-        //     })
-        // }
-
-
-        // startDate.addEventListener("change", updateDateRange);
-        // endDate.addEventListener("change", updateDateRange)
     }
 
     // UUID generation magic that doesn't require a secure context
@@ -392,6 +478,17 @@ class ScheduleCalendar
     getIsCreatingSchedule()
     {
         return this.#isCreatingSchedule;
+    }
+
+    /**
+     * Gets a calendar event using its ID.
+     * 
+     * @param {string} eventID The ID of the event to return. 
+     * @returns The Event object corresponding to the ID.
+     */
+    getEventById(eventID)
+    {
+        return this.#calendar.getEventById(eventID);
     }
 
     /**

@@ -8,6 +8,22 @@
  */
 
 /**
+ * Pause event execution until it stops being triggered for a short time.
+ * 
+ * @param {Function} func Function to run after delay expires
+ * @param {Number} delay Amount of milliseconds to wait before running func
+ */
+function debounceEvent(func, delay)
+{
+    let timer;
+
+    return function(...params){
+        clearTimeout(timer);
+        timer = setTimeout(function() {func.apply(this, params)}, delay);
+    }
+}
+
+/**
  * Creates and returns an element with the given type, id, and class.
  * 
  * @param {string} type The type of the element. Must be a valid HTML tag
@@ -31,10 +47,10 @@ function createElement(type, id, classes, text="")
 function removeTable(tableElement)
 {
     let tableToRemove = activeScheduleTables.get(tableElement)
-    for (const event of tableToRemove.events)
+    for (const eventId of tableToRemove.events)
     {
         activeEventsMap.delete(event.id);
-        event.remove(); // Remove all calendar events for this table
+        calendar.getEventById(eventId).remove(); // Remove all calendar events for this table
     }
     activeScheduleTables.delete(tableElement);
     tableElement.parentElement.remove();
@@ -101,6 +117,8 @@ function generateDeleteDiv(element)
                     // Remove the entire table
                     removeTable(closestTable);
                 } else {
+                    const rowIndex = closestElement.rowIndex;
+                    closestScheduleTable.rowHeadings.splice(rowIndex - 1, 1);
                     // Remove the row and decrease table height
                     closestElement.remove();
                     closestScheduleTable.height -= 1;
@@ -135,7 +153,7 @@ function generateDeleteDiv(element)
         noButton.onclick = () =>
         {
             confirmSection.style.display = "none";
-            overlay.style.display = "none"
+            overlay.style.display = "none";
         }
     })
 
@@ -174,11 +192,11 @@ function generateCreateEvent()
     const eventContainer = createElement("div", undefined, "event-container", undefined);
 
     // Make button
-    const button = createElement("button", undefined, "create-event-button", undefined)
+    const button = createElement("button", undefined, "create-event-button", undefined);
     
     // Make image and give it the src location of the image
-    const img = createElement("img", undefined, "calendar-add-image", undefined)
-    img.src = "images/calendar_add.svg"
+    const img = createElement("img", undefined, "calendar-add-image", undefined);
+    img.src = "images/calendar_add.svg";
 
     // Add event listener to calendar image
     button.addEventListener("click", (event) =>
@@ -222,15 +240,18 @@ function generateCreateEvent()
             checkSectionDiv.style.display = "block";
             overlay.style.display = "block"
             checkSectionText.innerHTML = "Table name cannot be empty!"
+            return;
         }
 
 
         // Get these variables and set the calendar to year and activate week numbers
         closestColorPicker = event.target.closest(".table-container").querySelector(".color-picker");
-        console.log(closestStationName);
         calendar.setOptionForCalendar("weekNumbers", true)
         calendar.changeViewMode("dayGridYear")
         calendar.setIsCreatingSchedule(true) // Set the calendar variable to true
+        
+        // Get all the previous events in the calendar for later comparison with to be added ones.
+        calendar.getAllActiveEvents();
         document.getElementById("calendar").scrollIntoView({behavior:"smooth"});
     })
 

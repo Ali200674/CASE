@@ -7,35 +7,65 @@
  * @module events.js
  */
 
+function handleStationNameChange(event)
+{
+    let newStationName = event.target.value;
+    for (const childTable of event.target.parentElement.parentElement.querySelectorAll(".table-container")) {
+        let tableName = childTable.querySelector(".table-name").value;
+	let tableInstance = activeScheduleTables.get(childTable.querySelector("table"));
+        for (const eventId of tableInstance.events) {
+	    let eventInstance = calendar.getEventById(eventId);
+            calendar.getEventById(eventId).setProp("title", newStationName + ": " + tableName);
+        }
+    }
+}
 
+function handleExpensiveInputEventForSchedules(event)
+{
+    let tableElement = event.target.parentElement.nextElementSibling;
+    let table = activeScheduleTables.get(tableElement);
+
+    if (event.target.type == "color") {
+        // Update calendar events with the new color
+        for (const eventId of table.events) {
+            calendar.getEventById(eventId).setProp("color", event.target.value);
+        }
+    } else if (event.target.className.includes("table-name")) {
+        // Update calendar events with the new table name
+        for (const eventId of table.events) {
+            calendar.getEventById(eventId).setProp("title", event.target.closest(".section").querySelector(".client-name").value + ": " + event.target.value);
+        }
+    }
+}
 
 /**
- * This will be for the table. It will automatically listen for any inputs when the client types in a number
- * 
- * @param {HTMLElement} event The element (input elements) that are being listened to for inputs
+ * Handles input events from schedule tables.
+ *
+ * @param {HTMLElement} event The event context
  */
 function handleInputEventForSchedules(event)
 {
-    // If the target is an input field.
-    if (event.target.tagName === "INPUT")
-    {   
+    let tableElement = event.target.closest("table");
+    let table = activeScheduleTables.get(tableElement);
+    let parentRow = event.target.closest("tr");
+
+    // If the target is a daypart
+    if (event.target.className.includes("daypart-input"))
+    {
+        // Update the table's rowHeadings with the value
+        table.rowHeadings[parentRow.rowIndex - 1] = event.target.value;
+        console.log(table.rowHeadings);
+    } else {
         // Turn the value into a float
-        const value = parseFloat(event.target.value)
+        const value = parseFloat(event.target.value);
 
         // if the value is negative and is not NaN
         if (!isNaN(value) && value < 0)
         {
             event.target.value = 0;
         }
+        table.getAllTotals();
     }
-
-    if (event.target.type !== "color" && !(event.target.classList.contains("table-name")))
-    {
-        let parentTable = event.target.parentElement.parentElement.parentElement.parentElement;
-
-        activeScheduleTables.get(parentTable).getAllTotals();
-
-    }   
 }
 
 /**
@@ -182,10 +212,12 @@ function handleAddDaypartRow(event)
     const newRow = document.createElement("tr");
 
     tableObject.populateRow(newRow, tableObject.height - 2, true);
-    tableObject.height += 1;
 
     // Insert the new row ABOVE the "+ Add Daypart" row
     tableBody.insertBefore(newRow, addDaypartRow);
+    // Insert the new daypart into rowHeadings
+    tableObject.rowHeadings.splice(tableObject.height - 2, 0, "New Daypart")
+    tableObject.height += 1;
 
     // Recalculate totals after adding the new row
     tableObject.getAllTotals();

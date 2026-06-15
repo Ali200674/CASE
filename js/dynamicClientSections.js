@@ -34,6 +34,8 @@ function generateSection()
         }
     })
 
+    clientName.addEventListener("input", debounceEvent(handleStationNameChange, 500));
+
     // Append the client name (h2) and the deletion div that will delete the section
     sectionName.append(clientName);
     sectionName.append(generateDeleteDiv(".section"));

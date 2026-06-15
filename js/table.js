@@ -525,7 +525,7 @@ class ScheduleTable {
 
         const tableName = createElement("input", null, "table-name", null);
         tableName.type = "text";
-        tableName.placeholder = "Enter In Something..."
+        tableName.placeholder = "Table Name"
 
         const colorPicker = createElement("input", null, "color-picker", null);
         colorPicker.type = "color";
@@ -554,11 +554,14 @@ class ScheduleTable {
     {
         // Build the table for that schedule
         const newTable = this.buildTable(element);
+        const newTableBody = newTable.children[1];
 
         //Add event listeners to the table
-        newTable.addEventListener("input", handleInputEventForSchedules);
-        newTable.addEventListener("paste", handlePasteEventForSchedules);
-        newTable.addEventListener("keydown", handleKeyDownEventForSchedules);
+        newTableBody.addEventListener("input", debounceEvent(handleInputEventForSchedules, 50));
+        newTableBody.addEventListener("paste", debounceEvent(handlePasteEventForSchedules, 100));
+        newTableBody.addEventListener("keydown", debounceEvent(handleKeyDownEventForSchedules, 100));
+	newTable.querySelector(".color-picker").addEventListener("input", debounceEvent(handleExpensiveInputEventForSchedules, 500));
+	newTable.querySelector(".table-name").addEventListener("input", debounceEvent(handleExpensiveInputEventForSchedules, 500));
 
         // Insert the table ABOVE the element (or before this element comes up)
         element.parentNode.insertBefore(newTable, element);

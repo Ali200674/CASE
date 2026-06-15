@@ -18,9 +18,15 @@ window.onload = () =>
 
 const checkSectionDiv = document.querySelector(".check-section");
 const overlay = document.querySelector(".overlay");
+const deleteEvent = document.querySelector(".event-deletion");
 
 document.querySelector(".check-section-button").addEventListener("click", () =>
 {
     checkSectionDiv.style.display = "none";
     overlay.style.display = "none";
+
+    if (deleteEvent.style.display === "block")
+    {
+        deleteEvent.style.display = "none";
+    }
 })
