@@ -34,7 +34,7 @@ function handleInputEventForSchedules(event)
     } else if (event.target.className.includes("table-name")) {
         // Update calendar events with the new table name
         for (const eventId of table.events) {
-            calendar.getEventById(eventId).setProp("title", event.target.value);
+            calendar.getEventById(eventId).setProp("title", event.target.closest(".client-name").value + ": " + event.target.value);
         }
     } else {
         // Turn the value into a float
