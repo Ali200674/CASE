@@ -8,25 +8,12 @@
  */
 
 
-
-/**
- * This will be for the table. It will automatically listen for any inputs when the client types in a number
- * 
- * @param {HTMLElement} event The element (input elements) that are being listened to for inputs
- */
-function handleInputEventForSchedules(event)
+function handleExpensiveInputEventForSchedules(event)
 {
-    let tableElement = event.target.closest("table") || event.target.parentElement.nextElementSibling;
+    let tableElement = event.target.parentElement.nextElementSibling;
     let table = activeScheduleTables.get(tableElement);
-    let parentRow = event.target.closest("tr");
 
-    // If the target is a daypart
-    if (event.target.className.includes("daypart-input"))
-    {
-        // Update the table's rowHeadings with the value
-        table.rowHeadings[parentRow.rowIndex - 1] = event.target.value;
-        console.log(table.rowHeadings);
-    } else if (event.target.type == "color") {
+    if (event.target.type == "color") {
         // Update calendar events with the new color
         for (const eventId of table.events) {
             calendar.getEventById(eventId).setProp("color", event.target.value);
@@ -36,6 +23,26 @@ function handleInputEventForSchedules(event)
         for (const eventId of table.events) {
             calendar.getEventById(eventId).setProp("title", event.target.closest(".section").querySelector(".client-name").value + ": " + event.target.value);
         }
+    }
+}
+
+/**
+ * Handles input events from schedule tables.
+ *
+ * @param {HTMLElement} event The event context
+ */
+function handleInputEventForSchedules(event)
+{
+    let tableElement = event.target.closest("table");
+    let table = activeScheduleTables.get(tableElement);
+    let parentRow = event.target.closest("tr");
+
+    // If the target is a daypart
+    if (event.target.className.includes("daypart-input"))
+    {
+        // Update the table's rowHeadings with the value
+        table.rowHeadings[parentRow.rowIndex - 1] = event.target.value;
+        console.log(table.rowHeadings);
     } else {
         // Turn the value into a float
         const value = parseFloat(event.target.value);
