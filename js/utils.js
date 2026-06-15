@@ -8,6 +8,22 @@
  */
 
 /**
+ * Pause event execution until it stops being triggered for a short time.
+ * 
+ * @param {Function} func Function to run after delay expires
+ * @param {Number} delay Amount of milliseconds to wait before running func
+ */
+function debounceEvent(func, delay)
+{
+    let timer;
+
+    return function(...params){
+        clearTimeout(timer);
+        timer = setTimeout(function() {func.apply(this, params)}, delay);
+    }
+}
+
+/**
  * Creates and returns an element with the given type, id, and class.
  * 
  * @param {string} type The type of the element. Must be a valid HTML tag
