@@ -99,8 +99,10 @@ class ScheduleCalendar
         const tableInstance = activeScheduleTables.get(closestTable.parentElement);
 
         // Loop through them and add them to the set (including the days between the start and end)
-        for (const event of tableInstance.events)
+        for (const eventId of tableInstance.events)
         {
+            event = this.getEventById(eventId);
+
             // Get start
             const startEvent = new Date(event.start);
 
@@ -143,22 +145,12 @@ class ScheduleCalendar
     {
         this.#deleteEventButton.addEventListener("click", () =>
         {
-
             const clickedEvent = this.#selectedDate.event.id;
-
             const schedule = activeEventsMap.get(clickedEvent);
-         
-            schedule.events.forEach(event =>
-                {
-                    if (event.id === clickedEvent)
-                    {
-                        schedule.events.delete(event);
-                    }
-                }
-            )
-            
-            this.#calendar.getEventById(this.#selectedDate.event.id).remove();
 
+            schedule.events.delete(clickedEvent);
+            this.getEventById(clickedEvent).remove();
+            activeEventsMap.delete(clickedEvent);
             checkSectionDiv.style.display = "none";
             overlay.style.display = "none";
             this.#deleteEventButton.style.display = "none"
@@ -404,7 +396,7 @@ class ScheduleCalendar
 
                     let tableInstance = activeScheduleTables.get(closestTable.parentElement);
                     activeEventsMap.set(event.id, tableInstance);
-                    tableInstance.events.add(event);
+                    tableInstance.events.add(event.id);
                     index++;
                 }
 
@@ -500,6 +492,17 @@ class ScheduleCalendar
     getIsCreatingSchedule()
     {
         return this.#isCreatingSchedule;
+    }
+
+    /**
+     * Gets a calendar event using its ID.
+     * 
+     * @param {string} eventID The ID of the event to return. 
+     * @returns The Event object corresponding to the ID.
+     */
+    getEventById(eventID)
+    {
+        return this.#calendar.getEventById(eventID);
     }
 
     /**
