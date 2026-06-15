@@ -93,7 +93,7 @@ class ScheduleCalendar
     // PRIVATE METHODS
 
     // Update second set will all current events on table
-   getAllActiveEvents()
+    getAllActiveEvents()
     {
         // Get all events of the closest table
         const tableInstance = activeScheduleTables.get(closestTable.parentElement);
@@ -122,22 +122,27 @@ class ScheduleCalendar
         }
     }
 
+    #getAllDaypartValues(table)
+    {
+        return table.rowHeadings.slice(0, -2).join("<br>");
+    }
+
     // Method for event clicking
     #initializeEventClick(eventClickInfo)
     {
         if (!this.#isCreatingSchedule)
         {
-            //activeEventsMap.get(eventClickInfo.event.id).tableElement.parentElement.parentElement.scrollIntoView();
             const checkSectionDiv = document.querySelector(".check-section");
             const overlay = document.querySelector(".overlay");
             const checkSectionText = document.querySelector(".check-section").querySelector("p");
+            const associatedTable = activeEventsMap.get(eventClickInfo.event.id);
 
             checkSectionDiv.style.display = "block";
             overlay.style.display = "block";
             this.#deleteEventButton.style.display = "block"
             this.#selectedDate = eventClickInfo;
 
-            checkSectionText.innerHTML = "Event Information:<br><br>" + eventClickInfo.event.extendedProps.description;
+            checkSectionText.innerHTML = "Event Information:<br><br>" + this.#getAllDaypartValues(associatedTable);
         }
     }
 
@@ -151,9 +156,10 @@ class ScheduleCalendar
             schedule.events.delete(clickedEvent);
             this.getEventById(clickedEvent).remove();
             activeEventsMap.delete(clickedEvent);
+
             checkSectionDiv.style.display = "none";
             overlay.style.display = "none";
-            this.#deleteEventButton.style.display = "none"
+            this.#deleteEventButton.style.display = "none";
         })
     }
 
@@ -348,31 +354,11 @@ class ScheduleCalendar
             // If we are creating the schedule
             if (this.#isCreatingSchedule)
             {
-                // Get all rows of table and make array
+                // Get all rows of table
                 const rows = closestTable.querySelectorAll("tr > td:first-child");
-
-                const textareas = []
-
-                // If the rows contain a textarea, add it to array
-                for (let i = 0; i < rows.length - 2; i++)
-                {
-                    if (rows[i].querySelector("textarea"))
-                    {
-                        textareas.push(rows[i].querySelector("textarea")); 
-                    }
-                }
 
                 // Make index variable
                 let index = 0;
-
-                // Make variable told hold each row text
-                let rowsText = "";
-
-                // For each textarea
-                for (let i = 0; i < textareas.length; i++)
-                {
-                    rowsText += textareas[i].value + "<br>";
-                }
 
                 // Go through the map
                 for (const [start, end] of this.#dateRangeSelected)
@@ -383,18 +369,18 @@ class ScheduleCalendar
 
                     // Make a temp date that actually includes the last date
                     const endDate = new Date(end);
-                    endDate.setDate(endDate.getDate() + 1)
+                    endDate.setDate(endDate.getDate() + 1);
 
+                    let tableInstance = activeScheduleTables.get(closestTable.parentElement);
                     let event = this.createEventBlock(
                         closestStationName.value + ": " + closestTableName.value,
                         startDate,
                         endDate,
                         closestColorPicker.value,
                         true,
-                        rowsText
-                    )
+                        this.#getAllDaypartValues(tableInstance)
+                    );
 
-                    let tableInstance = activeScheduleTables.get(closestTable.parentElement);
                     activeEventsMap.set(event.id, tableInstance);
                     tableInstance.events.add(event.id);
                     index++;

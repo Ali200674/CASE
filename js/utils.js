@@ -31,10 +31,10 @@ function createElement(type, id, classes, text="")
 function removeTable(tableElement)
 {
     let tableToRemove = activeScheduleTables.get(tableElement)
-    for (const event of tableToRemove.events)
+    for (const eventId of tableToRemove.events)
     {
         activeEventsMap.delete(event.id);
-        event.remove(); // Remove all calendar events for this table
+        calendar.getEventById(eventId).remove(); // Remove all calendar events for this table
     }
     activeScheduleTables.delete(tableElement);
     tableElement.parentElement.remove();
@@ -101,6 +101,8 @@ function generateDeleteDiv(element)
                     // Remove the entire table
                     removeTable(closestTable);
                 } else {
+                    const rowIndex = element.rowIndex;
+                    closestScheduleTable.rowHeadings.splice(rowIndex, rowIndex);
                     // Remove the row and decrease table height
                     closestElement.remove();
                     closestScheduleTable.height -= 1;

@@ -16,26 +16,37 @@
  */
 function handleInputEventForSchedules(event)
 {
-    // If the target is an input field.
-    if (event.target.tagName === "INPUT")
-    {   
+    let tableElement = event.target.closest("table") || event.target.parentElement.nextElementSibling;
+    let table = activeScheduleTables.get(tableElement);
+    let parentRow = event.target.closest("tr");
+
+    // If the target is a daypart
+    if (event.target.className.includes("daypart-input"))
+    {
+        // Update the table's rowHeadings with the value
+        table.rowHeadings[parentRow.rowIndex - 1] = event.target.value;
+        console.log(table.rowHeadings);
+    } else if (event.target.type == "color") {
+        // Update calendar events with the new color
+        for (const eventId of table.events) {
+            calendar.getEventById(eventId).setProp("color", event.target.value);
+        }
+    } else if (event.target.className.includes("table-name")) {
+        // Update calendar events with the new table name
+        for (const eventId of table.events) {
+            calendar.getEventById(eventId).setProp("title", event.target.value);
+        }
+    } else {
         // Turn the value into a float
-        const value = parseFloat(event.target.value)
+        const value = parseFloat(event.target.value);
 
         // if the value is negative and is not NaN
         if (!isNaN(value) && value < 0)
         {
             event.target.value = 0;
         }
+        table.getAllTotals();
     }
-
-    if (event.target.type !== "color" && !(event.target.classList.contains("table-name")))
-    {
-        let parentTable = event.target.parentElement.parentElement.parentElement.parentElement;
-
-        activeScheduleTables.get(parentTable).getAllTotals();
-
-    }   
 }
 
 /**
@@ -186,6 +197,8 @@ function handleAddDaypartRow(event)
 
     // Insert the new row ABOVE the "+ Add Daypart" row
     tableBody.insertBefore(newRow, addDaypartRow);
+    // Insert the new daypart into rowHeadings
+    tableObject.rowHeadings.splice(newRow.rowIndex - 1, 0, "New Daypart")
 
     // Recalculate totals after adding the new row
     tableObject.getAllTotals();
