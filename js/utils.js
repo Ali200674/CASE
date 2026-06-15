@@ -117,8 +117,8 @@ function generateDeleteDiv(element)
                     // Remove the entire table
                     removeTable(closestTable);
                 } else {
-                    const rowIndex = element.rowIndex;
-                    closestScheduleTable.rowHeadings.splice(rowIndex, rowIndex);
+                    const rowIndex = closestElement.rowIndex;
+                    closestScheduleTable.rowHeadings.splice(rowIndex - 1, 1);
                     // Remove the row and decrease table height
                     closestElement.remove();
                     closestScheduleTable.height -= 1;
@@ -153,7 +153,7 @@ function generateDeleteDiv(element)
         noButton.onclick = () =>
         {
             confirmSection.style.display = "none";
-            overlay.style.display = "none"
+            overlay.style.display = "none";
         }
     })
 
@@ -192,11 +192,11 @@ function generateCreateEvent()
     const eventContainer = createElement("div", undefined, "event-container", undefined);
 
     // Make button
-    const button = createElement("button", undefined, "create-event-button", undefined)
+    const button = createElement("button", undefined, "create-event-button", undefined);
     
     // Make image and give it the src location of the image
-    const img = createElement("img", undefined, "calendar-add-image", undefined)
-    img.src = "images/calendar_add.svg"
+    const img = createElement("img", undefined, "calendar-add-image", undefined);
+    img.src = "images/calendar_add.svg";
 
     // Add event listener to calendar image
     button.addEventListener("click", (event) =>
@@ -251,7 +251,7 @@ function generateCreateEvent()
         calendar.setIsCreatingSchedule(true) // Set the calendar variable to true
         
         // Get all the previous events in the calendar for later comparison with to be added ones.
-        calendar.getAllActiveEvents(); 
+        calendar.getAllActiveEvents();
         document.getElementById("calendar").scrollIntoView({behavior:"smooth"});
     })
 

@@ -34,7 +34,7 @@ function handleInputEventForSchedules(event)
     } else if (event.target.className.includes("table-name")) {
         // Update calendar events with the new table name
         for (const eventId of table.events) {
-            calendar.getEventById(eventId).setProp("title", event.target.closest(".client-name").value + ": " + event.target.value);
+            calendar.getEventById(eventId).setProp("title", event.target.closest(".section").querySelector(".client-name").value + ": " + event.target.value);
         }
     } else {
         // Turn the value into a float
@@ -193,12 +193,12 @@ function handleAddDaypartRow(event)
     const newRow = document.createElement("tr");
 
     tableObject.populateRow(newRow, tableObject.height - 2, true);
-    tableObject.height += 1;
 
     // Insert the new row ABOVE the "+ Add Daypart" row
     tableBody.insertBefore(newRow, addDaypartRow);
     // Insert the new daypart into rowHeadings
-    tableObject.rowHeadings.splice(newRow.rowIndex - 1, 0, "New Daypart")
+    tableObject.rowHeadings.splice(tableObject.height - 2, 0, "New Daypart")
+    tableObject.height += 1;
 
     // Recalculate totals after adding the new row
     tableObject.getAllTotals();

@@ -556,7 +556,7 @@ class ScheduleTable {
         const newTable = this.buildTable(element);
 
         //Add event listeners to the table
-        newTable.addEventListener("input", debounceEvent(handleInputEventForSchedules, 100));
+        newTable.addEventListener("input", debounceEvent(handleInputEventForSchedules, 50));
         newTable.addEventListener("paste", debounceEvent(handlePasteEventForSchedules, 100));
         newTable.addEventListener("keydown", debounceEvent(handleKeyDownEventForSchedules, 100));
 
