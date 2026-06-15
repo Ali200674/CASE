@@ -7,6 +7,18 @@
  * @module events.js
  */
 
+function handleStationNameChange(event)
+{
+    let newStationName = event.target.value;
+    for (const childTable of event.target.parentElement.parentElement.querySelectorAll(".table-container")) {
+        let tableName = childTable.querySelector(".table-name").value;
+	let tableInstance = activeScheduleTables.get(childTable.querySelector("table"));
+        for (const eventId of tableInstance.events) {
+	    let eventInstance = calendar.getEventById(eventId);
+            calendar.getEventById(eventId).setProp("title", newStationName + ": " + tableName);
+        }
+    }
+}
 
 function handleExpensiveInputEventForSchedules(event)
 {
